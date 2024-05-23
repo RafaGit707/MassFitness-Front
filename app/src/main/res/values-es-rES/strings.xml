@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MassFitness</string>
+    <string name="url">http://10.0.2.2:8080/massfitness/</string>
+    <string name="welcome_massfitness">¡Bienvenido a MassFitness!</string>
+    <string name="login">Inicio de sesion</string>
+    <string name="email">Email</string>
+    <string name="password">Contraseña</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="log_in">Iniciar sesion</string>
+    <string name="new_user">¿Eres nuevo?</string>
+    <string name="signup">Registrarse</string>
+    <string name="signup_access">Registrese para acceder a MassFitness</string>
+    <string name="full_name">Nombre completo</string>
+    <string name="confirm_password">Confirmar contraseña</string>
+    <string name="have_account">¿Tienes cuenta?</string>
+    <string name="recover_password">Recupera tu contraseña</string>
+    <string name="send">Enviar</string>
+    <string name="enter_email">Ingresa tu Email</string>
+    <string name="error_connection">Error de conexion</string>
+    <string name="error_unknown">Error desconocido</string>
+    <string name="error_json">Error JSON</string>
+</resources>
