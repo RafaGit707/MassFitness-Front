@@ -111,13 +111,13 @@ public class LoginActivity extends AppCompatActivity {
             progressBar.setVisibility(View.VISIBLE);
 
             Resources res = getResources();
-            String urlRegistro = res.getString(R.string.url) + "/usuarios";
+            String urlLogin = res.getString(R.string.url) + "usuarios/existe";
 
             List<Parametro> parametros = new ArrayList<>();
-            parametros.add(new Parametro("email", email));
+            parametros.add(new Parametro("correo_electronico", email));
             parametros.add(new Parametro("contrasena", contrasena));
 
-            loginUsuarioEnServidor(urlRegistro, parametros);
+            loginUsuarioEnServidor(urlLogin, parametros);
         } else {
             showError("No hay conexión a Internet.");
         }
@@ -130,14 +130,18 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Internetop interopera = Internetop.getInstance();
-                String resultado = interopera.postText(url, params);
+                String resultado = interopera.getText(url, params);
 
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
-                        if (resultado.equals("OK")) {
+                        System.out.println("Resultado del servidor: " + resultado);
+                        if (resultado.equals("true")) {
                             showSuccess("Usuario logueado correctamente.");
+                            Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+                            startActivity(intent);
+                            finish();
                         } else {
                             showError("Error al loguear el usuario. Por favor, inténtalo de nuevo más tarde.");
                         }

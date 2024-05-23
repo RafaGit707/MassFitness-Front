@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 
+import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -154,6 +155,43 @@ public class Internetop {
             ioe.printStackTrace();
             return "error.IOException";
         }
+    }
+
+    public String getText(String url, List<Parametro> params) {
+        return executeWithRetry(() -> okGetText(url, params), 5);
+    }
+
+    private String okGetText(String url, List<Parametro> params) {
+        OkHttpClient client = new OkHttpClient();
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
+        for (Parametro param : params) {
+            urlBuilder.addQueryParameter(param.getLlave(), param.getValor());
+        }
+        String urlWithParams = urlBuilder.build().toString();
+        Request request = new Request.Builder().url(urlWithParams).build();
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                return "false";
+            } else {
+                return response.body().string();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "false";
+        }
+    }
+    private String executeWithRetry(RequestExecutor executor, int maxRetries) {
+        int attempts = 0;
+        String result;
+        do {
+            result = executor.execute();
+            attempts++;
+        } while (attempts < maxRetries && result.equals("error.PIPE"));
+        return result;
+    }
+
+    private interface RequestExecutor {
+        String execute();
     }
 
     public String deleteTask(String url)
