@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -136,9 +137,15 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
-                        System.out.println("Resultado del servidor: " + resultado);
                         if (resultado.equals("true")) {
                             showSuccess("Usuario logueado correctamente.");
+
+                            SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putBoolean("isLoggedIn", true);
+                            editor.putString("correo_electronico", params.get(0).getValor());
+                            editor.apply();
+
                             Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
                             startActivity(intent);
                             finish();

@@ -3,7 +3,9 @@ package com.example.massfitness;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,22 +31,46 @@ public class MainActivity extends AppCompatActivity {
         ImageView loginImageView = findViewById(R.id.loginImageView);
         loginImageView.setAnimation(animacion1);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run(){
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        // Verificar el estado de la sesión
+        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
 
-                Pair[] pairs = new Pair[1];
-                pairs[0] = new Pair<View, String>(loginImageView, "loginImageTrans");
+        if (isLoggedIn) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(MainActivity.this, MenuActivity.class);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, pairs);
-                    startActivity(intent, options.toBundle());
-                } else {
-                    startActivity(intent);
-                    finish();
+                    Pair[] pairs = new Pair[1];
+                    pairs[0] = new Pair<View, String>(loginImageView, "loginImageTrans");
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, pairs);
+                        startActivity(intent, options.toBundle());
+                    } else {
+                        startActivity(intent);
+                        finish();
+                    }
                 }
-            }
-        }, 3000);
+            }, 3000);
+        } else {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+
+                    Pair[] pairs = new Pair[1];
+                    pairs[0] = new Pair<View, String>(loginImageView, "loginImageTrans");
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, pairs);
+                        startActivity(intent, options.toBundle());
+                    } else {
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+            }, 3000);
+        }
     }
 }
