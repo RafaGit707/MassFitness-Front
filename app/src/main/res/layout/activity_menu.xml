@@ -70,8 +70,8 @@
 
                 <ImageView
                     android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@drawable/ic_reservar_sala" />
+                    android:layout_height="64dp"/>
+<!--                    android:src="@drawable/ic_reservar_sala" />-->
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -103,12 +103,13 @@
 
                 <ImageView
                     android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@drawable/ic_acerca_de" />
+                    android:layout_height="64dp"/>
+<!--                    android:src="@drawable/ic_acerca_de" />-->
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:layout_marginTop="8dp"
                     android:text="Acerca de Nosotros"
                     android:textColor="@android:color/white"
@@ -136,8 +137,8 @@
 
                 <ImageView
                     android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@drawable/ic_perfil_usuario" />
+                    android:layout_height="64dp"/>
+<!--                    android:src="@drawable/ic_perfil_usuario" />-->
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -169,8 +170,8 @@
 
                 <ImageView
                     android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@drawable/ic_logros" />
+                    android:layout_height="64dp"/>
+<!--                    android:src="@drawable/ic_logros" />-->
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -202,8 +203,8 @@
 
                 <ImageView
                     android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@drawable/ic_equipo" />
+                    android:layout_height="64dp"/>
+<!--                    android:src="@drawable/ic_equipo" />-->
 
                 <TextView
                     android:layout_width="wrap_content"

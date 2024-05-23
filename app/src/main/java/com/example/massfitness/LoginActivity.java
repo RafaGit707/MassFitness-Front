@@ -158,7 +158,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-
     private void registrarUsuarioEnServidor(String url, String nombre, String email, String contrasena) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
