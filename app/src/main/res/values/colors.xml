@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF0000</color>
     <color name="massfitness_background">#0a1215</color>
+    <color name="massfitness_background_2">#111E23</color>
     <color name="massfitness">#91519b</color>
     <color name="darker_grey">#6f787f</color>
 </resources>

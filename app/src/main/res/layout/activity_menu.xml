@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/massfitness_background"
-    android:orientation="vertical"
     tools:context=".MenuActivity">
 
     <!-- Barra superior con logo del gimnasio y del usuario -->
@@ -20,92 +19,202 @@
         <!-- Logo del gimnasio -->
         <ImageView
             android:id="@+id/logoImageView"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_gravity="center"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
             android:layout_centerHorizontal="true"
             android:src="@drawable/massfitness_nobackground"
-            android:transitionName="loginImageTrans"/>
+            android:transitionName="loginImageTrans" />
 
         <!-- Logo del usuario -->
         <ImageView
             android:id="@+id/userImageView"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
-            android:layout_marginRight="18dp"
-            android:layout_marginTop="18dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_alignParentEnd="true"
+            android:layout_marginEnd="18dp"
+            android:layout_marginTop="20dp"
             android:src="@drawable/icon_user_purple3"
-            android:transitionName="userImageTrans"/>
+            android:transitionName="userImageTrans" />
 
     </RelativeLayout>
 
-    <!-- Botón de "Reservar Sala" -->
-    <Button
-        android:id="@+id/reservarSalaButton"
-        android:layout_width="205dp"
-        android:layout_height="140dp"
-        android:text="Reservar Sala"
-        android:textColor="@android:color/white"
-        android:layout_alignParentLeft="true"
-        android:textSize="18sp"
-        android:background="@drawable/ic_launcher_background"
-        android:padding="20dp"
-        android:layout_below="@id/topBarLayout"
-        android:layout_marginTop="10dp"/>
-
-    <!-- Botón de "Ver Contacto" -->
-    <Button
-        android:id="@+id/acercaDeButton"
+    <!-- Contenedor principal -->
+    <GridLayout
         android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:text="Acerca de Nosotros"
-        android:textColor="@android:color/white"
-        android:layout_alignParentRight="true"
-        android:textSize="18sp"
-        android:background="@drawable/ic_launcher_background"
-        android:layout_toRightOf="@id/reservarSalaButton"
+        android:layout_height="wrap_content"
         android:layout_below="@id/topBarLayout"
-        android:padding="20dp"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="20dp"
+        android:columnCount="2"
+        android:rowCount="3"
+        android:padding="16dp"
+        android:orientation="horizontal"
+        android:layout_gravity="center">
 
-    <!-- Botón de "Perfil del Usuario" -->
-    <Button
-        android:id="@+id/perfilUsuarioButton"
-        android:layout_width="205dp"
-        android:layout_height="140dp"
-        android:text="Perfil del Usuario"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        android:background="@drawable/ic_launcher_background"
-        android:padding="20dp"
-        android:layout_below="@id/reservarSalaButton"/>
+        <!-- Botón de "Reservar Sala" -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/darker_grey">
 
-    <!-- Botón de "Logros" -->
-    <Button
-        android:id="@+id/logrosButton"
-        android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:text="Logros"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/ic_launcher_background"
-        android:padding="20dp"
-        android:layout_toRightOf="@id/perfilUsuarioButton"
-        android:layout_below="@id/reservarSalaButton"
-        android:paddingLeft="20dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/button_background">
 
-    <!-- Botón de "Equipo" -->
-    <Button
-        android:id="@+id/equipoButton"
-        android:layout_width="205dp"
-        android:layout_height="140dp"
-        android:text="Equipo"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        android:background="@drawable/ic_launcher_background"
-        android:padding="20dp"
-        android:layout_below="@id/logrosButton"/>
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_reservar_sala" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Reservar Sala"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Botón de "Acerca de Nosotros" -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/darker_grey">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/button_background_menu">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_acerca_de" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Acerca de Nosotros"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Botón de "Perfil del Usuario" -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/darker_grey">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/button_background">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_perfil_usuario" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Perfil del Usuario"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Botón de "Logros" -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/darker_grey">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/button_background">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_logros" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Logros"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Botón de "Equipo" -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/darker_grey">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/button_background">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_equipo" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Equipo"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </GridLayout>
 
 </RelativeLayout>
