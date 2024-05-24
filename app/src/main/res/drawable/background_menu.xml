@@ -9,9 +9,7 @@
                 android:angle="70"
                 android:gradientRadius="60%"
                 android:startColor="@color/massfitness_background"
-                android:endColor="@color/massfitness_background_2"
                 android:centerColor="@color/massfitness_background_2"/>
-            <corners android:radius="8dp" />
         </shape>
     </item>
 </layer-list>
