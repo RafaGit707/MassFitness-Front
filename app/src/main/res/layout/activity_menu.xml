@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/massfitness_background"
+    android:background="@color/massfitness_background_2"
     tools:context=".MenuActivity">
 
     <!-- Barra superior con logo del gimnasio y del usuario -->
@@ -12,9 +12,9 @@
         android:id="@+id/topBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/darker_grey"
+        android:background="@color/massfitness_background"
         android:layout_alignParentTop="true"
-        android:padding="10dp">
+        android:paddingTop="12dp">
 
         <!-- Logo del gimnasio -->
         <ImageView
@@ -31,7 +31,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="18dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginTop="20dp"
             android:src="@drawable/icon_user_purple3"
             android:transitionName="userImageTrans" />
@@ -43,12 +43,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/topBarLayout"
-        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:background="@drawable/background_menu"
         android:columnCount="2"
-        android:rowCount="3"
-        android:padding="16dp"
         android:orientation="horizontal"
-        android:layout_gravity="center">
+        android:padding="16dp"
+        android:rowCount="3">
 
         <!-- Botón de "Reservar Sala" -->
         <androidx.cardview.widget.CardView
@@ -56,17 +56,16 @@
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:layout_margin="8dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/darker_grey">
+            app:cardBackgroundColor="@color/darker_grey"
+            app:cardCornerRadius="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@drawable/button_background_menu"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="16dp"
-                android:background="@drawable/button_background_menu">
+                android:padding="16dp">
 
                 <ImageView
                     android:layout_width="64dp"
@@ -77,6 +76,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:gravity="center"
                     android:text="Reservar Sala"
                     android:textColor="@android:color/white"
                     android:textSize="18sp" />
@@ -89,28 +89,27 @@
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:layout_margin="8dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/darker_grey">
+            app:cardBackgroundColor="@color/darker_grey"
+            app:cardCornerRadius="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@drawable/button_background_menu"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="16dp"
-                android:background="@drawable/button_background_menu">
+                android:padding="16dp">
 
                 <ImageView
                     android:layout_width="64dp"
-                    android:layout_height="64dp"/>
-<!--                    android:src="@drawable/ic_acerca_de" />-->
+                    android:layout_height="64dp" />
+                <!--                    android:src="@drawable/ic_acerca_de" />-->
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:layout_marginTop="8dp"
+                    android:gravity="center"
                     android:text="Acerca de Nosotros"
                     android:textColor="@android:color/white"
                     android:textSize="18sp" />
@@ -123,27 +122,27 @@
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:layout_margin="8dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/darker_grey">
+            app:cardBackgroundColor="@color/darker_grey"
+            app:cardCornerRadius="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@drawable/button_background_menu"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="16dp"
-                android:background="@drawable/button_background_menu">
+                android:padding="16dp">
 
                 <ImageView
                     android:layout_width="64dp"
-                    android:layout_height="64dp"/>
-<!--                    android:src="@drawable/ic_perfil_usuario" />-->
+                    android:layout_height="64dp" />
+                <!--                    android:src="@drawable/ic_perfil_usuario" />-->
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:gravity="center"
                     android:text="Perfil del Usuario"
                     android:textColor="@android:color/white"
                     android:textSize="18sp" />
@@ -156,27 +155,27 @@
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:layout_margin="8dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/darker_grey">
+            app:cardBackgroundColor="@color/darker_grey"
+            app:cardCornerRadius="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@drawable/button_background_menu"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="16dp"
-                android:background="@drawable/button_background_menu">
+                android:padding="16dp">
 
                 <ImageView
                     android:layout_width="64dp"
-                    android:layout_height="64dp"/>
-<!--                    android:src="@drawable/ic_logros" />-->
+                    android:layout_height="64dp" />
+                <!--                    android:src="@drawable/ic_logros" />-->
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:gravity="center"
                     android:text="Logros"
                     android:textColor="@android:color/white"
                     android:textSize="18sp" />
@@ -189,22 +188,21 @@
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:layout_margin="8dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/darker_grey">
+            app:cardBackgroundColor="@color/darker_grey"
+            app:cardCornerRadius="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@drawable/button_background_menu"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="16dp"
-                android:background="@drawable/button_background_menu">
+                android:padding="16dp">
 
                 <ImageView
                     android:layout_width="64dp"
-                    android:layout_height="64dp"/>
-<!--                    android:src="@drawable/ic_equipo" />-->
+                    android:layout_height="64dp" />
+                <!--                    android:src="@drawable/ic_equipo" />-->
 
                 <TextView
                     android:layout_width="wrap_content"

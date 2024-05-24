@@ -3,12 +3,13 @@
     <item>
         <shape android:shape="rectangle">
             <gradient
-                android:type="radial"
-                android:centerX="50%"
+                android:type="linear"
+                android:centerX="10%"
                 android:centerY="90%"
-                android:gradientRadius="90%"
-                android:startColor="@color/massfitness_background_2"
-                android:endColor="@color/massfitness_background"
+                android:angle="70"
+                android:gradientRadius="60%"
+                android:startColor="@color/massfitness_background"
+                android:endColor="@color/massfitness_background_2"
                 android:centerColor="@color/massfitness_background_2"/>
             <corners android:radius="8dp" />
         </shape>
