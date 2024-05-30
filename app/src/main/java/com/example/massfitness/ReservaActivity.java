@@ -32,6 +32,5 @@ public class ReservaActivity extends AppCompatActivity {
         Intent intent = new Intent(this, DetalleReservaActivity.class);
         intent.putExtra("SALA_NOMBRE", sala);
         startActivity(intent);
-        finish();
     }
 }
