@@ -13,7 +13,7 @@
         android:layout_height="60dp"
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
-        android:src="@drawable/ic_atras"
+        android:src="@drawable/ic_atras_white"
         android:clickable="true"
         android:onClick="onBackClick" />
 
