@@ -5,7 +5,7 @@
             <gradient
                 android:type="linear"
                 android:centerX="10%"
-                android:centerY="90%"
+                android:centerY="50%"
                 android:angle="70"
                 android:gradientRadius="60%"
                 android:startColor="@color/massfitness_background"

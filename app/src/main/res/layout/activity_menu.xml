@@ -31,9 +31,9 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="24dp"
             android:layout_marginTop="24dp"
-            android:src="@drawable/icon_user_purple3"
+            android:src="@drawable/icon_user_purple"
             android:transitionName="userImageTrans" />
 
     </RelativeLayout>
@@ -52,11 +52,12 @@
 
         <!-- Botón de "Reservar Sala" -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/reservaButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:layout_margin="8dp"
-            app:cardBackgroundColor="@color/darker_grey"
+            app:cardBackgroundColor="@color/massfitness_background_2"
             app:cardCornerRadius="8dp">
 
             <LinearLayout
@@ -118,11 +119,12 @@
 
         <!-- Botón de "Logros" -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/logrosButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:layout_margin="8dp"
-            app:cardBackgroundColor="@color/darker_grey"
+            app:cardBackgroundColor="@color/massfitness_background_2"
             app:cardCornerRadius="8dp">
 
             <LinearLayout
@@ -151,11 +153,12 @@
 
         <!-- Botón de "Acerca de Nosotros" -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/acercaButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:layout_margin="8dp"
-            app:cardBackgroundColor="@color/darker_grey"
+            app:cardBackgroundColor="@color/massfitness_background_2"
             app:cardCornerRadius="8dp">
 
             <LinearLayout
@@ -184,11 +187,12 @@
 
         <!-- Botón de "Equipo" -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/equipoButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:layout_margin="8dp"
-            app:cardBackgroundColor="@color/darker_grey"
+            app:cardBackgroundColor="@color/massfitness_background_2"
             app:cardCornerRadius="8dp">
 
             <LinearLayout

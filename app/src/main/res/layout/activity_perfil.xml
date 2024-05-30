@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/massfitness_background_2"
+    tools:context=".PerfilActivity">
+
+    <ImageView
+        android:id="@+id/image_atras"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/ic_atras"
+        android:clickable="true"
+        android:onClick="onBackClick" />
+
+    <ImageView
+        android:id="@+id/profile_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@id/image_atras"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/icon_user_purple"
+        android:clickable="true"
+        android:onClick="onProfileImageClick" />
+
+    <TextView
+        android:id="@+id/tv_nombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profile_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Nombre"
+        android:textColor="@color/white"/>
+
+    <TextView
+        android:id="@+id/tv_correo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_nombre"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="correo@ejemplo.com"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/tv_progreso_fitness"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_correo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Progreso de Fitness: 50%"
+        android:textColor="@color/white"/>
+
+    <TextView
+        android:id="@+id/tv_cantidad_puntos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_progreso_fitness"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Puntos: 100"
+        android:textColor="@color/white" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/editar_perfil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_cantidad_puntos"
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginTop="16dp"
+        android:text="Editar Perfil"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/massfitness"
+        android:background="@drawable/button_background"
+        android:onClick="onEditProfileClick" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cerrar_sesion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editar_perfil"
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginTop="16dp"
+        android:text="Cerrar Sesión"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/red"
+        android:background="@drawable/button_background"
+        android:onClick="onLogoutClick" />
+
+</RelativeLayout>

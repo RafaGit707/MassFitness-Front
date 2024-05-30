@@ -158,50 +158,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void registrarUsuarioEnServidor(String url, String nombre, String email, String contrasena) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                Internetop interopera = Internetop.getInstance();
-                List<Parametro> params = new ArrayList<>();
-                params.add(new Parametro("nombre", nombre));
-                params.add(new Parametro("correo_electronico", email));
-                params.add(new Parametro("contrasena", contrasena));
-
-                String resultado = interopera.postText(url,params);
-
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        progressBar.setVisibility(View.GONE);
-                        Button btAceptar = findViewById(R.id.inicioSesion);
-                        ProgressBar pbAceptar = findViewById(R.id.pb_register);
-
-                        pbAceptar.setVisibility(View.GONE);
-                        btAceptar.setEnabled(true);
-                        btAceptar.setClickable(true);
-
-                        try {
-                            Integer idCreado = Integer.parseInt(resultado);
-                            if (idCreado > 0) {
-                                setResult(RESULT_OK);
-                                showSuccess("Usuario registrado correctamente.");
-                                finish();
-                            } else {
-                                showError("Error al registrar el usuario. Por favor, inténtalo de nuevo más tarde.");
-                            }
-                        } catch (NumberFormatException ex) {
-                            ex.printStackTrace();
-                            showError("Error al registrar el usuario. ID creado -1");
-                        }
-                    }
-                });
-            }
-        });
-    }
-
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager != null) {

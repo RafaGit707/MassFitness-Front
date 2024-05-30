@@ -5,8 +5,8 @@
             <gradient
                 android:type="radial"
                 android:centerX="50%"
-                android:centerY="100%"
-                android:gradientRadius="90%"
+                android:centerY="0%"
+                android:gradientRadius="100%"
                 android:startColor="@color/massfitness_background_2"
                 android:endColor="@color/massfitness_background"
                 android:centerColor="@color/massfitness_background_2"/>
@@ -14,3 +14,4 @@
         </shape>
     </item>
 </layer-list>
+
