@@ -17,6 +17,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".EntrenadoresActivity"
+            android:exported="false" />
+        <activity
             android:name=".DetalleReservaActivity"
             android:exported="false" />
         <activity

@@ -125,8 +125,7 @@
         android:textColor="@android:color/white"
         android:layout_marginTop="4dp"
         android:layout_marginStart="16dp"
-        android:clickable="true"
-        android:onClick="verEntrenador"/>
+        android:clickable="true"/>
 
     <TextView
         android:id="@+id/tvClassDescription"

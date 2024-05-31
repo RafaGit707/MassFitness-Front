@@ -16,6 +16,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
     private TextView tvClassAvailability, tvClassLocation, tvClassInstructor, tvClassDescription;
     private ImageView ivClassImage, ivBack;
     private Button btnReservar;
+    private String entrenador;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
                     setClassDetails("BOXEO", "HORA: 17:30", "DURACIÓN: 60'", "INTENSIDAD: ALTA",
                             "12/31", "LUGAR: Pista Atletismo", "MONITOR: MAIKEL",
                             "Tonificación dirigida acompañada de soporte musical, donde se realizan ejercicios de fortalecimiento muscular global.",
-                            R.drawable.boxeo_img_info);
+                            R.drawable.boxeo_img_info, "maikel");
                     break;
                 case "Pilates":
 //                    setClassDetails("PILATES", "HORA: 18:00", "DURACIÓN: 50'", "INTENSIDAD: MEDIA",
@@ -56,7 +57,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
                     setClassDetails("MUSCULACIÓN", "HORA: 16:00", "DURACIÓN: 70'", "INTENSIDAD: ALTA",
                             "15/25", "LUGAR: Sala de Musculación", "MONITOR: CARLOS",
                             "Sesión dedicada a ejercicios de fuerza para tonificar y ganar masa muscular.",
-                            R.drawable.musculacion_img_info);
+                            R.drawable.musculacion_img_info,"");
                     break;
                 case "Sala de Abdominales":
 //                    setClassDetails("ABDOMINALES", "HORA: 15:30", "DURACIÓN: 30'", "INTENSIDAD: MEDIA",
@@ -73,7 +74,6 @@ public class DetalleReservaActivity extends AppCompatActivity {
             }
         }
 
-        // Set listeners
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,14 +82,11 @@ public class DetalleReservaActivity extends AppCompatActivity {
             }
         });
 
-//        tvClassInstructor.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Handle instructor name click
-//                Intent intent = new Intent(DetalleReservaActivity.this, EntrenadorDetailActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        tvClassInstructor.setOnClickListener(v -> {
+            Intent intent2 = new Intent(DetalleReservaActivity.this, EntrenadoresActivity.class);
+            intent2.putExtra("ENTRENADOR", entrenador);
+            startActivity(intent2);
+        });
 //
 //        btnReservar.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -103,9 +100,16 @@ public class DetalleReservaActivity extends AppCompatActivity {
 //        });
     }
 
+    private void abrirEntrenador(String entrenador) {
+        Intent intent = new Intent(this, EntrenadoresActivity.class);
+        intent.putExtra("ENTRENADOR", entrenador);
+
+        startActivity(intent);
+    }
+
     private void setClassDetails(String name, String time, String duration, String intensity,
                                  String availability, String location, String instructor, String description,
-                                 int imageResource) {
+                                 int imageResource, String trainer) {
         tvClassName.setText(name);
         tvClassTime.setText(time);
         tvClassDuration.setText(duration);
@@ -115,5 +119,6 @@ public class DetalleReservaActivity extends AppCompatActivity {
         tvClassInstructor.setText(instructor);
         tvClassDescription.setText(description);
         ivClassImage.setImageResource(imageResource);
+        entrenador = trainer;
     }
 }
