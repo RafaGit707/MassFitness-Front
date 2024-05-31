@@ -161,11 +161,11 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-<!--                <ImageView-->
-<!--                    android:layout_width="64dp"-->
-<!--                    android:layout_height="64dp"-->
-<!--                    android:src="@drawable/ic_abdominales"
-                        android:contentDescription="@string/abdominales"/>-->
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_abdominales"
+                    android:contentDescription="@string/abdominales"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -196,11 +196,11 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-<!--                <ImageView-->
-<!--                    android:layout_width="64dp"-->
-<!--                    android:layout_height="64dp"-->
-<!--                    android:src="@drawable/ic_yoga"
-                        android:contentDescription="@string/yoga" />-->
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_yoga"
+                    android:contentDescription="@string/yoga" />
 
                 <TextView
                     android:layout_width="wrap_content"
