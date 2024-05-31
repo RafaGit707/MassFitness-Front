@@ -19,4 +19,15 @@
     <string name="error_connection">Connection error</string>
     <string name="error_unknown">Unknown error</string>
     <string name="error_json">JSON error</string>
+
+    <string name="boxeo">Boxing</string>
+    <string name="pilates">Pilates</string>
+    <string name="musculacion">Weight Room</string>
+    <string name="abdominales">Abs Room</string>
+    <string name="yoga">Yoga</string>
+    <string name="boxeo_key">Boxeo</string>
+    <string name="pilates_key">Pilates</string>
+    <string name="musculacion_key">Sala de Musculación</string>
+    <string name="abdominales_key">Sala de Abdominales</string>
+    <string name="yoga_key">Yoga</string>
 </resources>

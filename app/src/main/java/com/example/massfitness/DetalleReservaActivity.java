@@ -37,28 +37,47 @@ public class DetalleReservaActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String salaNombre = intent.getStringExtra("SALA_NOMBRE");
 
+        // Set class details based on the salaNombre
         if (salaNombre != null) {
             switch (salaNombre) {
                 case "Boxeo":
-                    tvClassName.setText("BOXEO");
-                    tvClassTime.setText("HORA: 17:30");
-                    tvClassDuration.setText("DURACIÓN: 60'");
-                    tvClassIntensity.setText("INTENSIDAD: ALTA");
-                    tvClassAvailability.setText("12/31");
-                    tvClassLocation.setText("LUGAR: Pista Atletismo");
-                    tvClassInstructor.setText("MONITOR: MAIKEL");
-                    tvClassDescription.setText("Tonificación dirigida acompañada de soporte musical, donde se realizan ejercicios de fortalecimiento muscular global.");
-                    ivClassImage.setImageResource(R.drawable.boxeo_img_info);
+                    setClassDetails("BOXEO", "HORA: 17:30", "DURACIÓN: 60'", "INTENSIDAD: ALTA",
+                            "12/31", "LUGAR: Pista Atletismo", "MONITOR: MAIKEL",
+                            "Tonificación dirigida acompañada de soporte musical, donde se realizan ejercicios de fortalecimiento muscular global.",
+                            R.drawable.boxeo_img_info);
+                    break;
+                case "Pilates":
+//                    setClassDetails("PILATES", "HORA: 18:00", "DURACIÓN: 50'", "INTENSIDAD: MEDIA",
+//                            "10/20", "LUGAR: Sala de Yoga", "MONITOR: ANA",
+//                            "Clase de ejercicios controlados para fortalecer y flexibilizar el cuerpo.",
+//                            R.drawable.pilates_img_info);
+                    break;
+                case "Sala de Musculación":
+                    setClassDetails("MUSCULACIÓN", "HORA: 16:00", "DURACIÓN: 70'", "INTENSIDAD: ALTA",
+                            "15/25", "LUGAR: Sala de Musculación", "MONITOR: CARLOS",
+                            "Sesión dedicada a ejercicios de fuerza para tonificar y ganar masa muscular.",
+                            R.drawable.musculacion_img_info);
+                    break;
+                case "Sala de Abdominales":
+//                    setClassDetails("ABDOMINALES", "HORA: 15:30", "DURACIÓN: 30'", "INTENSIDAD: MEDIA",
+//                            "8/15", "LUGAR: Sala de Abdominales", "MONITOR: LUCIA",
+//                            "Ejercicios enfocados en fortalecer el core y mejorar la postura.",
+//                            R.drawable.abdominales_img_info);
+                    break;
+                case "Yoga":
+//                    setClassDetails("YOGA", "HORA: 19:00", "DURACIÓN: 60'", "INTENSIDAD: BAJA",
+//                            "20/30", "LUGAR: Sala de Yoga", "MONITOR: MARIA",
+//                            "Práctica de posturas y respiración para mejorar el equilibrio y la flexibilidad.",
+//                            R.drawable.yoga_img_info);
                     break;
             }
         }
 
+        // Set listeners
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.button_click_animation);
-                ivBack.startAnimation(anim);
-
+                // Handle back button click
                 finish();
             }
         });
@@ -66,7 +85,8 @@ public class DetalleReservaActivity extends AppCompatActivity {
 //        tvClassInstructor.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                Intent intent = new Intent(ClassDetailActivity.this, EntrenadorDetailActivity.class);
+//                // Handle instructor name click
+//                Intent intent = new Intent(DetalleReservaActivity.this, InstructorDetailActivity.class);
 //                startActivity(intent);
 //            }
 //        });
@@ -74,11 +94,26 @@ public class DetalleReservaActivity extends AppCompatActivity {
 //        btnReservar.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                Intent intent = new Intent(ClassDetailActivity.this, ReservationActivity.class);
-//                intent.putExtra("class_name", "BOXEO");
-//                intent.putExtra("class_time", "17:30");
+//                // Handle reserve button click
+//                Intent intent = new Intent(DetalleReservaActivity.this, ReservationActivity.class);
+//                intent.putExtra("class_name", tvClassName.getText().toString());
+//                intent.putExtra("class_time", tvClassTime.getText().toString().substring(6));
 //                startActivity(intent);
 //            }
 //        });
+    }
+
+    private void setClassDetails(String name, String time, String duration, String intensity,
+                                 String availability, String location, String instructor, String description,
+                                 int imageResource) {
+        tvClassName.setText(name);
+        tvClassTime.setText(time);
+        tvClassDuration.setText(duration);
+        tvClassIntensity.setText(intensity);
+        tvClassAvailability.setText(availability);
+        tvClassLocation.setText(location);
+        tvClassInstructor.setText(instructor);
+        tvClassDescription.setText(description);
+        ivClassImage.setImageResource(imageResource);
     }
 }

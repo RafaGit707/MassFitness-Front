@@ -21,11 +21,11 @@ public class ReservaActivity extends AppCompatActivity {
         abdominalesButton = findViewById(R.id.abdominalesButton);
         yogaButton = findViewById(R.id.yogaButton);
 
-        boxeoButton.setOnClickListener(v -> abrirDetalleReserva("Boxeo"));
-        pilatesButton.setOnClickListener(v -> abrirDetalleReserva("Pilates"));
-        musculacionButton.setOnClickListener(v -> abrirDetalleReserva("Sala de Musculación"));
-        abdominalesButton.setOnClickListener(v -> abrirDetalleReserva("Sala de Abdominales"));
-        yogaButton.setOnClickListener(v -> abrirDetalleReserva("Yoga"));
+        boxeoButton.setOnClickListener(v -> abrirDetalleReserva(getString(R.string.boxeo_key)));
+        pilatesButton.setOnClickListener(v -> abrirDetalleReserva(getString(R.string.pilates_key)));
+        musculacionButton.setOnClickListener(v -> abrirDetalleReserva(getString(R.string.musculacion_key)));
+        abdominalesButton.setOnClickListener(v -> abrirDetalleReserva(getString(R.string.abdominales_key)));
+        yogaButton.setOnClickListener(v -> abrirDetalleReserva(getString(R.string.yoga_key)));
     }
 
     private void abrirDetalleReserva(String sala) {
