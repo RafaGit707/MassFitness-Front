@@ -5,6 +5,8 @@ import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 public class ReservaActivity extends AppCompatActivity {
 
@@ -31,6 +33,7 @@ public class ReservaActivity extends AppCompatActivity {
     private void abrirDetalleReserva(String sala) {
         Intent intent = new Intent(this, DetalleReservaActivity.class);
         intent.putExtra("SALA_NOMBRE", sala);
+
         startActivity(intent);
     }
 }

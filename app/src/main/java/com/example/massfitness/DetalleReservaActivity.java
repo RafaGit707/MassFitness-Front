@@ -86,7 +86,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
 //            @Override
 //            public void onClick(View v) {
 //                // Handle instructor name click
-//                Intent intent = new Intent(DetalleReservaActivity.this, InstructorDetailActivity.class);
+//                Intent intent = new Intent(DetalleReservaActivity.this, EntrenadorDetailActivity.class);
 //                startActivity(intent);
 //            }
 //        });
