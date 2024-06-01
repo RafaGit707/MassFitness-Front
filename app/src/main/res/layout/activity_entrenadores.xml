@@ -22,14 +22,6 @@
             android:padding="16dp"
             android:id="@+id/trainerContainer">
 
-<!--            &lt;!&ndash; Divider &ndash;&gt;-->
-<!--            <View-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="1dp"-->
-<!--                android:background="@android:color/darker_gray" />-->
-
-<!--            &lt;!&ndash; Pa poner otros entrenadores &ndash;&gt;-->
-
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

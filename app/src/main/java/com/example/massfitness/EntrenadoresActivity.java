@@ -31,15 +31,22 @@ public class EntrenadoresActivity extends AppCompatActivity {
     }
 
     private void showTrainerInfo(String trainer) {
-        if (trainer.equals("maikel")) {
-            addTrainerView("MAIKEL", "LAST NAME", "Trainer description here", R.drawable.maikel_image);
-        } // else if (trainer.equals("ana_id")) {
-//            addTrainerView("ANA", "LAST NAME", "Trainer description here", R.drawable.ana_image);
-//        }
+        if (trainer.equals("Maikel")) {
+            addTrainerView("MAIKEL", "JOHNSON RAMIREZ ", "Certificación en Entrenamiento de Boxeo, Curso de Primeros Auxilios, Licenciatura en Educación Física", R.drawable.maikel_image);
+        } else if (trainer.equals("Jose")) {
+            addTrainerView("JOSE", "GOMEZ GARCIA", "Licenciatura en Ciencias del Deporte, Certificación en Entrenamiento Personal, Certificación en Nutrición Deportiva", R.drawable.jose_image);
+        } else if (trainer.equals("Laura")) {
+            addTrainerView("LAURA", "MARTINEZ RODRIGUEZ", "Certificación Internacional en Yoga (200 horas), Curso de Meditación y Mindfulness, Taller de Yoga Terapéutico", R.drawable.laura_image);
+        } else if (trainer.equals("John")) {
+            addTrainerView("JOHN", "NOSE", "AAAAAAAAAA", R.drawable.john_image);
+        }
     }
 
     private void showAllTrainers() {
-        addTrainerView("MAIKEL", "LAST NAME", "Trainer description here", R.drawable.maikel_image);
+        addTrainerView("MAIKEL", "JOHNSON RAMIREZ ", "Certificación en Entrenamiento de Boxeo, Curso de Primeros Auxilios, Licenciatura en Educación Física", R.drawable.maikel_image);
+        addTrainerView("JOSE", "GOMEZ GARCIA", "Licenciatura en Ciencias del Deporte, Certificación en Entrenamiento Personal, Certificación en Nutrición Deportiva", R.drawable.jose_image);
+        addTrainerView("LAURA", "MARTINEZ RODRIGUEZ", "Certificación Internacional en Yoga (200 horas), Curso de Meditación y Mindfulness, Taller de Yoga Terapéutico", R.drawable.laura_image);
+        addTrainerView("JOHN", "NOSE", "AAAAAAAAAA", R.drawable.john_image);
     }
 
     private void addTrainerView(String firstName, String lastName, String description, int imageResId) {

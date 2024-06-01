@@ -45,19 +45,19 @@ public class DetalleReservaActivity extends AppCompatActivity {
                     setClassDetails("BOXEO", "HORA: 17:30", "DURACIÓN: 60'", "INTENSIDAD: ALTA",
                             "12/31", "LUGAR: Pista Atletismo", "MONITOR: MAIKEL",
                             "Tonificación dirigida acompañada de soporte musical, donde se realizan ejercicios de fortalecimiento muscular global.",
-                            R.drawable.boxeo_img_info, "maikel");
+                            R.drawable.boxeo_img_info, "Maikel");
                     break;
                 case "Pilates":
-//                    setClassDetails("PILATES", "HORA: 18:00", "DURACIÓN: 50'", "INTENSIDAD: MEDIA",
-//                            "10/20", "LUGAR: Sala de Yoga", "MONITOR: ANA",
-//                            "Clase de ejercicios controlados para fortalecer y flexibilizar el cuerpo.",
-//                            R.drawable.pilates_img_info);
+                    setClassDetails("PILATES", "HORA: 18:00", "DURACIÓN: 50'", "INTENSIDAD: MEDIA",
+                            "10/20", "LUGAR: Sala de Yoga", "MONITOR: LAURA",
+                            "Clase de ejercicios controlados para fortalecer y flexibilizar el cuerpo.",
+                            R.drawable.pilates_img_info, "Laura");
                     break;
                 case "Sala de Musculación":
                     setClassDetails("MUSCULACIÓN", "HORA: 16:00", "DURACIÓN: 70'", "INTENSIDAD: ALTA",
-                            "15/25", "LUGAR: Sala de Musculación", "MONITOR: CARLOS",
+                            "15/25", "LUGAR: Sala de Musculación", "MONITOR: JOHN",
                             "Sesión dedicada a ejercicios de fuerza para tonificar y ganar masa muscular.",
-                            R.drawable.musculacion_img_info,"");
+                            R.drawable.musculacion_img_info,"John");
                     break;
                 case "Sala de Abdominales":
 //                    setClassDetails("ABDOMINALES", "HORA: 15:30", "DURACIÓN: 30'", "INTENSIDAD: MEDIA",
@@ -66,10 +66,10 @@ public class DetalleReservaActivity extends AppCompatActivity {
 //                            R.drawable.abdominales_img_info);
                     break;
                 case "Yoga":
-//                    setClassDetails("YOGA", "HORA: 19:00", "DURACIÓN: 60'", "INTENSIDAD: BAJA",
-//                            "20/30", "LUGAR: Sala de Yoga", "MONITOR: MARIA",
-//                            "Práctica de posturas y respiración para mejorar el equilibrio y la flexibilidad.",
-//                            R.drawable.yoga_img_info);
+                    setClassDetails("YOGA", "HORA: 19:00", "DURACIÓN: 60'", "INTENSIDAD: BAJA",
+                            "20/30", "LUGAR: Sala de Yoga", "MONITOR: LAURA",
+                            "Práctica de posturas y respiración para mejorar el equilibrio y la flexibilidad.",
+                            R.drawable.yoga_img_info, "Laura");
                     break;
             }
         }
