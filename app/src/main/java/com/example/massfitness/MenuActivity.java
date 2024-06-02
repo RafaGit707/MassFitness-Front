@@ -5,6 +5,7 @@ import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -27,6 +28,11 @@ public class MenuActivity extends AppCompatActivity {
         logrosButton = findViewById(R.id.logrosButton);
         acercaButton = findViewById(R.id.acercaButton);
         equipoButton = findViewById(R.id.equipoButton);
+
+        if (equipoButton == null) {
+            Log.e("MenuActivity", "equipoButton is null");
+            return;
+        }
 
         reservaButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,14 +61,14 @@ public class MenuActivity extends AppCompatActivity {
 //            }
 //        });
 //
-//        equipoButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.button_click_animation);
-//                reservaButton.startAnimation(anim);
-//                startActivity(new Intent(MenuActivity.this, EquipoActivity.class));
-//            }
-//        });
+        equipoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.button_click_animation);
+                equipoButton.startAnimation(anim);
+                startActivity(new Intent(MenuActivity.this, EntrenadoresActivity.class));
+            }
+        });
 //
 //        loginImageView.setOnClickListener(new View.OnClickListener() {
 //            @Override

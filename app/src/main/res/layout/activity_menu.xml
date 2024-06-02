@@ -50,7 +50,6 @@
         android:padding="16dp"
         android:rowCount="3">
 
-        <!-- Botón de "Reservar Sala" -->
         <androidx.cardview.widget.CardView
             android:id="@+id/reservaButton"
             android:layout_width="0dp"
@@ -185,7 +184,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Botón de "Equipo" -->
         <androidx.cardview.widget.CardView
             android:id="@+id/equipoButton"
             android:layout_width="0dp"

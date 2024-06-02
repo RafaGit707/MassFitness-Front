@@ -4,13 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.bumptech.glide.Glide;
 
 public class EntrenadoresActivity extends AppCompatActivity {
 
     private LinearLayout trainerContainer;
+    private ImageView ivBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,16 +21,22 @@ public class EntrenadoresActivity extends AppCompatActivity {
         setContentView(R.layout.activity_entrenadores);
 
         trainerContainer = findViewById(R.id.trainerContainer);
+        ivBack = findViewById(R.id.ivBack);
 
         String trainer = getIntent().getStringExtra("ENTRENADOR");
 
         if (trainer != null) {
-            // Show specific trainer information
             showTrainerInfo(trainer);
         } else {
-            // Show all trainers
             showAllTrainers();
         }
+
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void showTrainerInfo(String trainer) {
@@ -57,7 +66,11 @@ public class EntrenadoresActivity extends AppCompatActivity {
         TextView tvTrainerName = trainerLayout.findViewById(R.id.tvTrainerName);
         TextView tvTrainerDescription = trainerLayout.findViewById(R.id.tvTrainerDescription);
 
-        ivTrainerImage.setImageResource(imageResId);
+        Glide.with(this)
+                .load(imageResId)
+                .override(140, 140)
+                .into(ivTrainerImage);
+
         tvTrainerName.setText(firstName + " " + lastName);
         tvTrainerDescription.setText(description);
 

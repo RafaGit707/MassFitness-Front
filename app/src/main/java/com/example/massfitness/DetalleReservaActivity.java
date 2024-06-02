@@ -38,7 +38,6 @@ public class DetalleReservaActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String salaNombre = intent.getStringExtra("SALA_NOMBRE");
 
-        // Set class details based on the salaNombre
         if (salaNombre != null) {
             switch (salaNombre) {
                 case "Boxeo":
@@ -77,7 +76,6 @@ public class DetalleReservaActivity extends AppCompatActivity {
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle back button click
                 finish();
             }
         });
