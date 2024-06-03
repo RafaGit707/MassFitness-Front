@@ -16,7 +16,7 @@ import com.google.android.material.button.MaterialButton;
 public class MenuActivity extends AppCompatActivity {
 
     ImageView loginImageView, userImageView;
-    CardView reservaButton, logrosButton, acercaButton, equipoButton;
+    CardView reservaButton, logrosButton, acercaButton, equipoButton, misReservasButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,20 +25,24 @@ public class MenuActivity extends AppCompatActivity {
         loginImageView = findViewById (R.id.logoImageView);
         userImageView = findViewById(R.id.userImageView);
         reservaButton = findViewById(R.id.reservaButton);
+        misReservasButton = findViewById(R.id.misReservasButton);
         logrosButton = findViewById(R.id.logrosButton);
         acercaButton = findViewById(R.id.acercaButton);
         equipoButton = findViewById(R.id.equipoButton);
-
-        if (equipoButton == null) {
-            Log.e("MenuActivity", "equipoButton is null");
-            return;
-        }
 
         reservaButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.button_click_animation);
                 reservaButton.startAnimation(anim);
+                startActivity(new Intent(MenuActivity.this, ReservaActivity.class));
+            }
+        });
+        misReservasButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.button_click_animation);
+                misReservasButton.startAnimation(anim);
                 startActivity(new Intent(MenuActivity.this, ReservaActivity.class));
             }
         });
@@ -69,20 +73,12 @@ public class MenuActivity extends AppCompatActivity {
                 startActivity(new Intent(MenuActivity.this, EntrenadoresActivity.class));
             }
         });
-//
-//        loginImageView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(MenuActivity.this, MenuActivity.class));
-//            }
-//        });
-//
-//        userImageView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(MenuActivity.this, PerfilActivity.class));
-//            }
-//        });
+        userImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MenuActivity.this, PerfilActivity.class));
+            }
+        });
     }
 
 }

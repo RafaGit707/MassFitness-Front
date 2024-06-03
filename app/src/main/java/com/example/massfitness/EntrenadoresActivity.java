@@ -68,7 +68,7 @@ public class EntrenadoresActivity extends AppCompatActivity {
 
         Glide.with(this)
                 .load(imageResId)
-                .override(140, 140)
+                .fitCenter()
                 .into(ivTrainerImage);
 
         tvTrainerName.setText(firstName + " " + lastName);

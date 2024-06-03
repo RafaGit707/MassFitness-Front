@@ -16,7 +16,15 @@
         android:layout_alignParentTop="true"
         android:paddingTop="12dp">
 
-        <!-- Logo del gimnasio -->
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="25dp"
+            android:src="@drawable/ic_atras_white"
+            android:clickable="true"/>
+
         <ImageView
             android:id="@+id/logoImageView"
             android:layout_width="85dp"
@@ -24,6 +32,7 @@
             android:layout_centerHorizontal="true"
             android:src="@drawable/massfitness_nobackground"
             android:transitionName="loginImageTrans" />
+
     </RelativeLayout>
 
     <!-- Contenedor principal -->

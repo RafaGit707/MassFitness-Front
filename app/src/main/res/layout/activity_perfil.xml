@@ -7,21 +7,44 @@
     android:background="@color/massfitness_background_2"
     tools:context=".PerfilActivity">
 
-    <ImageView
-        android:id="@+id/image_atras"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:src="@drawable/ic_atras_white"
-        android:clickable="true"
-        android:onClick="onBackClick" />
+    <LinearLayout
+        android:id="@+id/topBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal"
+        android:background="@color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_atras_white"
+            android:clickable="true"/>
+
+        <TextView
+            android:id="@+id/tvClassName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:text="PERFIL"
+            android:textColor="@android:color/white"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"/>
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/profile_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_below="@id/image_atras"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/topBarLayout"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:src="@drawable/icon_user_purple"
@@ -79,8 +102,7 @@
         android:text="Editar Perfil"
         android:textColor="@color/white"
         app:backgroundTint="@color/massfitness"
-        android:background="@drawable/button_background"
-        android:onClick="onEditProfileClick" />
+        android:background="@drawable/button_background"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/cerrar_sesion"
