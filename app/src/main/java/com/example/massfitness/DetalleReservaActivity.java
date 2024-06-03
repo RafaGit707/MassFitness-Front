@@ -119,4 +119,16 @@ public class DetalleReservaActivity extends AppCompatActivity {
         ivClassImage.setImageResource(imageResource);
         entrenador = trainer;
     }
+    public void onReservarClick(View view) {
+        findViewById(R.id.confirmationDialog).setVisibility(View.VISIBLE);
+    }
+
+    public void onConfirmarClick(View view) {
+        // Lógica para confirmar la reserva
+        findViewById(R.id.confirmationDialog).setVisibility(View.GONE);
+    }
+
+    public void onCancelarClick(View view) {
+        findViewById(R.id.confirmationDialog).setVisibility(View.GONE);
+    }
 }

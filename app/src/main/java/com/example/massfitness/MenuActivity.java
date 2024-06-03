@@ -43,7 +43,7 @@ public class MenuActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.button_click_animation);
                 misReservasButton.startAnimation(anim);
-                startActivity(new Intent(MenuActivity.this, ReservaActivity.class));
+                startActivity(new Intent(MenuActivity.this, MisReservasActivity.class));
             }
         });
 
