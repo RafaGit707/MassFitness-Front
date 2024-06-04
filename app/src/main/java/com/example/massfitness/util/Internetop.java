@@ -1,4 +1,4 @@
-package com.example.massfitness;
+package com.example.massfitness.util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
