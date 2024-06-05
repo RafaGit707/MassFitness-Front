@@ -70,6 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/darker_gray"
+                android:text="DURACIÓN: "
                 android:textSize="16sp" />
 
             <TextView
@@ -77,6 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/darker_gray"
+                android:text="LUGAR: "
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -149,64 +151,75 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/dialog_background"
             android:layout_centerInParent="true"
-            android:layout_margin="16dp"
-            android:padding="16dp">
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/dialog_background"
+            android:elevation="@dimen/cardview_compat_inset_shadow"
+            android:orientation="vertical"
+            android:padding="28dp">
 
             <ImageView
                 android:id="@+id/ivConfirmationIcon"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/ic_gym"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:src="@drawable/ic_gym" />
 
             <TextView
                 android:id="@+id/tvConfirmationTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
                 android:text="¿CONFIRMA LA RESERVA?"
                 android:textColor="@color/massfitness"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_gravity="center"
-                android:layout_marginTop="8dp"/>
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvClassDetails"
+                android:id="@+id/tvClassDetailsHorario"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="BODY FIT\nLun 08-04-2024 17:30hs"
-                android:textColor="@android:color/white"
                 android:layout_gravity="center"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="12dp"
+                android:textColor="@android:color/white" />
+
+            <TextView
+                android:id="@+id/tvClassDetailsLugar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"
+                android:textColor="@android:color/white" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_gravity="center"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/btnConfirmar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SI"
-                    android:background="@drawable/button_background_menu"
-                    android:textColor="@android:color/white"
-                    android:onClick="onConfirmarClick"/>
+                    android:background="@drawable/button_background"
+                    android:onClick="onConfirmarClick"
+                    android:text="Confirmar"
+                    android:textColor="@android:color/white" />
 
                 <Button
                     android:id="@+id/btnCancelar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="NO"
-                    android:background="@drawable/button_background_menu"
-                    android:textColor="@android:color/white"
-                    android:layout_marginStart="16dp"
-                    android:onClick="onCancelarClick"/>
+                    android:layout_marginStart="20dp"
+                    android:background="@drawable/button_background"
+                    android:onClick="onCancelarClick"
+                    android:text="Cancelar"
+                    android:textColor="@android:color/white" />
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>

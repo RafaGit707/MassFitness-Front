@@ -1,5 +1,7 @@
 package com.example.massfitness;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,8 +31,10 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -38,10 +42,13 @@ public class DetalleReservaActivity extends AppCompatActivity {
 
     private TextView tvClassName, tvClassTime, tvClassDuration, tvClassIntensity;
     private TextView tvClassAvailability, tvClassLocation, tvClassInstructor, tvClassDescription;
+    private TextView tvClassDetailsHorario, tvClassDetailsLugar;
     private ImageView ivClassImage, ivBack;
     private Button btnReservar;
     private String entrenador;
     private int idUsuario;
+    private int capacidadActual;
+    private int capacidadMaxima;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +66,8 @@ public class DetalleReservaActivity extends AppCompatActivity {
         ivClassImage = findViewById(R.id.ivClassImage);
         ivBack = findViewById(R.id.ivBack);
         btnReservar = findViewById(R.id.btnReservar);
+        tvClassDetailsHorario = findViewById(R.id.tvClassDetailsHorario);
+        tvClassDetailsLugar = findViewById(R.id.tvClassDetailsLugar);
 
         Intent intent = getIntent();
         String salaNombre = intent.getStringExtra("SALA_NOMBRE");
@@ -66,38 +75,45 @@ public class DetalleReservaActivity extends AppCompatActivity {
         if (salaNombre != null) {
             switch (salaNombre) {
                 case "Boxeo":
-                    setClassDetails("BOXEO", "2024-06-05 10:00:00", "DURACIÓN: 60'", "INTENSIDAD: ALTA",
-                            "12/31", "LUGAR: Pista Atletismo", "MONITOR: MAIKEL",
+                    setClassDetails("BOXEO", "18:00", "60'", "INTENSIDAD: ALTA",
+                            capacidadActual+"/"+capacidadMaxima, "Pista Atletismo", "MONITOR: MAIKEL",
                             "Tonificación dirigida acompañada de soporte musical, donde se realizan ejercicios de fortalecimiento muscular global.",
                             R.drawable.boxeo_img_info, "Maikel");
                     break;
                 case "Pilates":
-                    setClassDetails("PILATES", "HORA: 18:00", "DURACIÓN: 50'", "INTENSIDAD: MEDIA",
-                            "10/20", "LUGAR: Sala de Yoga", "MONITOR: LAURA",
+                    setClassDetails("PILATES", "20:00", "60'", "INTENSIDAD: MEDIA",
+                            capacidadActual+"/"+capacidadMaxima, "Sala de Yoga", "MONITOR: LAURA",
                             "Clase de ejercicios controlados para fortalecer y flexibilizar el cuerpo.",
                             R.drawable.pilates_img_info, "Laura");
                     break;
+                case "Yoga":
+                    setClassDetails("YOGA", "19:00", "60'", "INTENSIDAD: BAJA",
+                            capacidadActual+"/"+capacidadMaxima, "Sala de Yoga", "MONITOR: LAURA",
+                            "Práctica de posturas y respiración para mejorar el equilibrio y la flexibilidad.",
+                            R.drawable.yoga_img_info, "Laura");
+                    break;
                 case "Sala de Musculación":
-                    setClassDetails("MUSCULACIÓN", "HORA: 16:00", "DURACIÓN: 70'", "INTENSIDAD: ALTA",
-                            "15/25", "LUGAR: Sala de Musculación", "MONITOR: JOHN",
+                    setClassDetails("MUSCULACIÓN", "Seleccionar hora", "60'", "INTENSIDAD: ALTA",
+                            capacidadActual+"/"+capacidadMaxima, "Sala de Musculación", "MONITOR: JOHN",
                             "Sesión dedicada a ejercicios de fuerza para tonificar y ganar masa muscular.",
                             R.drawable.musculacion_img_info,"John");
                     break;
                 case "Sala de Abdominales":
-                    setClassDetails("ABDOMINALES", "HORA: 15:30", "DURACIÓN: 30'", "INTENSIDAD: MEDIA",
-                            "8/15", "LUGAR: Sala de Abdominales", "MONITOR: LUCIA",
+                    setClassDetails("ABDOMINALES", "Seleccionar hora", "60'", "INTENSIDAD: MEDIA",
+                            capacidadActual+"/"+capacidadMaxima, "Sala de Abdominales", "MONITOR: JOSE",
                             "Ejercicios enfocados en fortalecer el core y mejorar la postura.",
                             R.drawable.ic_abdominales, "Jose");
-                    break;
-                case "Yoga":
-                    setClassDetails("YOGA", "HORA: 19:00", "DURACIÓN: 60'", "INTENSIDAD: BAJA",
-                            "20/30", "LUGAR: Sala de Yoga", "MONITOR: LAURA",
-                            "Práctica de posturas y respiración para mejorar el equilibrio y la flexibilidad.",
-                            R.drawable.yoga_img_info, "Laura");
-                    break;
             }
+            tvClassDetailsLugar.setText(salaNombre);
+            obtenerCapacidadActual(salaNombre);
         }
-
+        btnReservar.setOnClickListener(v -> {
+            if (salaNombre.equals("Boxeo") || salaNombre.equals("Pilates") || salaNombre.equals("Yoga")) {
+                reservarConHoraPredefinida(salaNombre);
+            } else {
+                showDateTimePicker();
+            }
+        });
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,26 +126,104 @@ public class DetalleReservaActivity extends AppCompatActivity {
             intent2.putExtra("ENTRENADOR", entrenador);
             startActivity(intent2);
         });
-//
-//        btnReservar.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Handle reserve button click
-//                Intent intent = new Intent(DetalleReservaActivity.this, ReservationActivity.class);
-//                intent.putExtra("class_name", tvClassName.getText().toString());
-//                intent.putExtra("class_time", tvClassTime.getText().toString().substring(6));
-//                startActivity(intent);
-//            }
-//        });
+    }
+    private void obtenerCapacidadActual(String salaNombre) {
+        if (isNetworkAvailable()) {
+            String urlCapacidad = getResources().getString(R.string.url) + "capacidad/" + salaNombre;
+
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Handler handler = new Handler(Looper.getMainLooper());
+
+            executor.execute(() -> {
+                Internetop interopera = Internetop.getInstance();
+                String resultado = interopera.getText(urlCapacidad, new ArrayList<>());
+
+                handler.post(() -> {
+                    try {
+                        JSONObject capacidadJson = new JSONObject(resultado);
+                        capacidadActual = capacidadJson.getInt("capacidad_actual");
+                        tvClassAvailability.setText(capacidadActual + "/" + capacidadMaxima);
+                    } catch (Exception e) {
+                        showError("Error al obtener la capacidad: " + e.getMessage());
+                    }
+                });
+            });
+        } else {
+            showError("No hay conexión a Internet.");
+        }
+    }
+    private void reservarConHoraPredefinida(String salaNombre) {
+        String fechaSeleccionada = obtenerFechaSeleccionada();
+        String horaPredefinida = "";
+
+        switch (salaNombre) {
+            case "Boxeo":
+                horaPredefinida = "18:00";
+                break;
+            case "Pilates":
+                horaPredefinida = "20:00";
+                break;
+            case "Yoga":
+                horaPredefinida = "19:00";
+                break;
+        }
+
+        String horarioReserva = fechaSeleccionada + " " + horaPredefinida;
+        tvClassTime.setText(horarioReserva);
+        tvClassDetailsHorario.setText(horarioReserva);
+        tvClassDetailsLugar.setText("Sala " + salaNombre);
+        findViewById(R.id.confirmationDialog).setVisibility(View.VISIBLE);
     }
 
+    private String obtenerFechaSeleccionada() {
+        final Calendar currentDate = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return sdf.format(currentDate.getTime());
+    }
+    private void showDateTimePicker() {
+        final Calendar currentDate = Calendar.getInstance();
+        final Calendar date = Calendar.getInstance();
+        new DatePickerDialog(this, (view, year, monthOfYear, dayOfMonth) -> {
+            date.set(year, monthOfYear, dayOfMonth);
+            new TimePickerDialog(DetalleReservaActivity.this, (view1, hourOfDay, minute) -> {
+                date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                date.set(Calendar.MINUTE, 0);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+                String selectedDate = sdf.format(date.getTime());
+                tvClassTime.setText(selectedDate);
+                tvClassDetailsHorario.setText(selectedDate);
+                onReservarClick(null);
+            }, currentDate.get(Calendar.HOUR_OF_DAY), 0, false).show();
+        }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
+
+    }
     private void abrirEntrenador(String entrenador) {
         Intent intent = new Intent(this, EntrenadoresActivity.class);
         intent.putExtra("ENTRENADOR", entrenador);
 
         startActivity(intent);
     }
-
+    private int obtenerEspacioId(String tipoReserva) {
+        switch (tipoReserva) {
+            case "BOXEO":
+                capacidadMaxima = 15;
+                return 1;
+            case "PILATES":
+                capacidadMaxima = 20;
+                return 2;
+            case "MUSCULACIÓN":
+                capacidadMaxima = 50;
+                return 3;
+            case "ABDOMINALES":
+                capacidadMaxima = 15;
+                return 4;
+            case "YOGA":
+                capacidadMaxima = 20;
+                return 5;
+            default:
+                return 0;
+        }
+    }
     private void setClassDetails(String name, String time, String duration, String intensity,
                                  String availability, String location, String instructor, String description,
                                  int imageResource, String trainer) {
@@ -194,7 +288,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
     private void agregarReserva(View view) {
         String tipoReserva = tvClassName.getText().toString();
         String horarioReserva = tvClassTime.getText().toString();
-        String estadoReserva = "SI";
+        String estadoReserva = "Reservado";
 
         if (tipoReserva.isEmpty() || horarioReserva.isEmpty() || estadoReserva.isEmpty()) {
             showError("Por favor, completa todos los campos.");
@@ -206,8 +300,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
             String urlAgregarReserva = res.getString(R.string.url) + "reservas/addReserva";
 
             try {
-                // Adjust the date format here if necessary
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
                 Date parsedDate = sdf.parse(horarioReserva);
 
                 String idUser = ""+idUsuario;
@@ -225,12 +318,14 @@ public class DetalleReservaActivity extends AppCompatActivity {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> {
+            String espacioid = obtenerEspacioId(tipoReserva)+"";
             Internetop interopera = Internetop.getInstance();
             List<Parametro> params = new ArrayList<>();
             params.add(new Parametro("usuario_id", idUsuario));
-            params.add(new Parametro("espacio_id", 1+""));
+            params.add(new Parametro("espacio_id", espacioid));
+            Log.e("espacio_id", String.format(espacioid));
             params.add(new Parametro("tipo_reserva", tipoReserva));
-            params.add(new Parametro("horario_reserva", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(horarioReserva))); // Use ISO 8601 format
+            params.add(new Parametro("horario_reserva", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault()).format(horarioReserva)));
             params.add(new Parametro("estado_reserva", estadoReserva));
 
             String resultado = interopera.postText(url, params);
