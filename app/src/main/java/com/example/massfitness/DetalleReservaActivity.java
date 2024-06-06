@@ -50,6 +50,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
     private int capacidadActual;
     private int capacidadMaxima;
     private String horarioReserva;
+    private String horarioReservaCapacidad;
     private String salaNombre;
 
     @Override
@@ -147,9 +148,17 @@ public class DetalleReservaActivity extends AppCompatActivity {
     public void onCancelarClick(View view) {
         findViewById(R.id.confirmationDialog).setVisibility(View.GONE);
     }
+    private void verificarYActualizarEstadoReserva() {
+        if (capacidadActual < capacidadMaxima) {
+            btnReservar.setEnabled(true);
+        } else {
+            btnReservar.setEnabled(false);
+            showError("La capacidad máxima se ha alcanzado.");
+        }
+    }
     private void obtenerCapacidadActual(String salaNombre, String horarioReserva) {
         if (isNetworkAvailable()) {
-            String urlCapacidad = getResources().getString(R.string.url) + "espacio_horario/" + salaNombre/* + "/" + horarioReserva*/;
+            String urlCapacidad = getResources().getString(R.string.url) + "espacio_horario/" + salaNombre + "/" + horarioReserva;
 
             ExecutorService executor = Executors.newSingleThreadExecutor();
             Handler handler = new Handler(Looper.getMainLooper());
@@ -162,6 +171,8 @@ public class DetalleReservaActivity extends AppCompatActivity {
                     try {
                         JSONObject capacidadJson = new JSONObject(resultado);
                         capacidadActual = capacidadJson.getInt("capacidad_actual");
+                        capacidadMaxima = capacidadJson.getInt("capacidad_maxima");
+                        verificarYActualizarEstadoReserva();
                         tvClassAvailability.setText(capacidadActual + "/" + capacidadMaxima);
                     } catch (Exception e) {
                         showError(capacidadActual+"");
@@ -194,6 +205,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
         }
 
         horarioReserva = fechaSeleccionada + " " + horaPredefinida;
+        horarioReservaCapacidad = fechaSeleccionada + "" + horaPredefinida;
         tvClassTime.setText(horarioReserva);
         tvClassDetailsHorario.setText(horarioReserva);
         tvClassDetailsLugar.setText("Sala " + salaNombre);
@@ -224,7 +236,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
         }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
 
     }
-    private int obtenerEspacioId(String tipoReserva) {
+    private int obtenerEspacioIdYCapacidad(String tipoReserva) {
         switch (tipoReserva) {
             case "BOXEO":
                 capacidadMaxima = 15;
@@ -331,7 +343,8 @@ public class DetalleReservaActivity extends AppCompatActivity {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> {
-            String espacioid = obtenerEspacioId(tipoReserva)+"";
+            String espacioid = obtenerEspacioIdYCapacidad(tipoReserva)+"";
+
             Internetop interopera = Internetop.getInstance();
             List<Parametro> params = new ArrayList<>();
             params.add(new Parametro("usuario_id", idUsuario));
@@ -356,7 +369,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
                     }
                 } catch (NumberFormatException ex) {
                     ex.printStackTrace();
-                    if (resultado.contains("capacidad máxima")) {
+                    if (resultado.contains("capacidad_maxima")) {
                         showError("No se puede agregar la reserva. La capacidad máxima del espacio se ha alcanzado.");
                     } else {
                         showError("Error al agregar la reserva. ID creado -1");
