@@ -149,7 +149,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
     }
     private void obtenerCapacidadActual(String salaNombre, String horarioReserva) {
         if (isNetworkAvailable()) {
-            String urlCapacidad = getResources().getString(R.string.url) + "capacidad/" + salaNombre + "/" + horarioReserva;
+            String urlCapacidad = getResources().getString(R.string.url) + "espacio_horario/" + salaNombre/* + "/" + horarioReserva*/;
 
             ExecutorService executor = Executors.newSingleThreadExecutor();
             Handler handler = new Handler(Looper.getMainLooper());
@@ -164,6 +164,10 @@ public class DetalleReservaActivity extends AppCompatActivity {
                         capacidadActual = capacidadJson.getInt("capacidad_actual");
                         tvClassAvailability.setText(capacidadActual + "/" + capacidadMaxima);
                     } catch (Exception e) {
+                        showError(capacidadActual+"");
+                        showError(capacidadMaxima+"");
+                        showError(salaNombre+"");
+                        showError(horarioReserva+"");
                         showError("Error al obtener la capacidad: " + e.getMessage());
                     }
                 });
@@ -336,6 +340,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
             params.add(new Parametro("tipo_reserva", tipoReserva));
             params.add(new Parametro("horario_reserva", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault()).format(horarioReserva)));
             params.add(new Parametro("estado_reserva", estadoReserva));
+            params.add(new Parametro("capacidad_maxima", String.valueOf(capacidadMaxima)));
 
             String resultado = interopera.postText(url, params);
             Log.e("RESULTADO", resultado);
