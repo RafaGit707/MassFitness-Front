@@ -44,11 +44,13 @@ public class DetalleReservaActivity extends AppCompatActivity {
     private TextView tvClassAvailability, tvClassLocation, tvClassInstructor, tvClassDescription;
     private TextView tvClassDetailsHorario, tvClassDetailsLugar;
     private ImageView ivClassImage, ivBack;
-    private Button btnReservar;
+    private Button btnReservar, btnSeleccionar;
     private String entrenador;
     private int idUsuario;
     private int capacidadActual;
     private int capacidadMaxima;
+    private String horarioReserva;
+    private String salaNombre;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,53 +68,62 @@ public class DetalleReservaActivity extends AppCompatActivity {
         ivClassImage = findViewById(R.id.ivClassImage);
         ivBack = findViewById(R.id.ivBack);
         btnReservar = findViewById(R.id.btnReservar);
+        btnSeleccionar = findViewById(R.id.btnSeleccionarFecha);
         tvClassDetailsHorario = findViewById(R.id.tvClassDetailsHorario);
         tvClassDetailsLugar = findViewById(R.id.tvClassDetailsLugar);
 
         Intent intent = getIntent();
-        String salaNombre = intent.getStringExtra("SALA_NOMBRE");
+        salaNombre = intent.getStringExtra("SALA_NOMBRE");
 
         if (salaNombre != null) {
             switch (salaNombre) {
                 case "Boxeo":
-                    setClassDetails("BOXEO", "18:00", "60'", "INTENSIDAD: ALTA",
+                    setClassDetails("BOXEO", reservarConHoraPredefinida(salaNombre), "60'", "INTENSIDAD: ALTA",
                             capacidadActual+"/"+capacidadMaxima, "Pista Atletismo", "MONITOR: MAIKEL",
                             "Tonificación dirigida acompañada de soporte musical, donde se realizan ejercicios de fortalecimiento muscular global.",
                             R.drawable.boxeo_img_info, "Maikel");
+                    obtenerCapacidadActual(salaNombre, reservarConHoraPredefinida(salaNombre));
+                    findViewById(R.id.btnReservar).setVisibility(View.VISIBLE);
+                    findViewById(R.id.btnSeleccionarFecha).setVisibility(View.GONE);
                     break;
                 case "Pilates":
-                    setClassDetails("PILATES", "20:00", "60'", "INTENSIDAD: MEDIA",
+                    setClassDetails("PILATES", reservarConHoraPredefinida(salaNombre), "60'", "INTENSIDAD: MEDIA",
                             capacidadActual+"/"+capacidadMaxima, "Sala de Yoga", "MONITOR: LAURA",
                             "Clase de ejercicios controlados para fortalecer y flexibilizar el cuerpo.",
                             R.drawable.pilates_img_info, "Laura");
+                    obtenerCapacidadActual(salaNombre, reservarConHoraPredefinida(salaNombre));
+                    findViewById(R.id.btnReservar).setVisibility(View.VISIBLE);
+                    findViewById(R.id.btnSeleccionarFecha).setVisibility(View.GONE);
                     break;
                 case "Yoga":
-                    setClassDetails("YOGA", "19:00", "60'", "INTENSIDAD: BAJA",
+                    setClassDetails("YOGA", reservarConHoraPredefinida(salaNombre), "60'", "INTENSIDAD: BAJA",
                             capacidadActual+"/"+capacidadMaxima, "Sala de Yoga", "MONITOR: LAURA",
                             "Práctica de posturas y respiración para mejorar el equilibrio y la flexibilidad.",
                             R.drawable.yoga_img_info, "Laura");
+                    obtenerCapacidadActual(salaNombre, reservarConHoraPredefinida(salaNombre));
+                    findViewById(R.id.btnReservar).setVisibility(View.VISIBLE);
+                    findViewById(R.id.btnSeleccionarFecha).setVisibility(View.GONE);
                     break;
                 case "Sala de Musculación":
                     setClassDetails("MUSCULACIÓN", "Seleccionar hora", "60'", "INTENSIDAD: ALTA",
                             capacidadActual+"/"+capacidadMaxima, "Sala de Musculación", "MONITOR: JOHN",
                             "Sesión dedicada a ejercicios de fuerza para tonificar y ganar masa muscular.",
                             R.drawable.musculacion_img_info,"John");
+                    findViewById(R.id.btnReservar).setVisibility(View.GONE);
+                    findViewById(R.id.btnSeleccionarFecha).setVisibility(View.VISIBLE);
                     break;
                 case "Sala de Abdominales":
-                    setClassDetails("ABDOMINALES", "Seleccionar hora", "60'", "INTENSIDAD: MEDIA",
+                    setClassDetails("ABDOMINALES", "Seleccionar fecha", "60'", "INTENSIDAD: MEDIA",
                             capacidadActual+"/"+capacidadMaxima, "Sala de Abdominales", "MONITOR: JOSE",
                             "Ejercicios enfocados en fortalecer el core y mejorar la postura.",
                             R.drawable.ic_abdominales, "Jose");
+                    findViewById(R.id.btnReservar).setVisibility(View.GONE);
+                    findViewById(R.id.btnSeleccionarFecha).setVisibility(View.VISIBLE);
             }
             tvClassDetailsLugar.setText(salaNombre);
-            obtenerCapacidadActual(salaNombre);
         }
-        btnReservar.setOnClickListener(v -> {
-            if (salaNombre.equals("Boxeo") || salaNombre.equals("Pilates") || salaNombre.equals("Yoga")) {
-                reservarConHoraPredefinida(salaNombre);
-            } else {
-                showDateTimePicker();
-            }
+        btnSeleccionar.setOnClickListener(v -> {
+            showDateTimePicker();
         });
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,16 +131,25 @@ public class DetalleReservaActivity extends AppCompatActivity {
                 finish();
             }
         });
-
         tvClassInstructor.setOnClickListener(v -> {
             Intent intent2 = new Intent(DetalleReservaActivity.this, EntrenadoresActivity.class);
             intent2.putExtra("ENTRENADOR", entrenador);
             startActivity(intent2);
         });
     }
-    private void obtenerCapacidadActual(String salaNombre) {
+    public void onReservarClick(View view) {
+        findViewById(R.id.confirmationDialog).setVisibility(View.VISIBLE);
+    }
+    public void onConfirmarClick(View view) {
+        getUserIdAndReservas(view);
+        findViewById(R.id.confirmationDialog).setVisibility(View.GONE);
+    }
+    public void onCancelarClick(View view) {
+        findViewById(R.id.confirmationDialog).setVisibility(View.GONE);
+    }
+    private void obtenerCapacidadActual(String salaNombre, String horarioReserva) {
         if (isNetworkAvailable()) {
-            String urlCapacidad = getResources().getString(R.string.url) + "capacidad/" + salaNombre;
+            String urlCapacidad = getResources().getString(R.string.url) + "capacidad/" + salaNombre + "/" + horarioReserva;
 
             ExecutorService executor = Executors.newSingleThreadExecutor();
             Handler handler = new Handler(Looper.getMainLooper());
@@ -152,7 +172,8 @@ public class DetalleReservaActivity extends AppCompatActivity {
             showError("No hay conexión a Internet.");
         }
     }
-    private void reservarConHoraPredefinida(String salaNombre) {
+
+    private String reservarConHoraPredefinida(String salaNombre) {
         String fechaSeleccionada = obtenerFechaSeleccionada();
         String horaPredefinida = "";
 
@@ -168,13 +189,12 @@ public class DetalleReservaActivity extends AppCompatActivity {
                 break;
         }
 
-        String horarioReserva = fechaSeleccionada + " " + horaPredefinida;
+        horarioReserva = fechaSeleccionada + " " + horaPredefinida;
         tvClassTime.setText(horarioReserva);
         tvClassDetailsHorario.setText(horarioReserva);
         tvClassDetailsLugar.setText("Sala " + salaNombre);
-        findViewById(R.id.confirmationDialog).setVisibility(View.VISIBLE);
+        return horarioReserva;
     }
-
     private String obtenerFechaSeleccionada() {
         final Calendar currentDate = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -190,18 +210,15 @@ public class DetalleReservaActivity extends AppCompatActivity {
                 date.set(Calendar.MINUTE, 0);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
                 String selectedDate = sdf.format(date.getTime());
+
+                obtenerCapacidadActual(salaNombre, horarioReserva);
                 tvClassTime.setText(selectedDate);
                 tvClassDetailsHorario.setText(selectedDate);
-                onReservarClick(null);
+                findViewById(R.id.btnReservar).setVisibility(View.VISIBLE);
+                findViewById(R.id.btnSeleccionarFecha).setVisibility(View.GONE);
             }, currentDate.get(Calendar.HOUR_OF_DAY), 0, false).show();
         }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
 
-    }
-    private void abrirEntrenador(String entrenador) {
-        Intent intent = new Intent(this, EntrenadoresActivity.class);
-        intent.putExtra("ENTRENADOR", entrenador);
-
-        startActivity(intent);
     }
     private int obtenerEspacioId(String tipoReserva) {
         switch (tipoReserva) {
@@ -237,14 +254,6 @@ public class DetalleReservaActivity extends AppCompatActivity {
         tvClassDescription.setText(description);
         ivClassImage.setImageResource(imageResource);
         entrenador = trainer;
-    }
-    public void onReservarClick(View view) {
-        findViewById(R.id.confirmationDialog).setVisibility(View.VISIBLE);
-    }
-
-    public void onConfirmarClick(View view) {
-        getUserIdAndReservas(view);
-        findViewById(R.id.confirmationDialog).setVisibility(View.GONE);
     }
     private void getUserIdAndReservas(View view) {
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
@@ -342,7 +351,11 @@ public class DetalleReservaActivity extends AppCompatActivity {
                     }
                 } catch (NumberFormatException ex) {
                     ex.printStackTrace();
-                    showError("Error al agregar la reserva. ID creado -1");
+                    if (resultado.contains("capacidad máxima")) {
+                        showError("No se puede agregar la reserva. La capacidad máxima del espacio se ha alcanzado.");
+                    } else {
+                        showError("Error al agregar la reserva. ID creado -1");
+                    }
                 }
             });
         });
@@ -376,7 +389,4 @@ public class DetalleReservaActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT);
     }
 
-    public void onCancelarClick(View view) {
-        findViewById(R.id.confirmationDialog).setVisibility(View.GONE);
-    }
 }
