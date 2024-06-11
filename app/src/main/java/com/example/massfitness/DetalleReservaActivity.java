@@ -28,6 +28,7 @@ import com.example.massfitness.util.Parametro;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -169,16 +170,32 @@ public class DetalleReservaActivity extends AppCompatActivity {
 
                 handler.post(() -> {
                     try {
+                        if (resultado == null || resultado.isEmpty()) {
+                            throw new IOException("Respuesta vacía o nula del servidor.");
+                        }
+
+                        if (resultado.equals("false")) {
+                            throw new IOException("El servidor retornó 'false'.");
+                        }
+
+                        Log.d("DetalleReservaActivity", "JSON recibido: " + resultado); // Imprime el JSON completo
                         JSONObject capacidadJson = new JSONObject(resultado);
                         capacidadActual = capacidadJson.getInt("capacidad_actual");
                         capacidadMaxima = capacidadJson.getInt("capacidad_maxima");
+
+                        Log.d("DetalleReservaActivity", "Capacidad Actual: " + capacidadActual); // Mensaje de depuración
+                        Log.d("DetalleReservaActivity", "Capacidad Maxima: " + capacidadMaxima); // Mensaje de depuración
+                        Log.d("DetalleReservaActivity", "salaNombre: " + salaNombre); // Mensaje de depuración
+                        Log.d("DetalleReservaActivity", "horarioReserva: " + horarioReserva); // Mensaje de depuración
+
                         verificarYActualizarEstadoReserva();
                         tvClassAvailability.setText(capacidadActual + "/" + capacidadMaxima);
                     } catch (Exception e) {
-                        showError(capacidadActual+"");
-                        showError(capacidadMaxima+"");
-                        showError(salaNombre+"");
-                        showError(horarioReserva+"");
+                        Log.e("DetalleReservaActivity", "Error al obtener la capacidad: " + e.getMessage());
+                        Log.d("DetalleReservaActivity", "Capacidad Actual: " + capacidadActual); // Mensaje de depuración
+                        Log.d("DetalleReservaActivity", "Capacidad Maxima: " + capacidadMaxima); // Mensaje de depuración
+                        Log.d("DetalleReservaActivity", "salaNombre: " + salaNombre); // Mensaje de depuración
+                        Log.d("DetalleReservaActivity", "horarioReserva: " + horarioReserva); // Mensaje de depuración
                         showError("Error al obtener la capacidad: " + e.getMessage());
                     }
                 });
@@ -354,6 +371,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
             params.add(new Parametro("horario_reserva", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault()).format(horarioReserva)));
             params.add(new Parametro("estado_reserva", estadoReserva));
             params.add(new Parametro("capacidad_maxima", String.valueOf(capacidadMaxima)));
+            params.add(new Parametro("capacidad_actual", String.valueOf(capacidadActual)));
 
             String resultado = interopera.postText(url, params);
             Log.e("RESULTADO", resultado);
@@ -363,6 +381,11 @@ public class DetalleReservaActivity extends AppCompatActivity {
                     if (idCreado > 0) {
                         setResult(RESULT_OK);
                         showSuccess("Reserva agregada correctamente.");
+
+                        capacidadActual++;
+                        tvClassAvailability.setText(capacidadActual + "/" + capacidadMaxima);
+                        verificarYActualizarEstadoReserva();
+
                         finish();
                     } else {
                         showError("Error al agregar la reserva. Por favor, inténtalo de nuevo más tarde.");
