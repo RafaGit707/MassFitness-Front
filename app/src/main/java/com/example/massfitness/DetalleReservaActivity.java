@@ -192,10 +192,6 @@ public class DetalleReservaActivity extends AppCompatActivity {
                         tvClassAvailability.setText(capacidadActual + "/" + capacidadMaxima);
                     } catch (Exception e) {
                         Log.e("DetalleReservaActivity", "Error al obtener la capacidad: " + e.getMessage());
-                        Log.d("DetalleReservaActivity", "Capacidad Actual: " + capacidadActual); // Mensaje de depuración
-                        Log.d("DetalleReservaActivity", "Capacidad Maxima: " + capacidadMaxima); // Mensaje de depuración
-                        Log.d("DetalleReservaActivity", "salaNombre: " + salaNombre); // Mensaje de depuración
-                        Log.d("DetalleReservaActivity", "horarioReserva: " + horarioReserva); // Mensaje de depuración
                         showError("Error al obtener la capacidad: " + e.getMessage());
                     }
                 });
