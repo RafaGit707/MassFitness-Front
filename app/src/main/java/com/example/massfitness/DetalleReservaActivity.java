@@ -240,7 +240,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
                 String selectedDate = sdf.format(date.getTime());
 
-                obtenerCapacidadActual(salaNombre, horarioReserva);
+                obtenerCapacidadActual(salaNombre, selectedDate);
                 tvClassTime.setText(selectedDate);
                 tvClassDetailsHorario.setText(selectedDate);
                 findViewById(R.id.btnReservar).setVisibility(View.VISIBLE);
@@ -252,19 +252,14 @@ public class DetalleReservaActivity extends AppCompatActivity {
     private int obtenerEspacioIdYCapacidad(String tipoReserva) {
         switch (tipoReserva) {
             case "BOXEO":
-                capacidadMaxima = 15;
                 return 1;
             case "PILATES":
-                capacidadMaxima = 20;
                 return 2;
             case "MUSCULACIÓN":
-                capacidadMaxima = 50;
                 return 3;
             case "ABDOMINALES":
-                capacidadMaxima = 15;
                 return 4;
             case "YOGA":
-                capacidadMaxima = 20;
                 return 5;
             default:
                 return 0;
