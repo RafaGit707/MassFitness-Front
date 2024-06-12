@@ -181,7 +181,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
                         Log.d("DetalleReservaActivity", "JSON recibido: " + resultado); // Imprime el JSON completo
                         JSONObject capacidadJson = new JSONObject(resultado);
                         capacidadActual = capacidadJson.getInt("capacidad_actual");
-                        capacidadMaxima = capacidadJson.getInt("capacidad_maxima");
+                        capacidadMaxima = obtenerCapacidadMaxima(salaNombre);
 
                         Log.d("DetalleReservaActivity", "Capacidad Actual: " + capacidadActual); // Mensaje de depuración
                         Log.d("DetalleReservaActivity", "Capacidad Maxima: " + capacidadMaxima); // Mensaje de depuración
@@ -198,6 +198,22 @@ public class DetalleReservaActivity extends AppCompatActivity {
             });
         } else {
             showError("No hay conexión a Internet.");
+        }
+    }
+    private int obtenerCapacidadMaxima(String tipoReserva) {
+        switch (tipoReserva) {
+            case "Boxeo":
+                return 15;
+            case "Pilates":
+                return 20;
+            case "Sala de Musculación":
+                return 50;
+            case "Sala de Abdominales":
+                return 15;
+            case "Yoga":
+                return 20;
+            default:
+                return 0;
         }
     }
 
@@ -357,7 +373,6 @@ public class DetalleReservaActivity extends AppCompatActivity {
             List<Parametro> params = new ArrayList<>();
             params.add(new Parametro("usuario_id", idUsuario));
             params.add(new Parametro("espacio_id", espacioid));
-            Log.e("espacio_id", String.format(espacioid));
             params.add(new Parametro("tipo_reserva", tipoReserva));
             params.add(new Parametro("horario_reserva", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault()).format(horarioReserva)));
             params.add(new Parametro("estado_reserva", estadoReserva));
@@ -365,6 +380,8 @@ public class DetalleReservaActivity extends AppCompatActivity {
             params.add(new Parametro("capacidad_actual", String.valueOf(capacidadActual)));
 
             String resultado = interopera.postText(url, params);
+
+            Log.e("espacio_id", String.format(espacioid));
             Log.e("RESULTADO", resultado);
             handler.post(() -> {
                 try {
