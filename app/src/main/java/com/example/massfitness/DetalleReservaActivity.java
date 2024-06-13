@@ -349,10 +349,10 @@ public class DetalleReservaActivity extends AppCompatActivity {
             Resources res = getResources();
             String urlAgregarReserva = res.getString(R.string.url) + "reservas/addReserva";
 
-//            try {
+            try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-                String parsedDate = sdf.format(horarioReserva);
-//                Date parsedDate = sdf.parse(horarioReserva);
+//                String parsedDate = sdf.format(horarioReserva);
+                Date parsedDate = sdf.parse(horarioReserva);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Da error por la fecha esta de aqui arriba, si es string hay que quitar el try catch, y te dice que debe ser date,
 // pero si es date pilla la fecha pero no la hora, en el back creo que hay que poner lo de offsetdatetime para que pille la hora local
@@ -360,15 +360,15 @@ public class DetalleReservaActivity extends AppCompatActivity {
                 String idUser = ""+idUsuario;
                 Log.e("AGREGAR RESERVA", String.format("%s %s %s %s %s", urlAgregarReserva, idUser, tipoReserva, parsedDate, estadoReserva));
                 agregarReservaEnServidor(urlAgregarReserva, idUser, tipoReserva, parsedDate , estadoReserva);
-//            } catch (ParseException e) {
-//                showError("Error al parsear la fecha: " + e.getMessage());
-//            }
+            } catch (ParseException e) {
+                showError("Error al parsear la fecha: " + e.getMessage());
+            }
         } else {
             showError("No hay conexión a Internet.");
         }
     }
 
-    private void agregarReservaEnServidor(String url, String idUsuario, String tipoReserva, String horarioReserva, String estadoReserva) {
+    private void agregarReservaEnServidor(String url, String idUsuario, String tipoReserva, Date horarioReserva, String estadoReserva) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> {
@@ -379,7 +379,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
             params.add(new Parametro("usuario_id", idUsuario));
             params.add(new Parametro("espacio_id", espacioid));
             params.add(new Parametro("tipo_reserva", tipoReserva));
-            params.add(new Parametro("horario_reserva", horarioReserva));
+            params.add(new Parametro("horario_reserva", new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault()).format(horarioReserva)));
             params.add(new Parametro("estado_reserva", estadoReserva));
 //            params.add(new Parametro("capacidad_maxima", String.valueOf(capacidadMaxima)));
 //            params.add(new Parametro("capacidad_actual", String.valueOf(capacidadActual)));
