@@ -29,6 +29,7 @@ import com.example.massfitness.util.Parametro;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -149,55 +150,26 @@ public class DetalleReservaActivity extends AppCompatActivity {
     public void onCancelarClick(View view) {
         findViewById(R.id.confirmationDialog).setVisibility(View.GONE);
     }
+    private void setClassDetails(String name, String time, String duration, String intensity,
+                                 String availability, String location, String instructor, String description,
+                                 int imageResource, String trainer) {
+        tvClassName.setText(name);
+        tvClassTime.setText(time);
+        tvClassDuration.setText(duration);
+        tvClassIntensity.setText(intensity);
+        tvClassAvailability.setText(availability);
+        tvClassLocation.setText(location);
+        tvClassInstructor.setText(instructor);
+        tvClassDescription.setText(description);
+        ivClassImage.setImageResource(imageResource);
+        entrenador = trainer;
+    }
     private void verificarYActualizarEstadoReserva() {
         if (capacidadActual < capacidadMaxima) {
             btnReservar.setEnabled(true);
         } else {
             btnReservar.setEnabled(false);
             showError("La capacidad máxima se ha alcanzado.");
-        }
-    }
-    private void obtenerCapacidadActual(String salaNombre, String horarioReserva) {
-        if (isNetworkAvailable()) {
-            String urlCapacidad = getResources().getString(R.string.url) + "espacio_horario/" + salaNombre + "/" + horarioReserva;
-
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            Handler handler = new Handler(Looper.getMainLooper());
-
-            executor.execute(() -> {
-                Internetop interopera = Internetop.getInstance();
-                String resultado = interopera.getText(urlCapacidad, new ArrayList<>());
-
-                handler.post(() -> {
-                    try {
-                        if (resultado == null || resultado.isEmpty()) {
-                            throw new IOException("Respuesta vacía o nula del servidor.");
-                        }
-
-                        if (resultado.equals("false")) {
-                            throw new IOException("El servidor retornó 'false'.");
-                        }
-
-                        Log.d("DetalleReservaActivity", "JSON recibido: " + resultado); // Imprime el JSON completo
-                        JSONObject capacidadJson = new JSONObject(resultado);
-                        capacidadActual = capacidadJson.getInt("capacidad_actual");
-                        capacidadMaxima = obtenerCapacidadMaxima(salaNombre);
-
-                        Log.d("DetalleReservaActivity", "Capacidad Actual: " + capacidadActual); // Mensaje de depuración
-                        Log.d("DetalleReservaActivity", "Capacidad Maxima: " + capacidadMaxima); // Mensaje de depuración
-                        Log.d("DetalleReservaActivity", "salaNombre: " + salaNombre); // Mensaje de depuración
-                        Log.d("DetalleReservaActivity", "horarioReserva: " + horarioReserva); // Mensaje de depuración
-
-                        verificarYActualizarEstadoReserva();
-                        tvClassAvailability.setText(capacidadActual + "/" + capacidadMaxima);
-                    } catch (Exception e) {
-                        Log.e("DetalleReservaActivity", "Error al obtener la capacidad: " + e.getMessage());
-                        showError("Error al obtener la capacidad: " + e.getMessage());
-                    }
-                });
-            });
-        } else {
-            showError("No hay conexión a Internet.");
         }
     }
     private int obtenerCapacidadMaxima(String tipoReserva) {
@@ -216,7 +188,6 @@ public class DetalleReservaActivity extends AppCompatActivity {
                 return 0;
         }
     }
-
     private String reservarConHoraPredefinida(String salaNombre) {
         String fechaSeleccionada = obtenerFechaSeleccionada();
         String horaPredefinida = "";
@@ -281,20 +252,6 @@ public class DetalleReservaActivity extends AppCompatActivity {
                 return 0;
         }
     }
-    private void setClassDetails(String name, String time, String duration, String intensity,
-                                 String availability, String location, String instructor, String description,
-                                 int imageResource, String trainer) {
-        tvClassName.setText(name);
-        tvClassTime.setText(time);
-        tvClassDuration.setText(duration);
-        tvClassIntensity.setText(intensity);
-        tvClassAvailability.setText(availability);
-        tvClassLocation.setText(location);
-        tvClassInstructor.setText(instructor);
-        tvClassDescription.setText(description);
-        ivClassImage.setImageResource(imageResource);
-        entrenador = trainer;
-    }
     private void getUserIdAndReservas(View view) {
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
         String email = sharedPreferences.getString("correo_electronico", null);
@@ -334,6 +291,50 @@ public class DetalleReservaActivity extends AppCompatActivity {
             showError("No hay conexión a Internet.");
         }
     }
+    private void obtenerCapacidadActual(String salaNombre, String horarioReserva) {
+        if (isNetworkAvailable()) {
+            String urlCapacidad = getResources().getString(R.string.url) + "espacio_horario/" + salaNombre + "/" + horarioReserva;
+
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Handler handler = new Handler(Looper.getMainLooper());
+
+            executor.execute(() -> {
+                Internetop interopera = Internetop.getInstance();
+                String resultado = interopera.getText(urlCapacidad, new ArrayList<>());
+
+                handler.post(() -> {
+                    try {
+                        if (resultado == null || resultado.isEmpty()) {
+                            throw new IOException("Respuesta vacía o nula del servidor.");
+                        }
+
+                        if (resultado.equals("false")) {
+                            throw new IOException("El servidor retornó 'false'.");
+                        }
+
+                        Log.d("DetalleReservaActivity", "JSON recibido: " + resultado); // Imprime el JSON completo
+                        JSONObject capacidadJson = new JSONObject(resultado);
+                        capacidadActual = capacidadJson.getInt("capacidad_actual");
+                        capacidadMaxima = obtenerCapacidadMaxima(salaNombre);
+                        //capacidadMaxima = capacidadJson.getInt("capacidad_maxima"); // Si el servidor envía capacidad máxima esta linea
+
+                        Log.d("DetalleReservaActivity", "Capacidad Actual: " + capacidadActual); // Mensaje de depuración
+                        Log.d("DetalleReservaActivity", "Capacidad Maxima: " + capacidadMaxima); // Mensaje de depuración
+                        Log.d("DetalleReservaActivity", "salaNombre: " + salaNombre); // Mensaje de depuración
+                        Log.d("DetalleReservaActivity", "horarioReserva: " + horarioReserva); // Mensaje de depuración
+
+                        verificarYActualizarEstadoReserva();
+                        tvClassAvailability.setText(capacidadActual + "/" + capacidadMaxima);
+                    } catch (Exception e) {
+                        Log.e("DetalleReservaActivity", "Error al obtener la capacidad: " + e.getMessage());
+                        showError("Error al obtener la capacidad: " + e.getMessage());
+                    }
+                });
+            });
+        } else {
+            showError("No hay conexión a Internet.");
+        }
+    }
     private void agregarReserva(View view) {
         String tipoReserva = tvClassName.getText().toString();
         String horarioReserva = tvClassTime.getText().toString();
@@ -348,22 +349,26 @@ public class DetalleReservaActivity extends AppCompatActivity {
             Resources res = getResources();
             String urlAgregarReserva = res.getString(R.string.url) + "reservas/addReserva";
 
-            try {
+//            try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-                Date parsedDate = sdf.parse(horarioReserva);
+                String parsedDate = sdf.format(horarioReserva);
+//                Date parsedDate = sdf.parse(horarioReserva);
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Da error por la fecha esta de aqui arriba, si es string hay que quitar el try catch, y te dice que debe ser date,
+// pero si es date pilla la fecha pero no la hora, en el back creo que hay que poner lo de offsetdatetime para que pille la hora local
 
                 String idUser = ""+idUsuario;
                 Log.e("AGREGAR RESERVA", String.format("%s %s %s %s %s", urlAgregarReserva, idUser, tipoReserva, parsedDate, estadoReserva));
-                agregarReservaEnServidor(urlAgregarReserva, idUser, tipoReserva, parsedDate, estadoReserva);
-            } catch (ParseException e) {
-                showError("Error al parsear la fecha: " + e.getMessage());
-            }
+                agregarReservaEnServidor(urlAgregarReserva, idUser, tipoReserva, parsedDate , estadoReserva);
+//            } catch (ParseException e) {
+//                showError("Error al parsear la fecha: " + e.getMessage());
+//            }
         } else {
             showError("No hay conexión a Internet.");
         }
     }
 
-    private void agregarReservaEnServidor(String url, String idUsuario, String tipoReserva, Date horarioReserva, String estadoReserva) {
+    private void agregarReservaEnServidor(String url, String idUsuario, String tipoReserva, String horarioReserva, String estadoReserva) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> {
@@ -374,13 +379,14 @@ public class DetalleReservaActivity extends AppCompatActivity {
             params.add(new Parametro("usuario_id", idUsuario));
             params.add(new Parametro("espacio_id", espacioid));
             params.add(new Parametro("tipo_reserva", tipoReserva));
-            params.add(new Parametro("horario_reserva", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault()).format(horarioReserva)));
+            params.add(new Parametro("horario_reserva", horarioReserva));
             params.add(new Parametro("estado_reserva", estadoReserva));
-            params.add(new Parametro("capacidad_maxima", String.valueOf(capacidadMaxima)));
-            params.add(new Parametro("capacidad_actual", String.valueOf(capacidadActual)));
+//            params.add(new Parametro("capacidad_maxima", String.valueOf(capacidadMaxima)));
+//            params.add(new Parametro("capacidad_actual", String.valueOf(capacidadActual)));
 
             String resultado = interopera.postText(url, params);
-
+            Log.e("horarioReserva", new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault()).format(horarioReserva));
+            Log.e("horarioReserva",horarioReserva+"");
             Log.e("espacio_id", String.format(espacioid));
             Log.e("RESULTADO", resultado);
             handler.post(() -> {
@@ -396,13 +402,16 @@ public class DetalleReservaActivity extends AppCompatActivity {
 
                         finish();
                     } else {
+                        capacidadActual--;
                         showError("Error al agregar la reserva. Por favor, inténtalo de nuevo más tarde.");
                     }
                 } catch (NumberFormatException ex) {
                     ex.printStackTrace();
                     if (resultado.contains("capacidad_maxima")) {
+                        capacidadActual--;
                         showError("No se puede agregar la reserva. La capacidad máxima del espacio se ha alcanzado.");
                     } else {
+                        capacidadActual--;
                         showError("Error al agregar la reserva. ID creado -1");
                     }
                 }

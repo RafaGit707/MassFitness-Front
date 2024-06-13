@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -37,7 +38,9 @@ import java.util.concurrent.Executors;
 public class MisReservasActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ReservaAdapter reservaAdapter;
+    private ImageView ivBack;
     private List<Reserva> reservaList;
+    private int idUsuario;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +51,15 @@ public class MisReservasActivity extends AppCompatActivity {
 
         reservaAdapter = new ReservaAdapter(new ArrayList<>());
         recyclerView.setAdapter(reservaAdapter);
+
+        ivBack = findViewById(R.id.ivBack);
+
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         // Obtener el ID de usuario y luego las reservas asociadas
         getUserIdAndReservas();
@@ -78,7 +90,8 @@ public class MisReservasActivity extends AppCompatActivity {
                     } else {
                         try {
                             JSONObject usuarioJson = new JSONObject(resultado);
-                            int idUsuario = usuarioJson.getInt("idUsuario");
+                            idUsuario = usuarioJson.getInt("idUsuario");
+                            Log.d("ID USUARIO", ""+idUsuario);
                             fetchReservas(idUsuario);
                         } catch (Exception e) {
                             showError("Error al obtener el ID de usuario: " + e.getMessage());
@@ -122,7 +135,6 @@ public class MisReservasActivity extends AppCompatActivity {
     private void parseReservas(JSONArray jsonArray) {
         Log.d("JSON_RESPONSE", jsonArray.toString()); // Imprimir el JSON recibido en el logcat
         if (jsonArray.length() == 0) {
-            // No hay reservas para este usuario
             showError("No hay reservas para este usuario");
             return;
         }
