@@ -20,6 +20,10 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
     public ReservaAdapter(List<Reserva> reservaList) {
         this.reservaList = reservaList;
     }
+    public void setReservas(List<Reserva> reservas) {
+        this.reservaList = reservas;
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override
@@ -35,6 +39,8 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
         String formattedDate = dateFormat.format(reserva.getHorarioReserva());
         holder.fechaTextView.setText(formattedDate);
+        holder.tipoTextView.setText(reserva.getTipoReserva());
+        holder.estadoTextView.setText(reserva.getEstadoReserva());
     }
 
     @Override
@@ -44,10 +50,14 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
 
     static class ReservaViewHolder extends RecyclerView.ViewHolder {
         TextView fechaTextView;
+        TextView tipoTextView;
+        TextView estadoTextView;
 
         public ReservaViewHolder(@NonNull View itemView) {
             super(itemView);
             fechaTextView = itemView.findViewById(R.id.tvReservaFecha);
+            tipoTextView = itemView.findViewById(R.id.tvTipoReserva);
+            estadoTextView = itemView.findViewById(R.id.tvEstadoReserva);
         }
     }
 }

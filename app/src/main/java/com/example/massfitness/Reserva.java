@@ -1,5 +1,6 @@
 package com.example.massfitness;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class Reserva {
@@ -7,13 +8,13 @@ public class Reserva {
     private int idUsuario;
     private int espacio_id;
     private String tipoReserva;
-    private Date horarioReserva;
+    private Timestamp horarioReserva;
     private String estadoReserva;
 
     public Reserva() {
     }
 
-    public Reserva(int idReserva, int idUsuario, int espacio_id, String tipoReserva, Date horarioReserva, String estadoReserva) {
+    public Reserva(int idReserva, int idUsuario, int espacio_id, String tipoReserva, Timestamp horarioReserva, String estadoReserva) {
         this.idReserva = idReserva;
         this.idUsuario = idUsuario;
         this.espacio_id = espacio_id;
@@ -54,11 +55,11 @@ public class Reserva {
         this.tipoReserva = tipoReserva;
     }
 
-    public Date getHorarioReserva() {
+    public Timestamp getHorarioReserva() {
         return horarioReserva;
     }
 
-    public void setHorarioReserva(Date horarioReserva) {
+    public void setHorarioReserva(Timestamp horarioReserva) {
         this.horarioReserva = horarioReserva;
     }
 

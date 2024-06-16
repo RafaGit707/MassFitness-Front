@@ -29,9 +29,11 @@ import org.json.JSONObject;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -131,7 +133,13 @@ public class MisReservasActivity extends AppCompatActivity {
         });
     }
 
-
+    private Timestamp parseDateTime(String dateTimeStr) throws ParseException {
+        // Modificar el patrón para aceptar solo fechas
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
+        java.util.Date date = simpleDateFormat.parse(dateTimeStr);
+        return new Timestamp(date.getTime());
+    }
     private void parseReservas(JSONArray jsonArray) {
         Log.d("JSON_RESPONSE", jsonArray.toString()); // Imprimir el JSON recibido en el logcat
         if (jsonArray.length() == 0) {
@@ -141,14 +149,28 @@ public class MisReservasActivity extends AppCompatActivity {
 
         try {
             reservaList = new ArrayList<>();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 Reserva reserva = new Reserva();
                 reserva.setIdReserva(jsonObject.getInt("idReserva"));
-                reserva.setIdUsuario(jsonObject.getInt("id_usuario"));
+                reserva.setIdUsuario(jsonObject.getInt("usuario_id"));
                 reserva.setEspacio_id(jsonObject.getInt("espacio_id"));
-                Date horarioReserva = (Date) dateFormat.parse(jsonObject.getString("horario_reserva"));
+                String horarioReservaStr = jsonObject.getString("horario_reserva");
+                Log.d("DetalleReservaActivity", "Horario recibido: " + jsonObject.getString("horario_reserva"));
+//                Timestamp horarioReserva = Timestamp.valueOf(horarioReservaStr);
+//                reserva.setHorarioReserva(horarioReserva);
+                // Intentar parsear el timestamp en el formato `yyyy-MM-dd`
+                Timestamp horarioReserva;
+                try {
+                    horarioReserva = parseDateTime(horarioReservaStr);
+                } catch (ParseException e) {
+                    showError("Error al analizar la fecha y hora: " + e.getMessage());
+                    Log.e("ERROR_RESERVAS", e.getMessage());
+                    continue; // Saltar a la siguiente reserva
+                }
+
+                reserva.setHorarioReserva(horarioReserva);
+
                 reserva.setHorarioReserva(horarioReserva);
                 reserva.setTipoReserva(jsonObject.getString("tipo_reserva"));
                 reserva.setEstadoReserva(jsonObject.getString("estado_reserva"));
