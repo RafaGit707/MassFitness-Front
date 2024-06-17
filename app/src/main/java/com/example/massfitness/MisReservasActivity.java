@@ -170,8 +170,6 @@ public class MisReservasActivity extends AppCompatActivity {
                 }
 
                 reserva.setHorarioReserva(horarioReserva);
-
-                reserva.setHorarioReserva(horarioReserva);
                 reserva.setTipoReserva(jsonObject.getString("tipo_reserva"));
                 reserva.setEstadoReserva(jsonObject.getString("estado_reserva"));
 
