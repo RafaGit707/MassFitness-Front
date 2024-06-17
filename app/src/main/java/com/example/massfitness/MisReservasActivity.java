@@ -134,14 +134,17 @@ public class MisReservasActivity extends AppCompatActivity {
     }
 
     private Timestamp parseDateTime(String dateTimeStr) throws ParseException {
-        // Modificar el patrón para aceptar solo fechas
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
         java.util.Date date = simpleDateFormat.parse(dateTimeStr);
         return new Timestamp(date.getTime());
     }
+
+
+
     private void parseReservas(JSONArray jsonArray) {
-        Log.d("JSON_RESPONSE", jsonArray.toString()); // Imprimir el JSON recibido en el logcat
+        Log.d("JSON_RESPONSE", jsonArray.toString());
+
         if (jsonArray.length() == 0) {
             showError("No hay reservas para este usuario");
             return;
@@ -156,17 +159,15 @@ public class MisReservasActivity extends AppCompatActivity {
                 reserva.setIdUsuario(jsonObject.getInt("usuario_id"));
                 reserva.setEspacio_id(jsonObject.getInt("espacio_id"));
                 String horarioReservaStr = jsonObject.getString("horario_reserva");
-                Log.d("DetalleReservaActivity", "Horario recibido: " + jsonObject.getString("horario_reserva"));
-//                Timestamp horarioReserva = Timestamp.valueOf(horarioReservaStr);
-//                reserva.setHorarioReserva(horarioReserva);
-                // Intentar parsear el timestamp en el formato `yyyy-MM-dd`
+                Log.d("DetalleReservaActivity", "Horario recibido: " + horarioReservaStr);
+
                 Timestamp horarioReserva;
                 try {
                     horarioReserva = parseDateTime(horarioReservaStr);
                 } catch (ParseException e) {
                     showError("Error al analizar la fecha y hora: " + e.getMessage());
                     Log.e("ERROR_RESERVAS", e.getMessage());
-                    continue; // Saltar a la siguiente reserva
+                    continue;
                 }
 
                 reserva.setHorarioReserva(horarioReserva);
@@ -181,8 +182,6 @@ public class MisReservasActivity extends AppCompatActivity {
             Log.e("ERROR_RESERVAS", e.getMessage());
         }
     }
-
-
     private void updateRecyclerView(List<Reserva> reservas) {
         reservaAdapter = new ReservaAdapter(reservas);
         recyclerView.setAdapter(reservaAdapter);
