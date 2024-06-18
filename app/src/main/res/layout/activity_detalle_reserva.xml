@@ -28,11 +28,11 @@
             android:id="@+id/tvClassName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
             android:layout_gravity="center"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginStart="8dp"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -63,7 +63,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/massfitness"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:clickable="true"/>
 
             <TextView
                 android:id="@+id/tvClassDuration"

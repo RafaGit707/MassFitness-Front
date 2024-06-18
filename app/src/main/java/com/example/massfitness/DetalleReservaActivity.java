@@ -1,5 +1,6 @@
 package com.example.massfitness;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -119,6 +120,9 @@ public class DetalleReservaActivity extends AppCompatActivity {
                             capacidadActual+"/"+capacidadMaxima, "Sala de Musculación", "MONITOR: JOHN",
                             "Sesión dedicada a ejercicios de fuerza para tonificar y ganar masa muscular.",
                             R.drawable.musculacion_img_info,"John");
+                    tvClassTime.setOnClickListener(v -> {
+                        showDateTimePicker();
+                    });
                     findViewById(R.id.btnReservar).setVisibility(View.GONE);
                     findViewById(R.id.btnSeleccionarFecha).setVisibility(View.VISIBLE);
                     break;
@@ -127,6 +131,10 @@ public class DetalleReservaActivity extends AppCompatActivity {
                             capacidadActual+"/"+capacidadMaxima, "Sala de Abdominales", "MONITOR: JOSE",
                             "Ejercicios enfocados en fortalecer el core y mejorar la postura.",
                             R.drawable.ic_abdominales, "Jose");
+
+                    tvClassTime.setOnClickListener(v -> {
+                        showDateTimePicker();
+                    });
                     findViewById(R.id.btnReservar).setVisibility(View.GONE);
                     findViewById(R.id.btnSeleccionarFecha).setVisibility(View.VISIBLE);
             }
@@ -147,8 +155,15 @@ public class DetalleReservaActivity extends AppCompatActivity {
             startActivity(intent2);
         });
     }
+    @SuppressLint("ResourceAsColor")
     public void onReservarClick(View view) {
-        findViewById(R.id.confirmationDialog).setVisibility(View.VISIBLE);
+        if(fechaReservaPasada(horarioReserva)) {
+            showError("No se puede reservar para una fecha y hora pasadas.");
+            findViewById(R.id.btnReservar).setBackgroundColor(R.color.darker_grey);
+            findViewById(R.id.confirmationDialog).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.confirmationDialog).setVisibility(View.VISIBLE);
+        }
     }
     public void onConfirmarClick(View view) {
         getUserIdAndReservas(view);
@@ -195,12 +210,45 @@ public class DetalleReservaActivity extends AppCompatActivity {
                 break;
         }
 
-        horarioReserva = fechaSeleccionada + " " + horaPredefinida;
-        horarioReservaCapacidad = fechaSeleccionada + "" + horaPredefinida;
+        String horarioReserva = fechaSeleccionada + " " + horaPredefinida;
         tvClassTime.setText(horarioReserva);
         tvClassDetailsHorario.setText(horarioReserva);
         tvClassDetailsLugar.setText("Sala " + salaNombre);
+
+        Log.d("DetalleReservaActivity", "reservarConHoraPredefinida: Horario de reserva establecido: " + horarioReserva);
+
+        // Verificar si la hora predefinida ya ha pasado y actualizar para el siguiente día si es necesario
+        if (horaPredefinidaPasada(horaPredefinida)) {
+            fechaSeleccionada = sumarUnDiaAFecha(fechaSeleccionada);
+            horarioReserva = fechaSeleccionada + " " + horaPredefinida;
+            tvClassTime.setText(horarioReserva);
+            tvClassDetailsHorario.setText(horarioReserva);
+            Log.d("DetalleReservaActivity", "reservarConHoraPredefinida: Se ha actualizado la reserva para el siguiente día: " + horarioReserva);
+        }
+
         return horarioReserva;
+    }
+    private boolean horaPredefinidaPasada(String horaPredefinida) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            Date horaActual = sdf.parse(sdf.format(new Date()));
+            Date horaPredefinidaDate = sdf.parse(horaPredefinida);
+            return horaActual != null && horaPredefinidaDate != null && horaActual.after(horaPredefinidaDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    private String sumarUnDiaAFecha(String fecha) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
+        try {
+            calendar.setTime(sdf.parse(fecha));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        return sdf.format(calendar.getTime());
     }
     private String obtenerFechaSeleccionada() {
         final Calendar currentDate = Calendar.getInstance();
@@ -208,24 +256,39 @@ public class DetalleReservaActivity extends AppCompatActivity {
         return sdf.format(currentDate.getTime());
     }
     private void showDateTimePicker() {
-        final Calendar currentDate = Calendar.getInstance();
-        final Calendar date = Calendar.getInstance();
-        new DatePickerDialog(this, (view, year, monthOfYear, dayOfMonth) -> {
-            date.set(year, monthOfYear, dayOfMonth);
-            new TimePickerDialog(DetalleReservaActivity.this, (view1, hourOfDay, minute) -> {
-                date.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                date.set(Calendar.MINUTE, 0);
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-                String selectedDate = sdf.format(date.getTime());
+        Calendar calendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                obtenerCapacidadActual(salaNombre, selectedDate);
-                tvClassTime.setText(selectedDate);
-                tvClassDetailsHorario.setText(selectedDate);
-                findViewById(R.id.btnReservar).setVisibility(View.VISIBLE);
-                findViewById(R.id.btnSeleccionarFecha).setVisibility(View.GONE);
-            }, currentDate.get(Calendar.HOUR_OF_DAY), 0, false).show();
-        }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
+            TimePickerDialog timePickerDialog = new TimePickerDialog(DetalleReservaActivity.this, (view1, hourOfDay, minute) -> {
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                calendar.set(Calendar.MINUTE, 0);
+                updateDateTime(calendar);
+            }, calendar.get(Calendar.HOUR_OF_DAY), 0,false);
+            timePickerDialog.show();
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
+    }
+    @SuppressLint("ResourceAsColor")
+    private void updateDateTime(Calendar calendar) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:00", Locale.getDefault());
+        String dateTime = dateFormat.format(calendar.getTime());
+        tvClassTime.setText(dateTime);
+        tvClassDetailsHorario.setText(dateTime);
+        horarioReservaCapacidad = dateTime;
+        obtenerCapacidadActual(salaNombre, dateTime);
 
+        if(fechaReservaPasada(dateTime)) {
+            showError("No se puede reservar para una fecha y hora pasadas.");
+            findViewById(R.id.btnReservar).setBackgroundColor(R.color.darker_grey);
+            findViewById(R.id.btnReservar).setVisibility(View.VISIBLE);
+            findViewById(R.id.btnSeleccionarFecha).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.btnReservar).setVisibility(View.VISIBLE);
+            findViewById(R.id.btnSeleccionarFecha).setVisibility(View.GONE);
+        }
     }
     private int obtenerEspacioId(String tipoReserva) {
         switch (tipoReserva) {
@@ -325,6 +388,28 @@ public class DetalleReservaActivity extends AppCompatActivity {
             showError("No hay conexión a Internet.");
         }
     }
+    private boolean fechaReservaPasada(String horarioReserva) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            Date fechaReserva = sdf.parse(horarioReserva + ":00");
+            Date fechaActual = new Date();
+
+            return fechaReserva.before(fechaActual);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    private boolean validarDisponibilidadReserva(String horarioReserva) {
+        // Implementar la lógica para verificar si ya existe una reserva para esta fecha y hora
+        // Esto podría implicar hacer una consulta al servidor para verificar en la base de datos
+        // Si ya hay una reserva para este horario específico.
+        // Devolver true si está disponible para reservar, false si no está disponible.
+        // Aquí deberías utilizar tu lógica o servicio existente para realizar esta validación.
+
+        // Ejemplo de validación temporal (debes adaptar a tu lógica real)
+        return true; // Supongamos que siempre está disponible para este ejemplo
+    }
     private void agregarReserva(View view) {
         String tipoReserva = tvClassName.getText().toString();
         String horarioReserva = tvClassTime.getText().toString();
@@ -334,6 +419,18 @@ public class DetalleReservaActivity extends AppCompatActivity {
             showError("Por favor, completa todos los campos.");
             return;
         }
+
+        // Verificar si la fecha de reserva ya ha pasado
+        if (fechaReservaPasada(horarioReserva)) {
+            showError("No se puede reservar para una fecha y hora pasadas.");
+            return;
+        }
+
+//        // Verificar si ya hay una reserva para esa fecha y hora
+//        if (!validarDisponibilidadReserva(horarioReserva)) {
+//            showError("Ya existe una reserva para esta fecha y hora.");
+//            return;
+//        }
 
         if (isNetworkAvailable()) {
             Resources res = getResources();
