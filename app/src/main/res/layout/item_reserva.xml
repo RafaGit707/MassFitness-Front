@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="6dp">
 
     <LinearLayout
         android:id="@+id/tvClassReserva"
@@ -33,14 +33,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Fecha de la reserva"
-                android:textSize="14sp"
+                android:textSize="15sp"
                 android:textColor="@color/white"/>
 
             <TextView
                 android:id="@+id/tvEstadoReserva"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
+                android:textSize="15sp"
                 android:textColor="@color/white"
                 android:text="Estado Reserva" />
 
@@ -60,7 +60,8 @@
                 android:textSize="12sp"
                 android:text="Cancelar Reserva"
                 android:background="@drawable/button_background"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white"
+                android:onClick="onCancelarReservaClick"/>
 
         </RelativeLayout>
     </LinearLayout>
@@ -93,6 +94,12 @@
             android:elevation="@dimen/cardview_compat_inset_shadow"
             android:orientation="vertical"
             android:padding="28dp">
+
+            <TextView
+                android:id="@+id/tvReservaId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
 
             <ImageView
                 android:id="@+id/ivConfirmationIcon"

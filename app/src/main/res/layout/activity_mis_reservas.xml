@@ -45,7 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/topBarLayout"
-        android:padding="10dp"
+        android:padding="8dp"
         tools:listitem="@layout/item_reserva" />
 
 </RelativeLayout>

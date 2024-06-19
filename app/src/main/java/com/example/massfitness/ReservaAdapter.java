@@ -41,6 +41,7 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
         holder.fechaTextView.setText(formattedDate);
         holder.tipoTextView.setText(reserva.getTipoReserva());
         holder.estadoTextView.setText(reserva.getEstadoReserva());
+        holder.idReservaTextView.setText(reserva.getIdReserva());
     }
 
     @Override
@@ -52,9 +53,11 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
         TextView fechaTextView;
         TextView tipoTextView;
         TextView estadoTextView;
+        TextView idReservaTextView;
 
         public ReservaViewHolder(@NonNull View itemView) {
             super(itemView);
+            idReservaTextView = itemView.findViewById(R.id.tvReservaId);
             fechaTextView = itemView.findViewById(R.id.tvReservaFecha);
             tipoTextView = itemView.findViewById(R.id.tvTipoReserva);
             estadoTextView = itemView.findViewById(R.id.tvEstadoReserva);

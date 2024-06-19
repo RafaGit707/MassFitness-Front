@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -19,6 +20,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.massfitness.util.Internetop;
@@ -62,11 +64,8 @@ public class MisReservasActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        // Obtener el ID de usuario y luego las reservas asociadas
         getUserIdAndReservas();
     }
-
     private void getUserIdAndReservas() {
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
         String email = sharedPreferences.getString("correo_electronico", null);
@@ -106,7 +105,6 @@ public class MisReservasActivity extends AppCompatActivity {
             showError("No hay conexión a Internet.");
         }
     }
-
     private void fetchReservas(int userId) {
         String urlReservas = getResources().getString(R.string.url) + "reservas/usuario/" + userId;
         Log.d("IDUSER", "" + userId);
@@ -132,16 +130,12 @@ public class MisReservasActivity extends AppCompatActivity {
             });
         });
     }
-
     private Timestamp parseDateTime(String dateTimeStr) throws ParseException {
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
         java.util.Date date = simpleDateFormat.parse(dateTimeStr);
         return new Timestamp(date.getTime());
     }
-
-
-
     private void parseReservas(JSONArray jsonArray) {
         Log.d("JSON_RESPONSE", jsonArray.toString());
 
@@ -150,8 +144,10 @@ public class MisReservasActivity extends AppCompatActivity {
             return;
         }
 
+        reservaList = new ArrayList<>();
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+
         try {
-            reservaList = new ArrayList<>();
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 Reserva reserva = new Reserva();
@@ -170,11 +166,14 @@ public class MisReservasActivity extends AppCompatActivity {
                     continue;
                 }
 
-                reserva.setHorarioReserva(horarioReserva);
-                reserva.setTipoReserva(jsonObject.getString("tipo_reserva"));
-                reserva.setEstadoReserva(jsonObject.getString("estado_reserva"));
+                // Verificar si la reserva es en el futuro
+                if (horarioReserva.after(now)) {
+                    reserva.setHorarioReserva(horarioReserva);
+                    reserva.setTipoReserva(jsonObject.getString("tipo_reserva"));
+                    reserva.setEstadoReserva(jsonObject.getString("estado_reserva"));
 
-                reservaList.add(reserva);
+                    reservaList.add(reserva);
+                }
             }
             updateRecyclerView(reservaList);
         } catch (Exception e) {
@@ -182,11 +181,55 @@ public class MisReservasActivity extends AppCompatActivity {
             Log.e("ERROR_RESERVAS", e.getMessage());
         }
     }
+
+    public void onCancelarReservaClick(View view) {
+        findViewById(R.id.confirmationDialog).setVisibility(View.VISIBLE);
+    }
+    public void onConfirmarClick(View view) {
+        int position = recyclerView.getChildLayoutPosition((View) view.getParent().getParent());
+        if (position != RecyclerView.NO_POSITION) {
+            Reserva reserva = reservaList.get(position);
+            if (reserva != null) {
+                TextView tvReservaId = findViewById(R.id.tvReservaId);
+                tvReservaId.setText(String.valueOf(reserva.getIdReserva())); // Setear la ID de la reserva en el TextView
+                findViewById(R.id.confirmationDialog).setVisibility(View.VISIBLE);
+            } else {
+                showError("Error: No se pudo obtener la reserva.");
+            }
+        } else {
+            showError("Error al obtener la posición de la reserva.");
+        }
+    }
+
+    public void onCancelarClick(View view) {
+        findViewById(R.id.confirmationDialog).setVisibility(View.GONE);
+    }
+    private void cancelarReserva(int idReserva) {
+        String url = getResources().getString(R.string.url) + "reservas/eliminar/" + idReserva;
+        Log.d("DetalleReservaActivity", "idReserva: " + idReserva);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        executor.execute(() -> {
+            Internetop interopera = Internetop.getInstance();
+            String resultado = interopera.deleteTask(url);
+
+            handler.post(() -> {
+                if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
+                    showError("Error al cancelar la reserva: " + resultado);
+                } else {
+                    showSuccess("Reserva cancelada exitosamente");
+                    fetchReservas(idUsuario);
+                }
+            });
+        });
+    }
+
     private void updateRecyclerView(List<Reserva> reservas) {
         reservaAdapter = new ReservaAdapter(reservas);
         recyclerView.setAdapter(reservaAdapter);
+        reservaAdapter.notifyDataSetChanged();
     }
-
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager != null) {
