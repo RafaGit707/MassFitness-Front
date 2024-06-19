@@ -17,6 +17,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".AcercadeActivity"
+            android:exported="false" />
+        <activity
             android:name=".MisReservasActivity"
             android:exported="false" />
         <activity

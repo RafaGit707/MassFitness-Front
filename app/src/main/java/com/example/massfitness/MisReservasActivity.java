@@ -127,11 +127,10 @@ public class MisReservasActivity extends AppCompatActivity {
             });
         });
     }
-    private Timestamp parseDateTime(String dateTimeStr) throws ParseException {
-        String pattern = "yyyy-MM-dd";
+    private Timestamp parseDateTime(String dateTimeStr, String horaPredefinida) throws ParseException {
+        String pattern = "yyyy-MM-dd HH:mm";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
-        java.util.Date date = simpleDateFormat.parse(dateTimeStr);
-        return new Timestamp(date.getTime());
+        return new Timestamp(simpleDateFormat.parse(dateTimeStr + " " + horaPredefinida).getTime());
     }
     private void parseReservas(JSONArray jsonArray) {
         Log.d("JSON_RESPONSE", jsonArray.toString());
@@ -152,11 +151,33 @@ public class MisReservasActivity extends AppCompatActivity {
                 reserva.setIdUsuario(jsonObject.getInt("usuario_id"));
                 reserva.setEspacio_id(jsonObject.getInt("espacio_id"));
                 String horarioReservaStr = jsonObject.getString("horario_reserva");
+                String tipoSala =  jsonObject.getString("tipo_reserva");
                 Log.d("DetalleReservaActivity", "Horario recibido: " + horarioReservaStr);
+
+                String horaPredefinida = "";
+                switch (tipoSala) {
+                    case "BOXEO":
+                        horaPredefinida = "18:00";
+                        break;
+                    case "PILATES":
+                        horaPredefinida = "20:00";
+                        break;
+                    case "YOGA":
+                        horaPredefinida = "19:00";
+                        break;
+                    case "MUSCULACIÓN":
+                        horaPredefinida = "13:00";
+                        break;
+                    case "ABDOMINALES":
+                        horaPredefinida = "17:00";
+                        break;
+                    default:
+                        continue;
+                }
 
                 Timestamp horarioReserva;
                 try {
-                    horarioReserva = parseDateTime(horarioReservaStr);
+                    horarioReserva = parseDateTime(horarioReservaStr, horaPredefinida);
                 } catch (ParseException e) {
                     showError("Error al analizar la fecha y hora: " + e.getMessage());
                     Log.e("ERROR_RESERVAS", e.getMessage());
@@ -168,7 +189,6 @@ public class MisReservasActivity extends AppCompatActivity {
                     reserva.setHorarioReserva(horarioReserva);
                     reserva.setTipoReserva(jsonObject.getString("tipo_reserva"));
                     reserva.setEstadoReserva(jsonObject.getString("estado_reserva"));
-
                     reservaList.add(reserva);
                 }
             }
@@ -188,8 +208,15 @@ public class MisReservasActivity extends AppCompatActivity {
             Reserva reserva = reservaList.get(position);
             if (reserva != null) {
                 TextView tvReservaId = findViewById(R.id.tvReservaId);
-                tvReservaId.setText(String.valueOf(reserva.getIdReserva())); // Setear la ID de la reserva en el TextView
-                findViewById(R.id.confirmationDialog).setVisibility(View.VISIBLE);
+                TextView tvClassDetailsHorario = findViewById(R.id.tvClassDetailsHorario);
+                TextView tvClassDetailsLugar = findViewById(R.id.tvClassDetailsLugar);
+
+                tvReservaId.setText(String.valueOf(reserva.getIdReserva()));
+                tvClassDetailsHorario.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(reserva.getHorarioReserva()));
+                tvClassDetailsLugar.setText("Sala " + reserva.getEspacio_id());
+
+                int idReserva = Integer.parseInt(tvReservaId.getText().toString());
+                cancelarReserva(idReserva);
             } else {
                 showError("Error: No se pudo obtener la reserva.");
             }

@@ -7,7 +7,6 @@
     android:background="@color/massfitness_background_2"
     tools:context=".MenuActivity">
 
-    <!-- Barra superior con logo del gimnasio y del usuario -->
     <RelativeLayout
         android:id="@+id/topBarLayout"
         android:layout_width="match_parent"
@@ -16,7 +15,6 @@
         android:layout_alignParentTop="true"
         android:paddingTop="12dp">
 
-        <!-- Logo del gimnasio -->
         <ImageView
             android:id="@+id/logoImageView"
             android:layout_width="85dp"
@@ -25,7 +23,6 @@
             android:src="@drawable/massfitness_nobackground"
             android:transitionName="loginImageTrans" />
 
-        <!-- Logo del usuario -->
         <ImageView
             android:id="@+id/userImageView"
             android:layout_width="32dp"
@@ -38,7 +35,6 @@
 
     </RelativeLayout>
 
-    <!-- Contenedor principal -->
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -116,7 +112,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Botón de "Logros" -->
         <androidx.cardview.widget.CardView
             android:id="@+id/logrosButton"
             android:layout_width="0dp"
@@ -182,7 +177,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Botón de "Acerca de Nosotros" -->
         <androidx.cardview.widget.CardView
             android:id="@+id/acercaButton"
             android:layout_width="0dp"

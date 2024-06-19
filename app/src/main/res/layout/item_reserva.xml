@@ -80,7 +80,9 @@
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
         android:visibility="gone"
-        android:clickable="true">
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="12dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -99,7 +101,7 @@
                 android:id="@+id/tvReservaId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/ivConfirmationIcon"

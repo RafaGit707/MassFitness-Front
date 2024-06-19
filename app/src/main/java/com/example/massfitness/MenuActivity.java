@@ -56,15 +56,15 @@ public class MenuActivity extends AppCompatActivity {
 //            }
 //        });
 //
-//        acercaButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.button_click_animation);
-//                reservaButton.startAnimation(anim);
-//                startActivity(new Intent(MenuActivity.this, AcercaActivity.class));
-//            }
-//        });
-//
+        acercaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.button_click_animation);
+                acercaButton.startAnimation(anim);
+                startActivity(new Intent(MenuActivity.this, AcercadeActivity.class));
+            }
+        });
+
         equipoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

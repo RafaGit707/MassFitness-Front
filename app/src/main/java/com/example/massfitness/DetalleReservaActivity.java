@@ -131,7 +131,6 @@ public class DetalleReservaActivity extends AppCompatActivity {
                             capacidadActual+"/"+capacidadMaxima, "Sala de Abdominales", "MONITOR: JOSE",
                             "Ejercicios enfocados en fortalecer el core y mejorar la postura.",
                             R.drawable.ic_abdominales, "Jose");
-
                     tvClassTime.setOnClickListener(v -> {
                         showDateTimePicker();
                     });
@@ -463,7 +462,6 @@ public class DetalleReservaActivity extends AppCompatActivity {
                 connection.setDoOutput(true);
                 connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-                // Construir el cuerpo de la solicitud
                 StringBuilder postData = new StringBuilder();
                 postData.append("usuario_id=").append(URLEncoder.encode(idUsuario, "UTF-8"));
                 postData.append("&espacio_id=").append(URLEncoder.encode(obtenerEspacioId(tipoReserva)+"", "UTF-8"));
@@ -471,12 +469,10 @@ public class DetalleReservaActivity extends AppCompatActivity {
                 postData.append("&horario_reserva=").append(URLEncoder.encode(horarioReserva.toString(), "UTF-8"));
                 postData.append("&estado_reserva=").append(URLEncoder.encode(estadoReserva, "UTF-8"));
 
-                // Enviar la solicitud
                 try (OutputStream outputStream = connection.getOutputStream()) {
                     outputStream.write(postData.toString().getBytes("UTF-8"));
                 }
 
-                // Leer la respuesta
                 InputStream inputStream = connection.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                 StringBuilder response = new StringBuilder();
