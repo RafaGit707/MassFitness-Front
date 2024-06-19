@@ -100,6 +100,10 @@
         android:layout_marginTop="16dp"
         app:boxStrokeColor="@color/massfitness"
         app:boxStrokeErrorColor="@color/red"
+        app:counterMaxLength="20"
+        app:helperText="Mínimo 8 caracteres"
+        app:helperTextTextColor="@color/white"
+        app:helperTextEnabled="true"
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/darker_grey">
 

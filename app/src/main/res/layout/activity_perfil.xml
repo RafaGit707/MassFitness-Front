@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas/android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,10 +13,7 @@
         android:layout_height="64dp"
         android:layout_alignParentTop="true"
         android:orientation="horizontal"
-        android:background="@color/black"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:background="@color/black">
 
         <ImageView
             android:id="@+id/ivBack"
@@ -25,7 +22,7 @@
             android:layout_gravity="center"
             android:layout_marginStart="10dp"
             android:src="@drawable/ic_atras_white"
-            android:clickable="true"/>
+            android:clickable="true" />
 
         <TextView
             android:id="@+id/tvClassName"
@@ -33,89 +30,150 @@
             android:layout_height="wrap_content"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:text="PERFIL"
+            android:text="PERFIL DE USUARIO"
             android:textColor="@android:color/white"
             android:layout_gravity="center"
-            android:layout_marginStart="8dp"/>
-
+            android:layout_marginStart="8dp" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/profile_image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@id/topBarLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/icon_user_purple"
-        android:clickable="true"
-        android:onClick="onProfileImageClick" />
+        android:padding="14dp">
 
-    <TextView
-        android:id="@+id/tv_nombre"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/profile_image"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="Nombre"
-        android:textColor="@color/white"/>
+        <LinearLayout
+            android:id="@+id/contentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
 
-    <TextView
-        android:id="@+id/tv_correo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_nombre"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="correo@ejemplo.com"
-        android:textColor="@color/white" />
+            <TextView
+                android:id="@+id/tvNombreLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NOMBRE"
+                android:textColor="@color/massfitness"
+                android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/tv_progreso_fitness"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_correo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="Progreso de Fitness: 50%"
-        android:textColor="@color/white"/>
+            <EditText
+                android:id="@+id/etNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:textColorHint="@color/darker_grey"
+                android:textColor="@color/white"  />
 
-    <TextView
-        android:id="@+id/tv_cantidad_puntos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_progreso_fitness"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="Puntos: 100"
-        android:textColor="@color/white" />
+            <TextView
+                android:id="@+id/tvEmailLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EMAIL"
+                android:textColor="@color/massfitness"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/editar_perfil"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_cantidad_puntos"
-        android:layout_marginStart="18dp"
-        android:layout_marginEnd="18dp"
-        android:layout_marginTop="16dp"
-        android:text="Editar Perfil"
-        android:textColor="@color/white"
-        app:backgroundTint="@color/massfitness"
-        android:background="@drawable/button_background"/>
+            <EditText
+                android:id="@+id/etCorreo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:textColorHint="@color/darker_grey"
+                android:textColor="@color/white" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/cerrar_sesion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editar_perfil"
-        android:layout_marginStart="18dp"
-        android:layout_marginEnd="18dp"
-        android:layout_marginTop="16dp"
-        android:text="Cerrar Sesión"
-        android:textColor="@color/white"
-        app:backgroundTint="@color/red"
-        android:background="@drawable/button_background"
-        android:onClick="onLogoutClick" />
+            <TextView
+                android:id="@+id/tvAntiguaContrasenaLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ANTIGUA CONTRASEÑA"
+                android:textColor="@color/massfitness"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp" />
 
+            <EditText
+                android:id="@+id/etAntiguaContrasena"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:padding="4dp"
+                android:textColorHint="@color/darker_grey"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/tvNuevaContrasenaLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NUEVA CONTRASEÑA"
+                android:textColor="@color/massfitness"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp" />
+
+            <EditText
+                android:id="@+id/etNuevaContrasena"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:padding="4dp"
+                android:textColorHint="@color/white"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/tvConfirmarContrasenaLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CONFIRMAR NUEVA CONTRASEÑA"
+                android:textColor="@color/massfitness"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp" />
+
+            <EditText
+                android:id="@+id/etConfirmarContrasena"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:padding="4dp"
+                android:textColorHint="@color/darker_grey"
+                android:textColor="@color/white" />
+
+            <LinearLayout
+                android:id="@+id/buttonLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
+
+                <Button
+                    android:id="@+id/btnGuardar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="GUARDAR"
+                    android:layout_marginEnd="8dp"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/massfitness" />
+
+                <Button
+                    android:id="@+id/btnSalir"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="CERRAR SESION"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/darker_grey" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnBorrarCuenta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="BORRAR CUENTA"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/red"
+                android:layout_marginTop="12dp"
+                android:layout_gravity="center" />
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

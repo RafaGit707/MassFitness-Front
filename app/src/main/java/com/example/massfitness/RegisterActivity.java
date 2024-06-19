@@ -108,7 +108,9 @@ public class RegisterActivity extends AppCompatActivity {
             finish();
         }
     }
-
+    private boolean isValidEmail(CharSequence target) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
     public void registrarUsuario(View view) {
         String nombre = nombreTextField.getEditText().getText().toString();
         String email = correoRegisterTextField.getEditText().getText().toString();
@@ -122,6 +124,16 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (!contrasena.equals(contrasenaConfirmar)) {
             showError("La contraseña no corresponde.");
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            showError("Por favor, ingresa un correo electrónico válido.");
+            return;
+        }
+
+        if (contrasena.length() < 8) {
+            showError("La contraseña debe tener al menos 8 caracteres.");
             return;
         }
 

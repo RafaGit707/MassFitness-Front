@@ -38,96 +38,160 @@
 
     </LinearLayout>
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HORARIO DE APERTURA"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_marginTop="8dp"
+            android:background="@color/massfitness_background_2"
+            android:padding="8dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="LUGAR"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="C/ Orujo,2"
-                android:textColor="#00FFFF"
+                android:text="L       7:30 a 22:30 h"
+                android:textColor="@color/white"
                 android:textSize="16sp" />
 
             <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="M       7:30 a 22:30 h"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="X       7:30 a 22:30 h"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="J       7:30 a 22:30 h"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="V       7:30 a 22:30 h"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="S       9:00 a 14:00 h"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="D       9:00 a 14:00 h"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:weightSum="4">
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="HORARIO DE APERTURA"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginTop="16dp" />
+                android:orientation="vertical"
+                android:layout_margin="12dp"
+                android:gravity="center"
+                android:weightSum="2">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_email"
+                    android:layout_margin="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="EMAIL"
+                    android:textColor="@color/massfitness"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="8dp">
+                android:layout_margin="12dp"
+                android:gravity="center"
+                android:weightSum="2">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_phone"
+                    android:layout_margin="8dp" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="L       7:30 a 22:30 h"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"/>
+                    android:text="954323454"
+                    android:textColor="@color/massfitness"
+                    android:textSize="16sp" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="D       9:00 a 14:00 h"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:layout_margin="12dp"
                 android:gravity="center"
-                android:weightSum="4">
+                android:weightSum="2">
 
-<!--                <ImageView-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:src="@drawable/ic_mail"-->
-<!--                    android:contentDescription="@string/mail"-->
-<!--                    android:tint="#00FFFF"-->
-<!--                    android:layout_margin="8dp" />-->
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_location"
+                    android:layout_margin="8dp" />
 
-<!--                <ImageView-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:src="@drawable/ic_phone"-->
-<!--                    android:contentDescription="@string/phone"-->
-<!--                    android:tint="#00FFFF"-->
-<!--                    android:layout_margin="8dp" />-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="C/ Orujo,2"
+                    android:textColor="@color/massfitness"
+                    android:textSize="16sp" />
 
-<!--                <ImageView-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:src="@drawable/ic_location"-->
-<!--                    android:contentDescription="@string/location"-->
-<!--                    android:tint="#00FFFF"-->
-<!--                    android:layout_margin="8dp" />-->
             </LinearLayout>
+
         </LinearLayout>
-    </ScrollView>
+    </LinearLayout>
 </LinearLayout>

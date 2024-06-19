@@ -216,7 +216,6 @@ public class DetalleReservaActivity extends AppCompatActivity {
 
         Log.d("DetalleReservaActivity", "reservarConHoraPredefinida: Horario de reserva establecido: " + horarioReserva);
 
-        // Verificar si la hora predefinida ya ha pasado y actualizar para el siguiente día si es necesario
         if (horaPredefinidaPasada(horaPredefinida)) {
             fechaSeleccionada = sumarUnDiaAFecha(fechaSeleccionada);
             horarioReserva = fechaSeleccionada + " " + horaPredefinida;
