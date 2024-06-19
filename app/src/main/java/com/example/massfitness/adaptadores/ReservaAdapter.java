@@ -1,4 +1,4 @@
-package com.example.massfitness;
+package com.example.massfitness.adaptadores;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.massfitness.Reserva;
+import com.example.massfitness.R;
+import com.example.massfitness.entidades.Reserva;
 
 import java.text.SimpleDateFormat;
 import java.util.List;

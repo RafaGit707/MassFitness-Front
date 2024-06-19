@@ -1,4 +1,4 @@
-package com.example.massfitness;
+package com.example.massfitness.entidades;
 
 import java.sql.Timestamp;
 import java.util.Date;
