@@ -16,7 +16,7 @@ import com.google.android.material.button.MaterialButton;
 public class MenuActivity extends AppCompatActivity {
 
     ImageView loginImageView, userImageView;
-    CardView reservaButton, logrosButton, acercaButton, equipoButton, misReservasButton;
+    CardView reservaButton, acercaButton, equipoButton, misReservasButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +26,6 @@ public class MenuActivity extends AppCompatActivity {
         userImageView = findViewById(R.id.userImageView);
         reservaButton = findViewById(R.id.reservaButton);
         misReservasButton = findViewById(R.id.misReservasButton);
-        logrosButton = findViewById(R.id.logrosButton);
         acercaButton = findViewById(R.id.acercaButton);
         equipoButton = findViewById(R.id.equipoButton);
 
@@ -47,15 +46,6 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
-//        logrosButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.button_click_animation);
-//                reservaButton.startAnimation(anim);
-//                startActivity(new Intent(MenuActivity.this, LogrosActivity.class));
-//            }
-//        });
-//
         acercaButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
