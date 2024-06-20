@@ -34,7 +34,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.button_click_animation);
                 sendButton.startAnimation(anim);
                 validate();
-                // Aquí puedes agregar el código adicional que se ejecuta cuando se hace clic en el botón
             }
         });
     }
@@ -56,23 +55,23 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         finish();
     }
 
-    /*public void sendEmail(String email) {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        String emailAddress = email;
-        auth.sendPasswordResetEmail(emailAddress)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(ForgotPasswordActivity.this, "Correo enviado!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(ForgotPasswordActivity.this, "Correo invalido", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }*/
+//    public void sendEmail(String email) {
+//        FirebaseAuth auth = FirebaseAuth.getInstance();
+//        String emailAddress = email;
+//        auth.sendPasswordResetEmail(emailAddress)
+//                .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        if (task.isSuccessful()) {
+//                            Toast.makeText(ForgotPasswordActivity.this, "Correo enviado!", Toast.LENGTH_SHORT).show();
+//                            Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
+//                            startActivity(intent);
+//                            finish();
+//                        } else {
+//                            Toast.makeText(ForgotPasswordActivity.this, "Correo invalido", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
+//    }
 
 }

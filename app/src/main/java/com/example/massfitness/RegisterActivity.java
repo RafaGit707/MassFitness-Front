@@ -185,7 +185,7 @@ public class RegisterActivity extends AppCompatActivity {
                             }
                         } catch (NumberFormatException ex) {
                             ex.printStackTrace();
-                            showError("Error al registrar el usuario. ID creado -1");
+                            showError("Error al registrar el usuario.");
                         }
                     }
                 });

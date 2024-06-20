@@ -214,14 +214,11 @@ public class DetalleReservaActivity extends AppCompatActivity {
         tvClassDetailsHorario.setText(horarioReserva);
         tvClassDetailsLugar.setText("Sala " + salaNombre);
 
-        Log.d("DetalleReservaActivity", "reservarConHoraPredefinida: Horario de reserva establecido: " + horarioReserva);
-
         if (horaPredefinidaPasada(horaPredefinida)) {
             fechaSeleccionada = sumarUnDiaAFecha(fechaSeleccionada);
             horarioReserva = fechaSeleccionada + " " + horaPredefinida;
             tvClassTime.setText(horarioReserva);
             tvClassDetailsHorario.setText(horarioReserva);
-            Log.d("DetalleReservaActivity", "reservarConHoraPredefinida: Se ha actualizado la reserva para el siguiente día: " + horarioReserva);
         }
 
         return horarioReserva;
@@ -333,8 +330,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
                             Log.d("ID USUARIO", ""+idUsuario);
                             agregarReserva(view);
                         } catch (Exception e) {
-                            showError("Error al obtener el ID de usuario: " + e.getMessage());
-                            Log.e("ERROR_USUARIO", e.getMessage());
+                            showError("Error al conectar con el servidor");
                         }
                     }
                 });
@@ -357,11 +353,11 @@ public class DetalleReservaActivity extends AppCompatActivity {
                 handler.post(() -> {
                     try {
                         if (resultado == null || resultado.isEmpty()) {
-                            throw new IOException("Respuesta vacía o nula del servidor.");
+                            throw new IOException("Error al conectar con el servidor");
                         }
 
                         if (resultado.equals("false")) {
-                            throw new IOException("El servidor retornó 'false'.");
+                            throw new IOException("Error al conectar con el servidor");
                         }
 
                         Log.d("DetalleReservaActivity", "JSON recibido: " + resultado);
@@ -369,15 +365,9 @@ public class DetalleReservaActivity extends AppCompatActivity {
                         capacidadActual = capacidadJson.getInt("capacidad_actual");
                         capacidadMaxima = capacidadJson.getInt("capacidad_maxima");
 
-                        Log.d("DetalleReservaActivity", "Capacidad Actual: " + capacidadActual); // Mensaje de depuración
-                        Log.d("DetalleReservaActivity", "Capacidad Maxima: " + capacidadMaxima); // Mensaje de depuración
-                        Log.d("DetalleReservaActivity", "salaNombre: " + salaNombre); // Mensaje de depuración
-                        Log.d("DetalleReservaActivity", "horarioReserva: " + horarioReserva); // Mensaje de depuración
-
                         verificarYActualizarEstadoReserva();
                         tvClassAvailability.setText(capacidadActual + "/" + capacidadMaxima);
                     } catch (Exception e) {
-                        Log.e("DetalleReservaActivity", "Error al obtener la capacidad: " + e.getMessage());
                         showError("Error al obtener la capacidad: " + e.getMessage());
                     }
                 });
@@ -398,16 +388,6 @@ public class DetalleReservaActivity extends AppCompatActivity {
             return false;
         }
     }
-    private boolean validarDisponibilidadReserva(String horarioReserva) {
-        // Implementar la lógica para verificar si ya existe una reserva para esta fecha y hora
-        // Esto podría implicar hacer una consulta al servidor para verificar en la base de datos
-        // Si ya hay una reserva para este horario específico.
-        // Devolver true si está disponible para reservar, false si no está disponible.
-        // Aquí deberías utilizar tu lógica o servicio existente para realizar esta validación.
-
-        // Ejemplo de validación temporal (debes adaptar a tu lógica real)
-        return true; // Supongamos que siempre está disponible para este ejemplo
-    }
     private void agregarReserva(View view) {
         String tipoReserva = tvClassName.getText().toString();
         String horarioReserva = tvClassTime.getText().toString();
@@ -418,17 +398,10 @@ public class DetalleReservaActivity extends AppCompatActivity {
             return;
         }
 
-        // Verificar si la fecha de reserva ya ha pasado
         if (fechaReservaPasada(horarioReserva)) {
             showError("No se puede reservar para una fecha y hora pasadas.");
             return;
         }
-
-//        // Verificar si ya hay una reserva para esa fecha y hora
-//        if (!validarDisponibilidadReserva(horarioReserva)) {
-//            showError("Ya existe una reserva para esta fecha y hora.");
-//            return;
-//        }
 
         if (isNetworkAvailable()) {
             Resources res = getResources();
@@ -443,7 +416,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
                 Log.e("AGREGAR RESERVA", String.format("%s %s %s %s %s", urlAgregarReserva, idUser, tipoReserva, timestamp, estadoReserva));
                 agregarReservaEnServidor(urlAgregarReserva, idUser, tipoReserva, timestamp , estadoReserva);
             } catch (ParseException e) {
-                showError("Error al parsear la fecha: " + e.getMessage());
+                showError("Error al obtener la fecha de reserva");
             }
         } else {
             showError("No hay conexión a Internet.");
@@ -486,7 +459,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
                 handler.post(() -> {
                     try {
                         if (resultado.contains("error")) {
-                            showError("Error en la respuesta del servidor: " + resultado);
+                            showError("Error en la respuesta del servidor");
                             return;
                         }
                         Integer idCreado = Integer.parseInt(resultado);
@@ -504,12 +477,12 @@ public class DetalleReservaActivity extends AppCompatActivity {
                         }
                     } catch (NumberFormatException ex) {
                         ex.printStackTrace();
-                        showError("Error al procesar la respuesta del servidor: " + ex.getMessage());
+                        showError("Error al procesar la respuesta del servidor");
                     }
                 });
             } catch (Exception e) {
                 e.printStackTrace();
-                handler.post(() -> showError("Error en la conexión al servidor: " + e.getMessage()));
+                handler.post(() -> showError("Error en la conexión al servidor:"));
             }
         });
     }

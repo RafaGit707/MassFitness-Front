@@ -7,7 +7,6 @@
     android:background="@color/massfitness_background_2"
     tools:context=".AcercadeActivity">
 
-
     <LinearLayout
         android:id="@+id/topBarLayout"
         android:layout_width="match_parent"

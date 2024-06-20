@@ -149,7 +149,7 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(intent);
                             finish();
                         } else {
-                            showError("Error al loguear el usuario. Por favor, inténtalo de nuevo más tarde.");
+                            showError("Error al loguear el usuario. Vuelva a intentarlo más tarde");
                         }
                     }
                 });

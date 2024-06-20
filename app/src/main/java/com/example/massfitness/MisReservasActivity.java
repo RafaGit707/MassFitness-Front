@@ -89,11 +89,9 @@ public class MisReservasActivity extends AppCompatActivity {
                         try {
                             JSONObject usuarioJson = new JSONObject(resultado);
                             idUsuario = usuarioJson.getInt("idUsuario");
-                            Log.d("ID USUARIO", ""+idUsuario);
                             fetchReservas(idUsuario);
                         } catch (Exception e) {
-                            showError("Error al obtener el ID de usuario: " + e.getMessage());
-                            Log.e("ERROR_USUARIO", e.getMessage());
+                            showError("Error al conectar con el servidor");
                         }
                     }
                 });
@@ -104,7 +102,6 @@ public class MisReservasActivity extends AppCompatActivity {
     }
     private void fetchReservas(int userId) {
         String urlReservas = getResources().getString(R.string.url) + "reservas/usuario/" + userId;
-        Log.d("IDUSER", "" + userId);
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
@@ -121,8 +118,7 @@ public class MisReservasActivity extends AppCompatActivity {
                         parseReservas(jsonArray);
                     }
                 } catch (Exception e) {
-                    showError("Error al procesar la respuesta del servidor: " + e.getMessage());
-                    Log.e("ERROR_RESERVAS", e.getMessage());
+                    showError("Error al procesar la respuesta del servidor");
                 }
             });
         });
@@ -152,7 +148,6 @@ public class MisReservasActivity extends AppCompatActivity {
                 reserva.setEspacio_id(jsonObject.getInt("espacio_id"));
                 String horarioReservaStr = jsonObject.getString("horario_reserva");
                 String tipoSala =  jsonObject.getString("tipo_reserva");
-                Log.d("DetalleReservaActivity", "Horario recibido: " + horarioReservaStr);
 
                 String horaPredefinida = "";
                 switch (tipoSala) {
@@ -179,12 +174,10 @@ public class MisReservasActivity extends AppCompatActivity {
                 try {
                     horarioReserva = parseDateTime(horarioReservaStr, horaPredefinida);
                 } catch (ParseException e) {
-                    showError("Error al analizar la fecha y hora: " + e.getMessage());
-                    Log.e("ERROR_RESERVAS", e.getMessage());
+                    showError("Error al analizar la fecha y hora");
                     continue;
                 }
 
-                // Verificar si la reserva es en el futuro
                 if (horarioReserva.after(now)) {
                     reserva.setHorarioReserva(horarioReserva);
                     reserva.setTipoReserva(jsonObject.getString("tipo_reserva"));
@@ -194,8 +187,7 @@ public class MisReservasActivity extends AppCompatActivity {
             }
             updateRecyclerView(reservaList);
         } catch (Exception e) {
-            showError("Error al analizar las reservas: " + e.getMessage());
-            Log.e("ERROR_RESERVAS", e.getMessage());
+            showError("Error al analizar las reservas");
         }
     }
 
@@ -221,7 +213,7 @@ public class MisReservasActivity extends AppCompatActivity {
                 showError("Error: No se pudo obtener la reserva.");
             }
         } else {
-            showError("Error al obtener la posición de la reserva.");
+            showError("Error al obtener la reserva.");
         }
     }
 
@@ -230,7 +222,6 @@ public class MisReservasActivity extends AppCompatActivity {
     }
     private void cancelarReserva(int idReserva) {
         String url = getResources().getString(R.string.url) + "reservas/eliminar/" + idReserva;
-        Log.d("DetalleReservaActivity", "idReserva: " + idReserva);
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
@@ -240,7 +231,7 @@ public class MisReservasActivity extends AppCompatActivity {
 
             handler.post(() -> {
                 if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
-                    showError("Error al cancelar la reserva: " + resultado);
+                    showError("Error al cancelar la reserva");
                 } else {
                     showSuccess("Reserva cancelada exitosamente");
                     fetchReservas(idUsuario);

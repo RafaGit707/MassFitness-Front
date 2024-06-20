@@ -7,7 +7,6 @@
     android:background="@color/massfitness_background_2"
     tools:context=".ReservaActivity">
 
-    <!-- Barra superior con logo del gimnasio -->
     <RelativeLayout
         android:id="@+id/topBarLayout"
         android:layout_width="match_parent"
@@ -35,7 +34,6 @@
 
     </RelativeLayout>
 
-    <!-- Contenedor principal -->
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,7 +45,6 @@
         android:padding="16dp"
         android:rowCount="3">
 
-        <!-- Botón de "Boxeo" -->
         <androidx.cardview.widget.CardView
             android:id="@+id/boxeoButton"
             android:layout_width="0dp"
@@ -82,7 +79,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Botón de "Pilates" -->
         <androidx.cardview.widget.CardView
             android:id="@+id/pilatesButton"
             android:layout_width="0dp"
@@ -117,7 +113,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Botón de "Sala de Musculación" -->
         <androidx.cardview.widget.CardView
             android:id="@+id/musculacionButton"
             android:layout_width="0dp"
@@ -152,7 +147,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Botón de "Sala de Abdominales" -->
         <androidx.cardview.widget.CardView
             android:id="@+id/abdominalesButton"
             android:layout_width="0dp"
@@ -187,7 +181,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Botón de "Yoga" -->
         <androidx.cardview.widget.CardView
             android:id="@+id/yogaButton"
             android:layout_width="0dp"

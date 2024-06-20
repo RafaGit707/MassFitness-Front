@@ -251,7 +251,7 @@ public class PerfilActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                handler.post(() -> Toast.makeText(PerfilActivity.this, "Error en la conexión al servidor: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                handler.post(() -> Toast.makeText(PerfilActivity.this, "Error en la conexión al servidor", Toast.LENGTH_SHORT).show());
             }
 
             @Override
@@ -263,7 +263,7 @@ public class PerfilActivity extends AppCompatActivity {
                             Toast.makeText(PerfilActivity.this, "Error en la respuesta del servidor: " + errorMessage, Toast.LENGTH_SHORT).show();
                         } catch (IOException e) {
                             e.printStackTrace();
-                            Toast.makeText(PerfilActivity.this, "Error al leer la respuesta del servidor: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PerfilActivity.this, "Error al leer la respuesta del servidor", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(PerfilActivity.this, "Perfil actualizado correctamente.", Toast.LENGTH_SHORT).show();
@@ -290,7 +290,7 @@ public class PerfilActivity extends AppCompatActivity {
                     if (isNetworkAvailable()) {
                         Resources res = getResources();
                         String urlBorrarCuenta = res.getString(R.string.url) + "usuarios/eliminar/" + idUsuario;
-                        Log.d("ID USUARIO", ""+idUsuario);
+
                         try {
                             JSONObject jsonObject = new JSONObject();
                             jsonObject.put("correo_electronico", tvEmailLabel.getText().toString());
@@ -298,7 +298,7 @@ public class PerfilActivity extends AppCompatActivity {
                             borrarCuentaEnServidor(urlBorrarCuenta, jsonObject);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(this, "Error al preparar los datos: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Error al preparar los datos", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(this, "No hay conexión a Internet.", Toast.LENGTH_SHORT).show();
@@ -330,7 +330,7 @@ public class PerfilActivity extends AppCompatActivity {
                             Toast.makeText(PerfilActivity.this, "Error en la respuesta del servidor: " + response.body().string(), Toast.LENGTH_SHORT).show();
                         } catch (IOException e) {
                             e.printStackTrace();
-                            Toast.makeText(PerfilActivity.this, "Error al leer la respuesta del servidor: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PerfilActivity.this, "Error al leer la respuesta del servidor", Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {

@@ -23,15 +23,12 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        // Pantalla completa
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        // Agregar animaciones
         Animation animacion1 = AnimationUtils.loadAnimation(this, R.anim.desplazamiento_arriba);
         ImageView loginImageView = findViewById(R.id.loginImageView);
         loginImageView.setAnimation(animacion1);
 
-        // Verificar el estado de la sesión
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
 

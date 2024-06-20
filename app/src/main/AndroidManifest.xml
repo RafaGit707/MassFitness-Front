@@ -23,9 +23,6 @@
             android:name=".MisReservasActivity"
             android:exported="false" />
         <activity
-            android:name=".EditarPerfilActivity"
-            android:exported="false" />
-        <activity
             android:name=".EntrenadoresActivity"
             android:exported="false" />
         <activity
