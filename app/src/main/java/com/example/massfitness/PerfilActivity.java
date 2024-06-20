@@ -140,11 +140,9 @@ public class PerfilActivity extends AppCompatActivity {
                         try {
                             JSONObject usuarioJson = new JSONObject(resultado);
                             idUsuario = usuarioJson.getInt("idUsuario");
-                            Log.d("ID USUARIO", ""+idUsuario);
                             cargarDatosUsuario();
                         } catch (Exception e) {
                             showError("Error al obtener el ID de usuario: " + e.getMessage());
-                            Log.e("ERROR_USUARIO", e.getMessage());
                         }
                     }
                 });
@@ -174,9 +172,8 @@ public class PerfilActivity extends AppCompatActivity {
                             etCorreo.setText(usuarioJson.getString("correo_electronico"));
                         } catch (Exception e) {
                             if (etNombre.getText().toString().isEmpty() || etCorreo.getText().toString().isEmpty()) {
-                                showError("Error al obtener los datos de usuario: " + e.getMessage());
+                                showError("Error al obtener los datos de usuario");
                             }
-                            Log.e("ERROR_USUARIO", e.getMessage());
                         }
                     }
                 });

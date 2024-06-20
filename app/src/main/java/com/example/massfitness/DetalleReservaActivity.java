@@ -130,7 +130,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
                     setClassDetails("ABDOMINALES", "Seleccionar fecha", "60'", "INTENSIDAD: MEDIA",
                             capacidadActual+"/"+capacidadMaxima, "Sala de Abdominales", "MONITOR: JOSE",
                             "Ejercicios enfocados en fortalecer el core y mejorar la postura.",
-                            R.drawable.ic_abdominales, "Jose");
+                            R.drawable.abdominales_img_info, "Jose");
                     tvClassTime.setOnClickListener(v -> {
                         showDateTimePicker();
                     });
