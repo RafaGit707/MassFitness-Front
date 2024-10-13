@@ -12,8 +12,10 @@ import com.example.massfitness.R;
 import com.example.massfitness.entidades.Reserva;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaViewHolder> {
     private List<Reserva> reservaList;
@@ -37,8 +39,12 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
     @Override
     public void onBindViewHolder(@NonNull ReservaViewHolder holder, int position) {
         Reserva reserva = reservaList.get(position);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-        String formattedDate = dateFormat.format(reserva.getHorarioReserva());
+
+        SimpleDateFormat utcDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+        utcDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        String formattedDate = utcDateFormat.format(reserva.getHorarioReserva());
+
         holder.fechaTextView.setText(formattedDate);
         holder.tipoTextView.setText(reserva.getTipoReserva());
         holder.estadoTextView.setText(reserva.getEstadoReserva());

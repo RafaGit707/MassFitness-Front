@@ -8,6 +8,7 @@ public class Reserva {
     private int idUsuario;
     private int espacio_id;
     private String tipoReserva;
+
     private Timestamp horarioReserva;
     private String estadoReserva;
 

@@ -82,7 +82,10 @@
         android:visibility="gone"
         android:clickable="true"
         android:focusable="true"
-        android:elevation="12dp">
+        android:elevation="12dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true">
 
         <LinearLayout
             android:layout_width="match_parent"

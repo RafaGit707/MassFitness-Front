@@ -31,8 +31,10 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -123,11 +125,15 @@ public class MisReservasActivity extends AppCompatActivity {
             });
         });
     }
-    private Timestamp parseDateTime(String dateTimeStr, String horaPredefinida) throws ParseException {
-        String pattern = "yyyy-MM-dd HH:mm";
+    private Timestamp parseDateTime(String dateTimeStr) throws ParseException {
+        String pattern = "yyyy-MM-dd HH:mm:ss.S";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
-        return new Timestamp(simpleDateFormat.parse(dateTimeStr + " " + horaPredefinida).getTime());
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        Date date = simpleDateFormat.parse(dateTimeStr);
+        return new Timestamp(date.getTime());
     }
+
     private void parseReservas(JSONArray jsonArray) {
         Log.d("JSON_RESPONSE", jsonArray.toString());
 
@@ -147,24 +153,19 @@ public class MisReservasActivity extends AppCompatActivity {
                 reserva.setIdUsuario(jsonObject.getInt("usuario_id"));
                 reserva.setEspacio_id(jsonObject.getInt("espacio_id"));
                 String horarioReservaStr = jsonObject.getString("horario_reserva");
+                Log.d("HORARIO_RESERVA", horarioReservaStr);
                 String tipoSala =  jsonObject.getString("tipo_reserva");
 
-                String horaPredefinida = "";
                 switch (tipoSala) {
                     case "BOXEO":
-                        horaPredefinida = "18:00";
                         break;
                     case "PILATES":
-                        horaPredefinida = "20:00";
                         break;
                     case "YOGA":
-                        horaPredefinida = "19:00";
                         break;
                     case "MUSCULACIÓN":
-                        horaPredefinida = "13:00";
                         break;
                     case "ABDOMINALES":
-                        horaPredefinida = "17:00";
                         break;
                     default:
                         continue;
@@ -172,11 +173,13 @@ public class MisReservasActivity extends AppCompatActivity {
 
                 Timestamp horarioReserva;
                 try {
-                    horarioReserva = parseDateTime(horarioReservaStr, horaPredefinida);
+                    horarioReserva = parseDateTime(horarioReservaStr);
                 } catch (ParseException e) {
                     showError("Error al analizar la fecha y hora");
                     continue;
                 }
+
+                horarioReserva.setTime(horarioReserva.getTime() + (2 * 60 * 60 * 1000));
 
                 if (horarioReserva.after(now)) {
                     reserva.setHorarioReserva(horarioReserva);
@@ -190,13 +193,10 @@ public class MisReservasActivity extends AppCompatActivity {
             showError("Error al analizar las reservas");
         }
     }
-
     public void onCancelarReservaClick(View view) {
-        findViewById(R.id.confirmationDialog).setVisibility(View.VISIBLE);
-    }
-    public void onConfirmarClick(View view) {
-        int position = recyclerView.getChildLayoutPosition((View) view.getParent().getParent());
-        if (position != RecyclerView.NO_POSITION) {
+        RecyclerView.ViewHolder viewHolder = recyclerView.findContainingViewHolder(view);
+        if (viewHolder != null) {
+            int position = viewHolder.getAdapterPosition();
             Reserva reserva = reservaList.get(position);
             if (reserva != null) {
                 TextView tvReservaId = findViewById(R.id.tvReservaId);
@@ -204,17 +204,38 @@ public class MisReservasActivity extends AppCompatActivity {
                 TextView tvClassDetailsLugar = findViewById(R.id.tvClassDetailsLugar);
 
                 tvReservaId.setText(String.valueOf(reserva.getIdReserva()));
-                tvClassDetailsHorario.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(reserva.getHorarioReserva()));
-                tvClassDetailsLugar.setText("Sala " + reserva.getEspacio_id());
+                tvClassDetailsHorario.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(reserva.getHorarioReserva()));
+                tvClassDetailsLugar.setText("Sala " + obtenerTipoReserva(reserva.getEspacio_id()));
 
-                int idReserva = Integer.parseInt(tvReservaId.getText().toString());
-                cancelarReserva(idReserva);
+                findViewById(R.id.confirmationDialog).setVisibility(View.VISIBLE);
             } else {
                 showError("Error: No se pudo obtener la reserva.");
             }
         } else {
             showError("Error al obtener la reserva.");
         }
+
+    }
+    private String obtenerTipoReserva(int espacio) {
+        switch (espacio) {
+            case 1:
+                return "Boxeo";
+            case 2:
+                return "Pilates";
+            case 3:
+                return "Sala de Musculación";
+            case 4:
+                return "Sala de Abdominales";
+            case 5:
+                return "Yoga";
+            default:
+                return "";
+        }
+    }
+    public void onConfirmarClick(View view) {
+        TextView tvReservaId = findViewById(R.id.tvReservaId);
+        int idReserva = Integer.parseInt(tvReservaId.getText().toString());
+        cancelarReserva(idReserva);
     }
 
     public void onCancelarClick(View view) {
@@ -235,6 +256,7 @@ public class MisReservasActivity extends AppCompatActivity {
                 } else {
                     showSuccess("Reserva cancelada exitosamente");
                     fetchReservas(idUsuario);
+                    findViewById(R.id.confirmationDialog).setVisibility(View.GONE);
                 }
             });
         });
