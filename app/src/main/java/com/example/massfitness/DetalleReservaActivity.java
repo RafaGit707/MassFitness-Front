@@ -462,6 +462,13 @@ public class DetalleReservaActivity extends AppCompatActivity {
                             showError("Error en la respuesta del servidor");
                             return;
                         }
+
+                        if (resultado.contains("-1")) {
+                            btnReservar.setEnabled(false);
+                            showError("Ya tienes una reserva para esta clase en este horario.");
+                            return;
+                        }
+
                         Integer idCreado = Integer.parseInt(resultado);
                         if (idCreado > 0) {
                             setResult(RESULT_OK);
