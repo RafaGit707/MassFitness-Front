@@ -179,8 +179,6 @@ public class MisReservasActivity extends AppCompatActivity {
                     continue;
                 }
 
-                horarioReserva.setTime(horarioReserva.getTime() + (2 * 60 * 60 * 1000));
-
                 if (horarioReserva.after(now)) {
                     reserva.setHorarioReserva(horarioReserva);
                     reserva.setTipoReserva(jsonObject.getString("tipo_reserva"));
