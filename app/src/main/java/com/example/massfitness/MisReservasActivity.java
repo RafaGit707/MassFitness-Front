@@ -201,9 +201,13 @@ public class MisReservasActivity extends AppCompatActivity {
                 TextView tvClassDetailsHorario = findViewById(R.id.tvClassDetailsHorario);
                 TextView tvClassDetailsLugar = findViewById(R.id.tvClassDetailsLugar);
 
+                String pattern = "yyyy-MM-dd HH:mm";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
+                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
                 tvReservaId.setText(String.valueOf(reserva.getIdReserva()));
-                tvClassDetailsHorario.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(reserva.getHorarioReserva()));
-                tvClassDetailsLugar.setText("Sala " + obtenerTipoReserva(reserva.getEspacio_id()));
+                tvClassDetailsHorario.setText(simpleDateFormat.format(reserva.getHorarioReserva()));
+                tvClassDetailsLugar.setText(obtenerTipoReserva(reserva.getEspacio_id()));
 
                 findViewById(R.id.confirmationDialog).setVisibility(View.VISIBLE);
             } else {
