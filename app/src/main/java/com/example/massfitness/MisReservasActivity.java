@@ -207,7 +207,7 @@ public class MisReservasActivity extends AppCompatActivity {
 
                 tvReservaId.setText(String.valueOf(reserva.getIdReserva()));
                 tvClassDetailsHorario.setText(simpleDateFormat.format(reserva.getHorarioReserva()));
-                tvClassDetailsLugar.setText(obtenerTipoReserva(reserva.getEspacio_id()));
+                tvClassDetailsLugar.setText(obtenerTipoEspacio(reserva.getEspacio_id()));
 
                 findViewById(R.id.confirmationDialog).setVisibility(View.VISIBLE);
             } else {
@@ -218,7 +218,7 @@ public class MisReservasActivity extends AppCompatActivity {
         }
 
     }
-    private String obtenerTipoReserva(int espacio) {
+    private String obtenerTipoEspacio(int espacio) {
         switch (espacio) {
             case 1:
                 return "Boxeo";
@@ -234,6 +234,22 @@ public class MisReservasActivity extends AppCompatActivity {
                 return "";
         }
     }
+    private String obtenerTipoReserva(String tipoReserva) {
+        switch (tipoReserva) {
+            case "BOXEO":
+                return "clase";
+            case "PILATES":
+                return "clase";
+            case "MUSCULACIÓN":
+                return "espacio";
+            case "ABDOMINALES":
+                return "espacio";
+            case "YOGA":
+                return "clase";
+            default:
+                return "";
+        }
+    }
     public void onConfirmarClick(View view) {
         TextView tvReservaId = findViewById(R.id.tvReservaId);
         int idReserva = Integer.parseInt(tvReservaId.getText().toString());
@@ -244,13 +260,27 @@ public class MisReservasActivity extends AppCompatActivity {
         findViewById(R.id.confirmationDialog).setVisibility(View.GONE);
     }
     private void cancelarReserva(int idReserva) {
-        String url = getResources().getString(R.string.url) + "reservas/eliminar/" + idReserva;
+        String tvTipoReserva = findViewById(R.id.tvTipoReserva).toString();
+        Log.d("AAAAAAAAAAAAAAAAAAAAAAAAAAA", tvTipoReserva);
+
+        String urlEliminarEspacio = getResources().getString(R.string.url) + "reservas/eliminarEspacio/" + idReserva;
+        String urlEliminarClase = getResources().getString(R.string.url) + "reservas/eliminarClase/" + idReserva;
+
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
         executor.execute(() -> {
             Internetop interopera = Internetop.getInstance();
-            String resultado = interopera.deleteTask(url);
+            String resultado;
+
+            if (obtenerTipoReserva(tvTipoReserva) == "clase") {
+                resultado = interopera.deleteTask(urlEliminarClase);
+            } else if (obtenerTipoReserva(tvTipoReserva) == "espacio") {
+                resultado = interopera.deleteTask(urlEliminarEspacio);
+            } else {
+                resultado = "";
+                showError("Error al obtener la sala: " + tvTipoReserva);
+            }
 
             handler.post(() -> {
                 if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {

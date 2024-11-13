@@ -212,7 +212,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
         String horarioReserva = fechaSeleccionada + " " + horaPredefinida;
         tvClassTime.setText(horarioReserva);
         tvClassDetailsHorario.setText(horarioReserva);
-        tvClassDetailsLugar.setText("Sala " + salaNombre);
+        tvClassDetailsLugar.setText(salaNombre);
 
         if (horaPredefinidaPasada(horaPredefinida)) {
             fechaSeleccionada = sumarUnDiaAFecha(fechaSeleccionada);
@@ -339,16 +339,44 @@ public class DetalleReservaActivity extends AppCompatActivity {
             showError("No hay conexión a Internet.");
         }
     }
+
+    private String obtenerTipoReserva(String tipoReserva) {
+        switch (tipoReserva) {
+            case "Boxeo":
+                return "clase";
+            case "Pilates":
+                return "clase";
+            case "Sala de Musculación":
+                return "espacio";
+            case "Sala de Abdominales":
+                return "espacio";
+            case "Yoga":
+                return "clase";
+            default:
+                return "";
+        }
+    }
+
     private void obtenerCapacidadActual(String salaNombre, String horarioReserva) {
         if (isNetworkAvailable()) {
-            String urlCapacidad = getResources().getString(R.string.url) + "espacio_horario/" + salaNombre + "/" + horarioReserva;
+            String urlCapacidadClase = getResources().getString(R.string.url) + "reserva_clase/" + salaNombre + "/" + horarioReserva;
+            String urlCapacidadEspacio = getResources().getString(R.string.url) + "espacio_horario/" + salaNombre + "/" + horarioReserva;
 
             ExecutorService executor = Executors.newSingleThreadExecutor();
             Handler handler = new Handler(Looper.getMainLooper());
 
             executor.execute(() -> {
                 Internetop interopera = Internetop.getInstance();
-                String resultado = interopera.getText(urlCapacidad, new ArrayList<>());
+                String resultado;
+
+                if (obtenerTipoReserva(salaNombre) == "clase") {
+                    resultado = interopera.getText(urlCapacidadClase, new ArrayList<>());
+                } else if (obtenerTipoReserva(salaNombre) == "espacio") {
+                    resultado = interopera.getText(urlCapacidadEspacio, new ArrayList<>());
+                } else {
+                    resultado = "";
+                    showError("Error al obtener la sala: " + salaNombre);
+                }
 
                 handler.post(() -> {
                     try {
