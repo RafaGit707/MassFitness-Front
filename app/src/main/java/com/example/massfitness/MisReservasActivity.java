@@ -152,6 +152,7 @@ public class MisReservasActivity extends AppCompatActivity {
                 reserva.setIdReserva(jsonObject.getInt("idReserva"));
                 reserva.setIdUsuario(jsonObject.getInt("usuario_id"));
                 reserva.setEspacio_id(jsonObject.getInt("espacio_id"));
+                reserva.setClase_id(jsonObject.getInt("clase_id"));
                 String horarioReservaStr = jsonObject.getString("horario_reserva");
                 Log.d("HORARIO_RESERVA", horarioReservaStr);
                 String tipoSala =  jsonObject.getString("tipo_reserva");
@@ -200,6 +201,7 @@ public class MisReservasActivity extends AppCompatActivity {
                 TextView tvReservaId = findViewById(R.id.tvReservaId);
                 TextView tvClassDetailsHorario = findViewById(R.id.tvClassDetailsHorario);
                 TextView tvClassDetailsLugar = findViewById(R.id.tvClassDetailsLugar);
+                TextView tvTipoReserva = findViewById(R.id.tvTipoReserva);
 
                 String pattern = "yyyy-MM-dd HH:mm";
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
@@ -207,7 +209,14 @@ public class MisReservasActivity extends AppCompatActivity {
 
                 tvReservaId.setText(String.valueOf(reserva.getIdReserva()));
                 tvClassDetailsHorario.setText(simpleDateFormat.format(reserva.getHorarioReserva()));
-                tvClassDetailsLugar.setText(obtenerTipoEspacio(reserva.getEspacio_id()));
+
+                if (obtenerTipoReserva2(tvTipoReserva.getText().toString()).equals("clase")) {
+                    tvClassDetailsLugar.setText(obtenerTipoEspacio(reserva.getClase_id()));
+                } else if (obtenerTipoReserva2(tvTipoReserva.getText().toString()).equals("espacio")) {
+                    tvClassDetailsLugar.setText(obtenerTipoEspacio(reserva.getEspacio_id()));
+                } else {
+                    showError("Error al obtener la sala: " + tvTipoReserva.getText().toString());
+                }
 
                 findViewById(R.id.confirmationDialog).setVisibility(View.VISIBLE);
             } else {
@@ -234,7 +243,7 @@ public class MisReservasActivity extends AppCompatActivity {
                 return "";
         }
     }
-    private String obtenerTipoReserva(String tipoReserva) {
+    private String obtenerTipoReserva2(String tipoReserva) {
         switch (tipoReserva) {
             case "BOXEO":
                 return "clase";
@@ -250,6 +259,22 @@ public class MisReservasActivity extends AppCompatActivity {
                 return "";
         }
     }
+    private String obtenerTipoReserva(String tipoReserva) {
+        switch (tipoReserva) {
+            case "Boxeo":
+                return "clase";
+            case "Pilates":
+                return "clase";
+            case "Sala de Musculación":
+                return "espacio";
+            case "Sala de Abdominales":
+                return "espacio";
+            case "Yoga":
+                return "clase";
+            default:
+                return "";
+        }
+    }
     public void onConfirmarClick(View view) {
         TextView tvReservaId = findViewById(R.id.tvReservaId);
         int idReserva = Integer.parseInt(tvReservaId.getText().toString());
@@ -260,7 +285,7 @@ public class MisReservasActivity extends AppCompatActivity {
         findViewById(R.id.confirmationDialog).setVisibility(View.GONE);
     }
     private void cancelarReserva(int idReserva) {
-        String tvTipoReserva = findViewById(R.id.tvTipoReserva).toString();
+        String tvTipoReserva = ((TextView) findViewById(R.id.tvClassDetailsLugar)).getText().toString();
         Log.d("AAAAAAAAAAAAAAAAAAAAAAAAAAA", tvTipoReserva);
 
         String urlEliminarEspacio = getResources().getString(R.string.url) + "reservas/eliminarEspacio/" + idReserva;
@@ -273,9 +298,9 @@ public class MisReservasActivity extends AppCompatActivity {
             Internetop interopera = Internetop.getInstance();
             String resultado;
 
-            if (obtenerTipoReserva(tvTipoReserva) == "clase") {
+            if (obtenerTipoReserva(tvTipoReserva).equals("clase")) {
                 resultado = interopera.deleteTask(urlEliminarClase);
-            } else if (obtenerTipoReserva(tvTipoReserva) == "espacio") {
+            } else if (obtenerTipoReserva(tvTipoReserva).equals("espacio")) {
                 resultado = interopera.deleteTask(urlEliminarEspacio);
             } else {
                 resultado = "";

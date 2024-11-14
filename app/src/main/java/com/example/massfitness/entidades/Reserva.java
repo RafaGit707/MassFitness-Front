@@ -7,8 +7,8 @@ public class Reserva {
     private int idReserva;
     private int idUsuario;
     private int espacio_id;
+    private int clase_id;
     private String tipoReserva;
-
     private Timestamp horarioReserva;
     private String estadoReserva;
 
@@ -19,6 +19,16 @@ public class Reserva {
         this.idReserva = idReserva;
         this.idUsuario = idUsuario;
         this.espacio_id = espacio_id;
+        this.tipoReserva = tipoReserva;
+        this.horarioReserva = horarioReserva;
+        this.estadoReserva = estadoReserva;
+    }
+
+    public Reserva(int idReserva, int idUsuario, int espacio_id, int clase_id, String tipoReserva, Timestamp horarioReserva, String estadoReserva) {
+        this.idReserva = idReserva;
+        this.idUsuario = idUsuario;
+        this.espacio_id = espacio_id;
+        this.clase_id = clase_id;
         this.tipoReserva = tipoReserva;
         this.horarioReserva = horarioReserva;
         this.estadoReserva = estadoReserva;
@@ -63,12 +73,19 @@ public class Reserva {
     public void setHorarioReserva(Timestamp horarioReserva) {
         this.horarioReserva = horarioReserva;
     }
-
     public String getEstadoReserva() {
         return estadoReserva;
     }
 
     public void setEstadoReserva(String estadoReserva) {
         this.estadoReserva = estadoReserva;
+    }
+
+    public int getClase_id() {
+        return clase_id;
+    }
+
+    public void setClase_id(int clase_id) {
+        this.clase_id = clase_id;
     }
 }
