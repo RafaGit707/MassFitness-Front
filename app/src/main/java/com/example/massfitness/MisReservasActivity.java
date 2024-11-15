@@ -180,11 +180,20 @@ public class MisReservasActivity extends AppCompatActivity {
                     continue;
                 }
 
+                TextView tvNoReservas = findViewById(R.id.tvNoReservas);
+
+                if (reservaList.isEmpty()) {
+                    tvNoReservas.setVisibility(View.VISIBLE);
+                } else {
+                    tvNoReservas.setVisibility(View.GONE);
+                }
+
                 if (horarioReserva.after(now)) {
                     reserva.setHorarioReserva(horarioReserva);
                     reserva.setTipoReserva(jsonObject.getString("tipo_reserva"));
                     reserva.setEstadoReserva(jsonObject.getString("estado_reserva"));
                     reservaList.add(reserva);
+                    tvNoReservas.setVisibility(View.GONE);
                 }
             }
             updateRecyclerView(reservaList);
@@ -203,16 +212,15 @@ public class MisReservasActivity extends AppCompatActivity {
                 TextView tvClassDetailsLugar = findViewById(R.id.tvClassDetailsLugar);
                 TextView tvTipoReserva = findViewById(R.id.tvTipoReserva);
 
-                String pattern = "yyyy-MM-dd HH:mm";
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
                 simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
                 tvReservaId.setText(String.valueOf(reserva.getIdReserva()));
                 tvClassDetailsHorario.setText(simpleDateFormat.format(reserva.getHorarioReserva()));
 
-                if (obtenerTipoReserva2(tvTipoReserva.getText().toString()).equals("clase")) {
+                if (obtenerTipoReserva(reserva.getClase_id()).equals("clase")) {
                     tvClassDetailsLugar.setText(obtenerTipoEspacio(reserva.getClase_id()));
-                } else if (obtenerTipoReserva2(tvTipoReserva.getText().toString()).equals("espacio")) {
+                } else if (obtenerTipoReserva(reserva.getEspacio_id()).equals("espacio")) {
                     tvClassDetailsLugar.setText(obtenerTipoEspacio(reserva.getEspacio_id()));
                 } else {
                     showError("Error al obtener la sala: " + tvTipoReserva.getText().toString());
@@ -243,17 +251,17 @@ public class MisReservasActivity extends AppCompatActivity {
                 return "";
         }
     }
-    private String obtenerTipoReserva2(String tipoReserva) {
-        switch (tipoReserva) {
-            case "BOXEO":
+    private String obtenerTipoReserva(int espacio) {
+        switch (espacio) {
+            case 1:
                 return "clase";
-            case "PILATES":
+            case 2:
                 return "clase";
-            case "MUSCULACIÓN":
+            case 3:
                 return "espacio";
-            case "ABDOMINALES":
+            case 4:
                 return "espacio";
-            case "YOGA":
+            case 5:
                 return "clase";
             default:
                 return "";

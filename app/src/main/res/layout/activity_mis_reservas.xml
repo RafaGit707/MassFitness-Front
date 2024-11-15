@@ -40,6 +40,16 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/tvNoReservas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="No hay reservas disponibles"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:visibility="gone"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvReservas"
         android:layout_width="match_parent"

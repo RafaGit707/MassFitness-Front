@@ -369,9 +369,9 @@ public class DetalleReservaActivity extends AppCompatActivity {
                 Internetop interopera = Internetop.getInstance();
                 String resultado;
 
-                if (obtenerTipoReserva(salaNombre) == "clase") {
+                if (obtenerTipoReserva(salaNombre).equals("clase")) {
                     resultado = interopera.getText(urlCapacidadClase, new ArrayList<>());
-                } else if (obtenerTipoReserva(salaNombre) == "espacio") {
+                } else if (obtenerTipoReserva(salaNombre).equals("espacio")) {
                     resultado = interopera.getText(urlCapacidadEspacio, new ArrayList<>());
                 } else {
                     resultado = "";
