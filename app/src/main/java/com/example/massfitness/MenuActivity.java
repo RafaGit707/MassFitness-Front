@@ -5,13 +5,10 @@ import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-
-import com.google.android.material.button.MaterialButton;
 
 public class MenuActivity extends AppCompatActivity {
 
@@ -34,7 +31,7 @@ public class MenuActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.button_click_animation);
                 reservaButton.startAnimation(anim);
-                startActivity(new Intent(MenuActivity.this, ReservaActivity.class));
+                startActivity(new Intent(MenuActivity.this, TipoReservaActivity.class));
             }
         });
         misReservasButton.setOnClickListener(new View.OnClickListener() {

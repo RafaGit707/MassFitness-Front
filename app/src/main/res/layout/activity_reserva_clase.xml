@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/massfitness_background_2"
-    tools:context=".MenuActivity">
+    tools:context=".ReservaClaseActivity">
 
     <RelativeLayout
         android:id="@+id/topBarLayout"
@@ -16,22 +16,21 @@
         android:paddingTop="12dp">
 
         <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="25dp"
+            android:src="@drawable/ic_atras_white"
+            android:clickable="true"/>
+
+        <ImageView
             android:id="@+id/logoImageView"
             android:layout_width="85dp"
             android:layout_height="85dp"
             android:layout_centerHorizontal="true"
             android:src="@drawable/massfitness_nobackground"
             android:transitionName="loginImageTrans" />
-
-        <ImageView
-            android:id="@+id/userImageView"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="24dp"
-            android:layout_marginTop="25dp"
-            android:src="@drawable/icon_user_purple"
-            android:transitionName="userImageTrans" />
 
     </RelativeLayout>
 
@@ -47,7 +46,7 @@
         android:rowCount="3">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/reservaButton"
+            android:id="@+id/boxeoButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -66,21 +65,22 @@
                 <ImageView
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:src="@drawable/ic_reservar_sala" />
+                    android:src="@drawable/ic_boxeo"
+                    android:contentDescription="@string/boxeo"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center"
-                    android:text="Reservar"
+                    android:text="Boxeo"
                     android:textColor="@android:color/white"
                     android:textSize="18sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/misReservasButton"
+            android:id="@+id/pilatesButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -99,21 +99,22 @@
                 <ImageView
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:src="@drawable/ic_misreservas"/>
+                    android:src="@drawable/ic_pilates"
+                    android:contentDescription="@string/pilates"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center"
-                    android:text="Mis Reservas"
+                    android:text="Pilates"
                     android:textColor="@android:color/white"
                     android:textSize="18sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/equipoButton"
+            android:id="@+id/yogaButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -132,51 +133,18 @@
                 <ImageView
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:src="@drawable/ic_equipo" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Equipo"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/acercaButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_margin="8dp"
-            app:cardBackgroundColor="@color/massfitness_background_2"
-            app:cardCornerRadius="8dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/button_background_menu"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@drawable/ic_acerca_de" />
+                    android:src="@drawable/ic_yoga"
+                    android:contentDescription="@string/yoga" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center"
-                    android:text="Acerca de Nosotros"
+                    android:text="Yoga"
                     android:textColor="@android:color/white"
                     android:textSize="18sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
     </GridLayout>
-
 </RelativeLayout>

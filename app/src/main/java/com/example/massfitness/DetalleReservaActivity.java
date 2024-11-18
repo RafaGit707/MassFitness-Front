@@ -17,6 +17,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -507,6 +509,7 @@ public class DetalleReservaActivity extends AppCompatActivity {
                             verificarYActualizarEstadoReserva();
 
                             finish();
+                            startActivity(new Intent(DetalleReservaActivity.this, MenuActivity.class));
                         } else {
                             showError("Error al agregar la reserva. Por favor, inténtalo de nuevo más tarde.");
                         }

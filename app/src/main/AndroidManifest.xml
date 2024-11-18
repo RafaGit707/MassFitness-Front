@@ -16,7 +16,9 @@
         android:theme="@style/Theme.MassFitness"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
+        <activity
+            android:name=".TipoReservaActivity"
+            android:exported="false" />
         <activity
             android:name=".AcercadeActivity"
             android:exported="false" />
@@ -33,7 +35,10 @@
             android:name=".PerfilActivity"
             android:exported="false" />
         <activity
-            android:name=".ReservaActivity"
+            android:name=".ReservaClaseActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ReservaEspacioActivity"
             android:exported="false" />
         <activity
             android:name=".ForgotPasswordActivity"
