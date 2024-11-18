@@ -40,10 +40,10 @@ public class ReservaAdapter extends RecyclerView.Adapter<ReservaAdapter.ReservaV
     public void onBindViewHolder(@NonNull ReservaViewHolder holder, int position) {
         Reserva reserva = reservaList.get(position);
 
-        SimpleDateFormat utcDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-        utcDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        SimpleDateFormat localDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+        localDateFormat.setTimeZone(TimeZone.getDefault());
 
-        String formattedDate = utcDateFormat.format(reserva.getHorarioReserva());
+        String formattedDate = localDateFormat.format(reserva.getHorarioReserva());
 
         holder.fechaTextView.setText(formattedDate);
         holder.tipoTextView.setText(reserva.getTipoReserva());

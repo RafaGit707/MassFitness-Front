@@ -128,12 +128,26 @@ public class MisReservasActivity extends AppCompatActivity {
     private Timestamp parseDateTime(String dateTimeStr) throws ParseException {
         String pattern = "yyyy-MM-dd HH:mm:ss.S";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Europe/Madrid"));
+                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         Date date = simpleDateFormat.parse(dateTimeStr);
-        return new Timestamp(date.getTime());
-    }
 
+        SimpleDateFormat localFormat = new SimpleDateFormat(pattern, Locale.getDefault());
+        localFormat.setTimeZone(TimeZone.getDefault());
+        String localDateTimeStr = localFormat.format(date);
+
+        Date localDate = localFormat.parse(localDateTimeStr);
+
+        // Obtener la zona horaria actual
+        TimeZone timeZone = TimeZone.getDefault();
+        String zoneID = timeZone.getID();
+
+        // Verificar si la zona horaria es la correcta
+        Log.d("TimeZone", "Current TimeZone: " + zoneID);
+
+        return new Timestamp(localDate.getTime());
+    }
     private void parseReservas(JSONArray jsonArray) {
         Log.d("JSON_RESPONSE", jsonArray.toString());
 
@@ -213,7 +227,7 @@ public class MisReservasActivity extends AppCompatActivity {
                 TextView tvTipoReserva = findViewById(R.id.tvTipoReserva);
 
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                simpleDateFormat.setTimeZone(TimeZone.getDefault());
 
                 tvReservaId.setText(String.valueOf(reserva.getIdReserva()));
                 tvClassDetailsHorario.setText(simpleDateFormat.format(reserva.getHorarioReserva()));
