@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@color/massfitness_background_2">
+
+    <ImageView
+        android:id="@+id/ivAchievementIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_logros"
+        android:layout_marginEnd="8dp" />
+
+    <TextView
+        android:id="@+id/tvAchievementName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Nombre del Logro"
+        android:textSize="18sp"
+        android:textColor="@color/massfitness"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvAchievementStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Progreso"
+        android:textSize="16sp"
+        android:textColor="@color/cardview_dark_background" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/lineChart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
+
+</LinearLayout>

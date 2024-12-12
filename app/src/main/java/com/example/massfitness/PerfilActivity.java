@@ -50,33 +50,36 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+
 public class PerfilActivity extends AppCompatActivity {
 
     private TextView tvNombreLabel, tvEmailLabel;
     private EditText etNombre, etCorreo, etAntiguaContrasena, etNuevaContrasena, etConfirmarContrasena;
-    private Button btnGuardar, btnSalir, btnBorrarCuenta;
+    private Button btnEditarPerfil, btnGuardar, btnSalir, btnBorrarCuenta;
     private ImageView ivBack;
     private SharedPreferences preferences;
     private ExecutorService executorService;
     private Handler handler;
     private int idUsuario;
 
+    private LineChart lineChart;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
 
-        tvNombreLabel = findViewById(R.id.tvNombreLabel);
-        tvEmailLabel = findViewById(R.id.tvEmailLabel);
-        etNombre = findViewById(R.id.etNombre);
-        etCorreo = findViewById(R.id.etCorreo);
-        etAntiguaContrasena = findViewById(R.id.etAntiguaContrasena);
-        etNuevaContrasena = findViewById(R.id.etNuevaContrasena);
-        etConfirmarContrasena = findViewById(R.id.etConfirmarContrasena);
-        btnGuardar = findViewById(R.id.btnGuardar);
-        btnSalir = findViewById(R.id.btnSalir);
-        btnBorrarCuenta = findViewById(R.id.btnBorrarCuenta);
+        lineChart = findViewById(R.id.lineChart);
+        setupLineChart();
+        loadChartData();
+
         ivBack = findViewById(R.id.ivBack);
+        btnEditarPerfil = findViewById(R.id.btnEditarPerfil);
 
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,291 +88,51 @@ public class PerfilActivity extends AppCompatActivity {
             }
         });
 
-        preferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-
-        executorService = Executors.newSingleThreadExecutor();
-        handler = new Handler(Looper.getMainLooper());
-
-        getUserId();
-        cargarDatosUsuario();
-
-        btnGuardar.setOnClickListener(new View.OnClickListener() {
+        btnEditarPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                actualizarPerfil();
+                startActivity(new Intent(PerfilActivity.this, EditarPerfilActivity.class));
             }
         });
 
-        btnSalir.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cerrarSesion();
-            }
-        });
-
-        btnBorrarCuenta.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                borrarCuenta();
-            }
-        });
-    }
-    private void getUserId() {
-        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
-        String email = sharedPreferences.getString("correo_electronico", null);
-
-        if (email == null) {
-            showError("No hay usuario conectado.");
-            return;
-        }
-
-        if (isNetworkAvailable()) {
-            String url = getResources().getString(R.string.url) + "usuarios/correo/" + email;
-
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            Handler handler = new Handler(Looper.getMainLooper());
-
-            executor.execute(() -> {
-                Internetop interopera = Internetop.getInstance();
-                String resultado = interopera.getText(url, new ArrayList<>());
-
-                handler.post(() -> {
-                    if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
-                        showError(resultado);
-                    } else {
-                        try {
-                            JSONObject usuarioJson = new JSONObject(resultado);
-                            idUsuario = usuarioJson.getInt("idUsuario");
-                            cargarDatosUsuario();
-                        } catch (Exception e) {
-                            showError("Error al obtener el ID de usuario: " + e.getMessage());
-                        }
-                    }
-                });
-            });
-        } else {
-            showError("No hay conexión a Internet.");
-        }
-    }
-    private void cargarDatosUsuario() {
-        if (isNetworkAvailable()) {
-            String url = getResources().getString(R.string.url) + "usuarios/" + idUsuario;
-
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            Handler handler = new Handler(Looper.getMainLooper());
-
-            executor.execute(() -> {
-                Internetop interopera = Internetop.getInstance();
-                String resultado = interopera.getText(url, new ArrayList<>());
-
-                handler.post(() -> {
-                    if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
-                        showError(resultado);
-                    } else {
-                        try {
-                            JSONObject usuarioJson = new JSONObject(resultado);
-                            etNombre.setText(usuarioJson.getString("nombre"));
-                            etCorreo.setText(usuarioJson.getString("correo_electronico"));
-                        } catch (Exception e) {
-                            if (etNombre.getText().toString().isEmpty() || etCorreo.getText().toString().isEmpty()) {
-                                showError("Error al obtener los datos de usuario");
-                            }
-                        }
-                    }
-                });
-            });
-        } else {
-            showError("No hay conexión a Internet.");
-        }
-    }
-    private void actualizarPerfil() {
-        String nombre = etNombre.getText().toString();
-        String correo = etCorreo.getText().toString();
-        String antiguaContrasena = etAntiguaContrasena.getText().toString();
-        String nuevaContrasena = etNuevaContrasena.getText().toString();
-        String confirmarContrasena = etConfirmarContrasena.getText().toString();
-
-        if (!nuevaContrasena.equals(confirmarContrasena)) {
-            Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (isNetworkAvailable()) {
-            verificarAntiguaContrasena(correo, antiguaContrasena, nombre, correo, nuevaContrasena);
-        } else {
-            Toast.makeText(this, "No hay conexión a Internet.", Toast.LENGTH_SHORT).show();
-        }
-    }
-    private void verificarAntiguaContrasena(String correo, String antiguaContrasena, String nombre, String nuevoCorreo, String nuevaContrasena) {
-        Resources res = getResources();
-        String urlVerificarContrasena = res.getString(R.string.url) + "usuarios/existe";
-
-        List<Parametro> parametros = new ArrayList<>();
-        parametros.add(new Parametro("correo_electronico", correo));
-        parametros.add(new Parametro("contrasena", antiguaContrasena));
-
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-        executor.execute(() -> {
-            Internetop interopera = Internetop.getInstance();
-            String resultado = interopera.getText(urlVerificarContrasena, parametros);
-
-            handler.post(() -> {
-                if (resultado.equals("true")) {
-                    actualizarPerfilEnServidor(nombre, nuevoCorreo, nuevaContrasena);
-                } else {
-                    Toast.makeText(PerfilActivity.this, "La contraseña antigua es incorrecta.", Toast.LENGTH_SHORT).show();
-                }
-            });
-        });
-    }
-    private void actualizarPerfilEnServidor(String nombre, String correo, String nuevaContrasena) {
-        Resources res = getResources();
-        String urlActualizarPerfil = res.getString(R.string.url) + "usuarios/actualizar/" + idUsuario;
-
-        OkHttpClient client = new OkHttpClient();
-        MediaType JSON = MediaType.get("application/json; charset=utf-8");
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("nombre", nombre);
-            jsonObject.put("correo_electronico", correo);
-            jsonObject.put("contrasena", nuevaContrasena);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
-        Request request = new Request.Builder()
-                .url(urlActualizarPerfil)
-                .put(body)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                handler.post(() -> Toast.makeText(PerfilActivity.this, "Error en la conexión al servidor", Toast.LENGTH_SHORT).show());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                handler.post(() -> {
-                    if (!response.isSuccessful()) {
-                        try {
-                            String errorMessage = response.body() != null ? response.body().string() : "No se pudo obtener la respuesta del servidor";
-                            Toast.makeText(PerfilActivity.this, "Error en la respuesta del servidor: " + errorMessage, Toast.LENGTH_SHORT).show();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            Toast.makeText(PerfilActivity.this, "Error al leer la respuesta del servidor", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(PerfilActivity.this, "Perfil actualizado correctamente.", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
-    }
-    private void cerrarSesion() {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.clear();
-        editor.apply();
-
-        Intent intent = new Intent(PerfilActivity.this, LoginActivity.class);
-        startActivity(intent);
-        finish();
     }
 
-    private void borrarCuenta() {
-        new AlertDialog.Builder(this)
-                .setTitle("Confirmar eliminación")
-                .setMessage("¿Estás seguro de que deseas borrar tu cuenta? Esta acción no se puede deshacer.")
-                .setPositiveButton("Sí", (dialog, which) -> {
-                    if (isNetworkAvailable()) {
-                        Resources res = getResources();
-                        String urlBorrarCuenta = res.getString(R.string.url) + "usuarios/eliminar/" + idUsuario;
+    private void setupLineChart() {
+        // Configuración básica del gráfico
+        lineChart.setTouchEnabled(true);
+        lineChart.setPinchZoom(true);
+        lineChart.getDescription().setEnabled(false);
+        lineChart.getLegend().setEnabled(false);
 
-                        try {
-                            JSONObject jsonObject = new JSONObject();
-                            jsonObject.put("correo_electronico", tvEmailLabel.getText().toString());
+        // Configuración de ejes
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setGranularity(1f); // Intervalos en el eje X
 
-                            borrarCuentaEnServidor(urlBorrarCuenta, jsonObject);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Toast.makeText(this, "Error al preparar los datos", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(this, "No hay conexión a Internet.", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton("No", null)
-                .show();
-    }
-    private void borrarCuentaEnServidor(String url, JSONObject jsonObject) {
-        OkHttpClient client = new OkHttpClient();
-
-        RequestBody body = RequestBody.create(jsonObject.toString(), MediaType.parse("application/json"));
-        Request request = new Request.Builder()
-                .url(url)
-                .delete(body)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                handler.post(() -> Toast.makeText(PerfilActivity.this, "Error en la conexión al servidor: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    handler.post(() -> {
-                        try {
-                            Toast.makeText(PerfilActivity.this, "Error en la respuesta del servidor: " + response.body().string(), Toast.LENGTH_SHORT).show();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            Toast.makeText(PerfilActivity.this, "Error al leer la respuesta del servidor", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } else {
-                    handler.post(() -> {
-                        Toast.makeText(PerfilActivity.this, "Cuenta eliminada correctamente.", Toast.LENGTH_SHORT).show();
-
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.clear();
-                        editor.apply();
-
-                        Intent intent = new Intent(PerfilActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
-                    });
-                }
-            }
-        });
-    }
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Network nw = connectivityManager.getActiveNetwork();
-                if (nw == null) {
-                    return false;
-                }
-                NetworkCapabilities actNw = connectivityManager.getNetworkCapabilities(nw);
-                return (actNw != null) && (actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-                        actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR));
-            } else {
-                NetworkInfo nwInfo = connectivityManager.getActiveNetworkInfo();
-                return nwInfo != null && nwInfo.isConnected();
-            }
-        }
-        return false;
+        lineChart.getAxisLeft().setDrawGridLines(false);
+        lineChart.getAxisRight().setEnabled(false);
     }
 
-    private void showError(String error) {
-        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+    private void loadChartData() {
+        // Datos de ejemplo para el progreso de logros
+        ArrayList<Entry> entries = new ArrayList<>();
+        entries.add(new Entry(1, 20)); // Día 1, 20% progreso
+        entries.add(new Entry(2, 40)); // Día 2, 40% progreso
+        entries.add(new Entry(3, 60)); // Día 3, 60% progreso
+        entries.add(new Entry(4, 80)); // Día 4, 80% progreso
+        entries.add(new Entry(5, 100)); // Día 5, 100% progreso
+
+        LineDataSet dataSet = new LineDataSet(entries, "Progreso");
+        dataSet.setColor(getResources().getColor(R.color.massfitness));
+        dataSet.setCircleColor(getResources().getColor(R.color.massfitness));
+        dataSet.setLineWidth(2f);
+        dataSet.setCircleRadius(4f);
+        dataSet.setValueTextSize(10f);
+
+        LineData lineData = new LineData(dataSet);
+        lineChart.setData(lineData);
+        lineChart.invalidate(); // Refrescar la gráfica
     }
 
-    private void showSuccess(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
 }

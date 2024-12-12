@@ -17,6 +17,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".EditarPerfilActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LogrosActivity"
+            android:exported="false" />
+        <activity
             android:name=".TipoReservaActivity"
             android:exported="false" />
         <activity

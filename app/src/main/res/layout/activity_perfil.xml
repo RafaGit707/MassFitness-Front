@@ -33,147 +33,107 @@
             android:text="PERFIL DE USUARIO"
             android:textColor="@android:color/white"
             android:layout_gravity="center"
-            android:layout_marginStart="8dp" />
+            android:layout_marginStart="8dp"/>
     </LinearLayout>
 
     <ScrollView
-        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/topBarLayout"
-        android:padding="14dp">
+        android:padding="16dp">
 
         <LinearLayout
-            android:id="@+id/contentLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="12dp">
+            android:gravity="center_horizontal">
 
-            <TextView
-                android:id="@+id/tvNombreLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="NOMBRE"
-                android:textColor="@color/massfitness"
-                android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/userImageView"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginTop="25dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_user_purple"
+                android:transitionName="userImageTrans" />
 
             <EditText
                 android:id="@+id/etNombre"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="4dp"
-                android:textColorHint="@color/darker_grey"
-                android:textColor="@color/white"  />
-
-            <TextView
-                android:id="@+id/tvEmailLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="EMAIL"
-                android:textColor="@color/massfitness"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:layout_marginTop="12dp" />
-
-            <EditText
-                android:id="@+id/etCorreo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:padding="4dp"
-                android:textColorHint="@color/darker_grey"
-                android:textColor="@color/white" />
-
-            <TextView
-                android:id="@+id/tvAntiguaContrasenaLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ANTIGUA CONTRASEÑA"
-                android:textColor="@color/massfitness"
-                android:textStyle="bold"
-                android:layout_marginTop="12dp" />
-
-            <EditText
-                android:id="@+id/etAntiguaContrasena"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:padding="4dp"
-                android:textColorHint="@color/darker_grey"
-                android:textColor="@color/white" />
-
-            <TextView
-                android:id="@+id/tvNuevaContrasenaLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="NUEVA CONTRASEÑA"
-                android:textColor="@color/massfitness"
-                android:textStyle="bold"
-                android:layout_marginTop="12dp" />
-
-            <EditText
-                android:id="@+id/etNuevaContrasena"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:padding="4dp"
-                android:textColorHint="@color/white"
-                android:textColor="@color/white" />
-
-            <TextView
-                android:id="@+id/tvConfirmarContrasenaLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CONFIRMAR NUEVA CONTRASEÑA"
-                android:textColor="@color/massfitness"
-                android:textStyle="bold"
-                android:layout_marginTop="12dp" />
-
-            <EditText
-                android:id="@+id/etConfirmarContrasena"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:padding="4dp"
-                android:textColorHint="@color/darker_grey"
-                android:textColor="@color/white" />
-
-            <LinearLayout
-                android:id="@+id/buttonLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp">
-
-                <Button
-                    android:id="@+id/btnGuardar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="GUARDAR"
-                    android:layout_marginEnd="8dp"
-                    android:textColor="@color/white"
-                    android:backgroundTint="@color/massfitness" />
-
-                <Button
-                    android:id="@+id/btnSalir"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="CERRAR SESION"
-                    android:layout_marginStart="8dp"
-                    android:textColor="@color/white"
-                    android:backgroundTint="@color/darker_grey" />
-            </LinearLayout>
+                android:text="Rafa"
+                android:textColor="@color/massfitness"  />
 
             <Button
-                android:id="@+id/btnBorrarCuenta"
+                android:id="@+id/btnEditarPerfil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Editar Perfil"
+                android:backgroundTint="@color/black"
+                android:textColor="@android:color/white" />
+
+            <!-- Sección de estadísticas -->
+            <TextView
+                android:id="@+id/tvStatisticsLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Progreso de Logros"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+
+
+            <!-- Sección de Logros -->
+            <LinearLayout
+                android:id="@+id/llAchievements"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="BORRAR CUENTA"
-                android:textColor="@color/white"
-                android:backgroundTint="@color/red"
-                android:layout_marginTop="12dp"
-                android:layout_gravity="center" />
+                android:layout_marginTop="24dp"
+                android:orientation="vertical">
+
+                <!-- Logros desbloqueados -->
+                <TextView
+                    android:id="@+id/tvUnlockedAchievementsLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Logros Desbloqueados"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvUnlockedAchievements"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    tools:listitem="@layout/item_logros" />
+
+                <!-- Logros por desbloquear -->
+                <TextView
+                    android:id="@+id/tvLockedAchievementsLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Logros por Desbloquear"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvLockedAchievements"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    tools:listitem="@layout/item_logros" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+
 </RelativeLayout>
