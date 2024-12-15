@@ -88,10 +88,9 @@
                 android:textStyle="bold"
                 android:textColor="@color/black" />
 
-
             <!-- Sección de Logros -->
             <LinearLayout
-                android:id="@+id/llAchievements"
+                android:id="@+id/llLogros"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -99,7 +98,7 @@
 
                 <!-- Logros desbloqueados -->
                 <TextView
-                    android:id="@+id/tvUnlockedAchievementsLabel"
+                    android:id="@+id/tvUnlockedLogrosLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Logros Desbloqueados"
@@ -108,7 +107,7 @@
                     android:textColor="@color/black" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvUnlockedAchievements"
+                    android:id="@+id/rvUnlockedLogros"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -116,7 +115,7 @@
 
                 <!-- Logros por desbloquear -->
                 <TextView
-                    android:id="@+id/tvLockedAchievementsLabel"
+                    android:id="@+id/tvLockedLogrosLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -126,7 +125,7 @@
                     android:textColor="@color/black" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvLockedAchievements"
+                    android:id="@+id/rvLockedLogros"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"

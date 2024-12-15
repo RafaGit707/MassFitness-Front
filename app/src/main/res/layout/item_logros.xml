@@ -7,14 +7,14 @@
     android:background="@color/massfitness_background_2">
 
     <ImageView
-        android:id="@+id/ivAchievementIcon"
+        android:id="@+id/ivLogroIcon"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/ic_logros"
         android:layout_marginEnd="8dp" />
 
     <TextView
-        android:id="@+id/tvAchievementName"
+        android:id="@+id/tvLogroName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -24,7 +24,7 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/tvAchievementStatus"
+        android:id="@+id/tvLogroStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Progreso"
