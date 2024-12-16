@@ -118,6 +118,8 @@ public class PerfilActivity extends AppCompatActivity {
                             JSONObject logrosJson = new JSONObject(resultado);
                             idUsuario = logrosJson.getInt("idUsuario");
                             fetchLogros(idUsuario);
+                            obtenerLogros();
+                            obtenerPuntosUsuario(idUsuario);
                         } catch (Exception e) {
                             showError("Error al conectar con el servidor");
                         }
@@ -187,7 +189,7 @@ public class PerfilActivity extends AppCompatActivity {
                     lockedLogros.add(logro);  // Add locked logros
                 }
             }
-            updateRecyclerViews(logrosList);
+            updateRecyclerViews();
         } catch (Exception e) {
             showError("Error al procesar la respuesta del servidor");
         }
@@ -243,6 +245,7 @@ public class PerfilActivity extends AppCompatActivity {
                             logro.setRequisitosPuntos(logroJson.getInt("requisitos_puntos"));
                             logros.add(logro);
                         }
+                        updateRecyclerViews();
                     } catch (JSONException e) {
                         showError("Error al obtener los logros");
                     }
@@ -264,7 +267,10 @@ public class PerfilActivity extends AppCompatActivity {
                     try {
                         JSONObject puntosJson = new JSONObject(resultado);
                         int puntosUsuario = puntosJson.getInt("cantidad_puntos");
-                        actualizarProgreso(puntosUsuario);
+                        for (Logro logro : logrosList) {
+                            int puntosRequeridos = logro.getRequisitosPuntos();
+                            int progreso = (puntosUsuario * 100) / puntosRequeridos;
+                        }
                     } catch (JSONException e) {
                         showError("Error al obtener los puntos");
                     }
@@ -273,7 +279,7 @@ public class PerfilActivity extends AppCompatActivity {
         });
     }
 
-    private void updateRecyclerViews(List<Logro> logrosList) {
+    private void updateRecyclerViews() {
         LogroAdapter unlockedAdapter = new LogroAdapter(unlockedLogros);
         rvUnlockedLogros.setLayoutManager(new LinearLayoutManager(this));
         rvUnlockedLogros.setAdapter(unlockedAdapter);
@@ -284,19 +290,6 @@ public class PerfilActivity extends AppCompatActivity {
 
         unlockedAdapter.notifyDataSetChanged();
         lockedAdapter.notifyDataSetChanged();
-    }
-
-    private void actualizarProgreso(int puntosUsuario) {
-        for (Logro logro : logrosList) {
-            int puntosRequeridos = logro.getRequisitosPuntos();
-            int progreso = (puntosUsuario * 100) / puntosRequeridos;
-            mostrarProgresoLogro(logro, progreso);
-        }
-    }
-
-    private void mostrarProgresoLogro(Logro logro, int progreso) {
-        // Mostrar progreso en la UI, por ejemplo, en un TextView o barra de progreso
-        // textoLogro.setText(logro.getNombre() + ": " + progreso + "%");
     }
 
     private void mostrarNotificacionLogro(String titulo, String mensaje) {

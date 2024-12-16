@@ -173,9 +173,7 @@ public class EditarPerfilActivity extends AppCompatActivity {
                             etNombre.setText(usuarioJson.getString("nombre"));
                             etCorreo.setText(usuarioJson.getString("correo_electronico"));
                         } catch (Exception e) {
-                            if (etNombre.getText().toString().isEmpty() || etCorreo.getText().toString().isEmpty()) {
-                                showError("Error al obtener los datos de usuario");
-                            }
+                            showError("Error al obtener los datos de usuario");
                         }
                     }
                 });
