@@ -1,33 +1,54 @@
 package com.example.massfitness.entidades;
 
+import java.sql.Timestamp;
+
 public class Logro {
-    private static int id;
+    private int id_usuario_logro;
+    private int id_logro;
+    private int id_usuario;
     private String nombre;
     private String descripcion;
-    private static int requisitosPuntos;
-    private static int cantidadPuntos;
+    private int requisitosPuntos;
+    private int cantidadPuntos;
     private String recompensa;
     private boolean desbloqueado;
+    private Timestamp fechaObtenido;
 
     public Logro() {
     }
 
-    public Logro(int id, String nombre, String descripcion, int requisitosPuntos, int cantidadPuntos, String recompensa, boolean desbloqueado) {
-        this.id = id;
+
+
+    public Logro(int id_logro, String nombre, String descripcion, int requisitosPuntos, String recompensa) {
+        this.id_logro = id_logro;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.requisitosPuntos = requisitosPuntos;
-        this.cantidadPuntos = cantidadPuntos;
         this.recompensa = recompensa;
-        this.desbloqueado = desbloqueado;
     }
 
-    public static int getId() {
-        return id;
+    public int getId_usuario_logro() {
+        return id_usuario_logro;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId_usuario_logro(int id_usuario_logro) {
+        this.id_usuario_logro = id_usuario_logro;
+    }
+
+    public int getId_logro() {
+        return id_logro;
+    }
+
+    public void setId_logro(int id_logro) {
+        this.id_logro = id_logro;
+    }
+
+    public int getId_usuario() {
+        return id_usuario;
+    }
+
+    public void setId_usuario(int id_usuario) {
+        this.id_usuario = id_usuario;
     }
 
     public String getNombre() {
@@ -46,7 +67,7 @@ public class Logro {
         this.descripcion = descripcion;
     }
 
-    public static int getRequisitosPuntos() {
+    public int getRequisitosPuntos() {
         return requisitosPuntos;
     }
 
@@ -70,12 +91,20 @@ public class Logro {
         this.desbloqueado = desbloqueado;
     }
 
-    public static int getCantidadPuntos() {
+    public int getCantidadPuntos() {
         return cantidadPuntos;
     }
 
     public void setCantidadPuntos(int cantidadPuntos) {
         this.cantidadPuntos = cantidadPuntos;
+    }
+
+    public Timestamp getFechaObtenido() {
+        return fechaObtenido;
+    }
+
+    public void setFechaObtenido(Timestamp fechaObtenido) {
+        this.fechaObtenido = fechaObtenido;
     }
 }
 

@@ -4,18 +4,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.massfitness.R;
 import com.example.massfitness.entidades.Logro;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> {
@@ -28,17 +24,16 @@ public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        List<Entry> entries = new ArrayList<>();
-        float progressPercentage = (float) Logro.getCantidadPuntos() / Logro.getRequisitosPuntos() * 100;
-        entries.add(new Entry(Logro.getId(), progressPercentage));
-
-        LineDataSet dataSet = new LineDataSet(entries, "Progreso de Logros");
-        LineData data = new LineData(dataSet);
-
         Logro logro = logrosList.get(position);
+
+        // Calcular el progreso como porcentaje
+        float progreso = (float) logro.getCantidadPuntos() / logro.getRequisitosPuntos() * 100;
+        int progresoInt = Math.round(progreso); // Aseguramos que es un entero para la ProgressBar
+
+        // Asignar datos a las vistas
         holder.tvLogroName.setText(logro.getNombre());
-        holder.tvLogroStatus.setText(Logro.getRequisitosPuntos());
-        holder.lineChart.setData(data);
+        holder.tvLogroStatus.setText("Progreso: " + progresoInt + "%");
+        holder.progressBar.setProgress(progresoInt);  // Establecer progreso en la barra
         holder.ivLogroIcon.setImageResource(logro.isDesbloqueado() ? R.drawable.ic_logros : R.drawable.ic_logros);
     }
 
@@ -56,14 +51,14 @@ public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvLogroName, tvLogroStatus;
         ImageView ivLogroIcon;
-        LineChart lineChart;
+        ProgressBar progressBar;
 
         public ViewHolder(View itemView) {
             super(itemView);
             tvLogroName = itemView.findViewById(R.id.tvLogroName);
-            tvLogroStatus = itemView.findViewById(R.id.tvLogroName);
+            tvLogroStatus = itemView.findViewById(R.id.tvLogroStatus);
             ivLogroIcon = itemView.findViewById(R.id.ivLogroIcon);
-            lineChart = itemView.findViewById(R.id.lineChart);
+            progressBar = itemView.findViewById(R.id.progressBar);
         }
     }
 }

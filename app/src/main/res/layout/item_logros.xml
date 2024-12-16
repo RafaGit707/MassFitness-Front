@@ -31,11 +31,12 @@
         android:textSize="16sp"
         android:textColor="@color/cardview_dark_background" />
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/lineChart"
+    <ProgressBar
+        android:id="@+id/progressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp" />
+        android:progressDrawable="@drawable/progress_drawable"
+        android:max="100" />
 
 </LinearLayout>

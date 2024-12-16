@@ -12,11 +12,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -29,27 +28,28 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.massfitness.adaptadores.LogroAdapter;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.example.massfitness.entidades.Logro;
 import com.example.massfitness.util.Internetop;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class PerfilActivity extends AppCompatActivity {
 
-    private LineChart lineChart;
-    private RecyclerView recyclerViewLogros;
-    private LogroAdapter logrosAdapter;
-    private List<Logro> listaLogros;
+    private LogroAdapter logroAdapter;
+    private List<Logro> logrosList;
     private Button btnEditarPerfil;
     private ImageView ivBack;
     private SharedPreferences preferences;
@@ -57,12 +57,13 @@ public class PerfilActivity extends AppCompatActivity {
     private Handler handler;
     private int idUsuario;
     private RecyclerView rvUnlockedLogros, rvLockedLogros;
+    private List<Logro> unlockedLogros = new ArrayList<>();
+    private List<Logro> lockedLogros = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
-
 
         rvUnlockedLogros = findViewById(R.id.rvUnlockedLogros);
         rvLockedLogros = findViewById(R.id.rvLockedLogros);
@@ -70,8 +71,8 @@ public class PerfilActivity extends AppCompatActivity {
         ivBack = findViewById(R.id.ivBack);
         btnEditarPerfil = findViewById(R.id.btnEditarPerfil);
 
-        setupLineChart();
-/*        loadLogros();*/
+        executorService = Executors.newSingleThreadExecutor();
+        handler = new Handler(Looper.getMainLooper());
 
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,10 +88,10 @@ public class PerfilActivity extends AppCompatActivity {
             }
         });
 
-        getUserIdAndReservas();
+        getUserIdAndLogros();
     }
 
-    private void getUserIdAndReservas() {
+    private void getUserIdAndLogros() {
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
         String email = sharedPreferences.getString("correo_electronico", null);
 
@@ -114,8 +115,9 @@ public class PerfilActivity extends AppCompatActivity {
                         showError(resultado);
                     } else {
                         try {
-                            JSONObject usuarioJson = new JSONObject(resultado);
-                            idUsuario = usuarioJson.getInt("idUsuario");
+                            JSONObject logrosJson = new JSONObject(resultado);
+                            idUsuario = logrosJson.getInt("idUsuario");
+                            fetchLogros(idUsuario);
                         } catch (Exception e) {
                             showError("Error al conectar con el servidor");
                         }
@@ -127,39 +129,151 @@ public class PerfilActivity extends AppCompatActivity {
         }
     }
 
-    private void setupLineChart() {
-        lineChart.setTouchEnabled(true);
-        lineChart.setPinchZoom(true);
-        lineChart.getDescription().setEnabled(false);
-        lineChart.getLegend().setEnabled(false);
+    private void fetchLogros(int userId) {
+        String urlLogros = getResources().getString(R.string.url) + "logros/" + userId;
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
 
-        XAxis xAxis = lineChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(false);
-        xAxis.setGranularity(1f);
+        executor.execute(() -> {
+            Internetop interopera = Internetop.getInstance();
+            String resultado = interopera.getText(urlLogros, new ArrayList<>());
 
-        lineChart.getAxisLeft().setDrawGridLines(false);
-        lineChart.getAxisRight().setEnabled(false);
+            handler.post(() -> {
+                try {
+                    if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
+                        showError(resultado);
+                    } else {
+                        JSONArray jsonArray = new JSONArray(resultado);
+                        parseLogros(jsonArray);
+                    }
+                } catch (Exception e) {
+                    showError("Error al procesar los logros");
+                }
+            });
+        });
+    }
+    private void parseLogros(JSONArray jsonArray) {
+        if (jsonArray.length() == 0) {
+            showError("No hay logros para este usuario.");
+            return;
+        }
+        unlockedLogros.clear();
+        lockedLogros.clear();
+
+        try {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                Logro logro = new Logro();
+                logro.setId_usuario_logro(jsonObject.getInt("id_usuario_logro"));
+                logro.setId_logro(jsonObject.getInt("id_logro"));
+                logro.setId_usuario(jsonObject.getInt("id_usuario"));
+                String fechaObtenidoStr = jsonObject.getString("fecha_obtenido");
+                logrosList.add(logro);
+
+                Timestamp fechaObtenido;
+                try {
+                    fechaObtenido = parseDateTime(fechaObtenidoStr);
+                } catch (ParseException e) {
+                    showError("Error al analizar la fecha y hora");
+                    continue;
+                }
+
+                logro.setFechaObtenido(fechaObtenido);
+                logrosList.add(logro);
+
+                if (fechaObtenido != null) {
+                    unlockedLogros.add(logro);  // Add unlocked logros
+                } else {
+                    lockedLogros.add(logro);  // Add locked logros
+                }
+            }
+            updateRecyclerViews(logrosList);
+        } catch (Exception e) {
+            showError("Error al procesar la respuesta del servidor");
+        }
+    }
+    private Timestamp parseDateTime(String dateTimeStr) throws ParseException {
+        String pattern = "yyyy-MM-dd HH:mm:ss.S";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Europe/Madrid"));
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        Date date = simpleDateFormat.parse(dateTimeStr);
+
+        SimpleDateFormat localFormat = new SimpleDateFormat(pattern, Locale.getDefault());
+        localFormat.setTimeZone(TimeZone.getDefault());
+        String localDateTimeStr = localFormat.format(date);
+
+        Date localDate = localFormat.parse(localDateTimeStr);
+
+        // Obtener la zona horaria actual
+        TimeZone timeZone = TimeZone.getDefault();
+        String zoneID = timeZone.getID();
+
+        // Verificar si la zona horaria es la correcta
+        Log.d("TimeZone", "Current TimeZone: " + zoneID);
+
+        return new Timestamp(localDate.getTime());
+    }
+    private void obtenerLogros() {
+        String urlLogros = getResources().getString(R.string.url) + "logros";
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+        executor.execute(() -> {
+            Internetop interopera = Internetop.getInstance();
+            String resultado = interopera.getText(urlLogros, new ArrayList<>());
+            handler.post(() -> {
+                if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
+                    showError(resultado);
+                } else {
+                    try {
+                        JSONArray logrosJson = new JSONArray(resultado);
+                        List<Logro> logros = new ArrayList<>();
+                        for (int i = 0; i < logrosJson.length(); i++) {
+                            JSONObject logroJson = logrosJson.getJSONObject(i);
+                            Logro logro = new Logro(
+                                    logroJson.getInt("idLogro"),
+                                    logroJson.getString("nombre_logro"),
+                                    logroJson.getString("descripcion"),
+                                    logroJson.getInt("requisitos_puntos"),
+                                    logroJson.getString("recompensa")
+                            );
+                            logro.setNombre(logroJson.getString("nombre_logro"));
+                            logro.setDescripcion(logroJson.getString("descripcion"));
+                            logro.setRequisitosPuntos(logroJson.getInt("requisitos_puntos"));
+                            logros.add(logro);
+                        }
+                    } catch (JSONException e) {
+                        showError("Error al obtener los logros");
+                    }
+                }
+            });
+        });
+    }
+    private void obtenerPuntosUsuario(int idUsuario) {
+        String url = getResources().getString(R.string.url) + idUsuario + "/cantidad-puntos";
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+        executor.execute(() -> {
+            Internetop interopera = Internetop.getInstance();
+            String resultado = interopera.getText(url, new ArrayList<>());
+            handler.post(() -> {
+                if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
+                    showError(resultado);
+                } else {
+                    try {
+                        JSONObject puntosJson = new JSONObject(resultado);
+                        int puntosUsuario = puntosJson.getInt("cantidad_puntos");
+                        actualizarProgreso(puntosUsuario);
+                    } catch (JSONException e) {
+                        showError("Error al obtener los puntos");
+                    }
+                }
+            });
+        });
     }
 
-/*
-    private void loadLogros() {
-        // Supón que obtienes los logros desde la base de datos
-        List<Logro> Logros = dbHelper.getUserLogros(idUsuario);
-
-        List<Logro> unlockedLogros = new ArrayList<>();
-        List<Logro> lockedLogros = new ArrayList<>();
-
-        // Separar logros desbloqueados y bloqueados
-        for (Logro Logro : Logros) {
-            if (Logro.isDesbloqueado()) {
-                unlockedLogros.add(Logro);
-            } else {
-                lockedLogros.add(Logro);
-            }
-        }
-
-        // Actualizar RecyclerView
+    private void updateRecyclerViews(List<Logro> logrosList) {
         LogroAdapter unlockedAdapter = new LogroAdapter(unlockedLogros);
         rvUnlockedLogros.setLayoutManager(new LinearLayoutManager(this));
         rvUnlockedLogros.setAdapter(unlockedAdapter);
@@ -167,27 +281,23 @@ public class PerfilActivity extends AppCompatActivity {
         LogroAdapter lockedAdapter = new LogroAdapter(lockedLogros);
         rvLockedLogros.setLayoutManager(new LinearLayoutManager(this));
         rvLockedLogros.setAdapter(lockedAdapter);
+
+        unlockedAdapter.notifyDataSetChanged();
+        lockedAdapter.notifyDataSetChanged();
     }
 
-    private void loadChartData() {
-        // Obtener logros desde la base de datos
-        List<Logro> Logros = dbHelper.getUserLogros(idUsuario);
-
-        List<Entry> entries = new ArrayList<>();
-
-        for (Logro Logro : Logros) {
-            // Calcular el porcentaje de progreso
-            float progressPercentage = (float) Logro.getCantidadPuntos() / Logro.getRequisitosPuntos() * 100;
-            entries.add(new Entry(Logro.getId(), progressPercentage));
+    private void actualizarProgreso(int puntosUsuario) {
+        for (Logro logro : logrosList) {
+            int puntosRequeridos = logro.getRequisitosPuntos();
+            int progreso = (puntosUsuario * 100) / puntosRequeridos;
+            mostrarProgresoLogro(logro, progreso);
         }
-
-        // Crear un dataset para el gráfico
-        LineDataSet dataSet = new LineDataSet(entries, "Progreso de Logros");
-        LineData data = new LineData(dataSet);
-        lineChart.setData(data);
-        lineChart.invalidate(); // Actualizar el gráfico
     }
-*/
+
+    private void mostrarProgresoLogro(Logro logro, int progreso) {
+        // Mostrar progreso en la UI, por ejemplo, en un TextView o barra de progreso
+        // textoLogro.setText(logro.getNombre() + ": " + progreso + "%");
+    }
 
     private void mostrarNotificacionLogro(String titulo, String mensaje) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "logrosChannel")

@@ -86,7 +86,7 @@
                 android:text="Progreso de Logros"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
             <!-- Sección de Logros -->
             <LinearLayout
@@ -104,7 +104,7 @@
                     android:text="Logros Desbloqueados"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/white" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvUnlockedLogros"
@@ -117,12 +117,12 @@
                 <TextView
                     android:id="@+id/tvLockedLogrosLabel"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="13dp"
                     android:layout_marginTop="16dp"
                     android:text="Logros por Desbloquear"
+                    android:textColor="@color/white"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black" />
+                    android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvLockedLogros"
