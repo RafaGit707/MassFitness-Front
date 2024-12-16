@@ -39,6 +39,7 @@ import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.example.massfitness.adaptadores.ReservaAdapter;
 import com.example.massfitness.entidades.Logro;
 import com.example.massfitness.util.Internetop;
 
@@ -52,9 +53,6 @@ public class PerfilActivity extends AppCompatActivity {
     private List<Logro> logrosList;
     private Button btnEditarPerfil;
     private ImageView ivBack;
-    private SharedPreferences preferences;
-    private ExecutorService executorService;
-    private Handler handler;
     private int idUsuario;
     private RecyclerView rvUnlockedLogros, rvLockedLogros;
     private List<Logro> unlockedLogros = new ArrayList<>();
@@ -67,12 +65,15 @@ public class PerfilActivity extends AppCompatActivity {
 
         rvUnlockedLogros = findViewById(R.id.rvUnlockedLogros);
         rvLockedLogros = findViewById(R.id.rvLockedLogros);
+        rvLockedLogros.setLayoutManager(new LinearLayoutManager(this));
+        rvUnlockedLogros.setLayoutManager(new LinearLayoutManager(this));
+
+        logroAdapter = new LogroAdapter(new ArrayList<>());
+        rvLockedLogros.setAdapter(logroAdapter);
+        rvUnlockedLogros.setAdapter(logroAdapter);
 
         ivBack = findViewById(R.id.ivBack);
         btnEditarPerfil = findViewById(R.id.btnEditarPerfil);
-
-        executorService = Executors.newSingleThreadExecutor();
-        handler = new Handler(Looper.getMainLooper());
 
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,6 +118,7 @@ public class PerfilActivity extends AppCompatActivity {
                         try {
                             JSONObject logrosJson = new JSONObject(resultado);
                             idUsuario = logrosJson.getInt("idUsuario");
+                            Log.d("ID USUARIO", ""+idUsuario);
                             fetchLogros(idUsuario);
                             obtenerLogros();
                             obtenerPuntosUsuario(idUsuario);
@@ -171,6 +173,8 @@ public class PerfilActivity extends AppCompatActivity {
                 logro.setId_usuario(jsonObject.getInt("id_usuario"));
                 String fechaObtenidoStr = jsonObject.getString("fecha_obtenido");
                 logrosList.add(logro);
+
+                Log.e("AGREGAR LOGRO", String.format("%s %s %s %s %s", jsonObject.getInt("id_usuario_logro"), jsonObject.getInt("id_logro"), jsonObject.getInt("id_usuario"), fechaObtenidoStr));
 
                 Timestamp fechaObtenido;
                 try {
