@@ -16,10 +16,14 @@ import java.util.List;
 
 public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> {
 
-    private final List<Logro> logrosList;
+    private List<Logro> logrosList;
 
     public LogroAdapter(List<Logro> logros) {
         this.logrosList = logros;
+    }
+    public void updateLogros(List<Logro> nuevosLogros) {
+        this.logrosList = nuevosLogros;
+        notifyDataSetChanged();
     }
 
     @Override

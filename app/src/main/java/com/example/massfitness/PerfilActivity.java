@@ -41,6 +41,7 @@ import java.util.concurrent.Executors;
 
 import com.example.massfitness.adaptadores.ReservaAdapter;
 import com.example.massfitness.entidades.Logro;
+import com.example.massfitness.entidades.Reserva;
 import com.example.massfitness.util.Internetop;
 
 import org.json.JSONArray;
@@ -50,6 +51,7 @@ import org.json.JSONObject;
 public class PerfilActivity extends AppCompatActivity {
 
     private LogroAdapter logroAdapter;
+    private LogroAdapter unlockedAdapter, lockedAdapter;
     private List<Logro> logrosList;
     private Button btnEditarPerfil;
     private ImageView ivBack;
@@ -141,6 +143,7 @@ public class PerfilActivity extends AppCompatActivity {
         executor.execute(() -> {
             Internetop interopera = Internetop.getInstance();
             String resultado = interopera.getText(urlLogros, new ArrayList<>());
+            Log.e("AGREGAR LOGRO", String.format("%s %s", resultado, urlLogros));
 
             handler.post(() -> {
                 try {
@@ -185,7 +188,6 @@ public class PerfilActivity extends AppCompatActivity {
                 }
 
                 logro.setFechaObtenido(fechaObtenido);
-                logrosList.add(logro);
 
                 if (fechaObtenido != null) {
                     unlockedLogros.add(logro);  // Add unlocked logros
@@ -193,7 +195,7 @@ public class PerfilActivity extends AppCompatActivity {
                     lockedLogros.add(logro);  // Add locked logros
                 }
             }
-            updateRecyclerViews();
+            updateRecyclerViews(logrosList);
         } catch (Exception e) {
             showError("Error al procesar la respuesta del servidor");
         }
@@ -228,15 +230,24 @@ public class PerfilActivity extends AppCompatActivity {
         executor.execute(() -> {
             Internetop interopera = Internetop.getInstance();
             String resultado = interopera.getText(urlLogros, new ArrayList<>());
+            Log.e("AGREGAR LOGRO1", String.format("%s %s", resultado, urlLogros));
+
             handler.post(() -> {
                 if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
                     showError(resultado);
                 } else {
                     try {
+                        Log.e("AGREGAR LOGRO2", String.format("%s %s", resultado, urlLogros));
                         JSONArray logrosJson = new JSONArray(resultado);
-                        List<Logro> logros = new ArrayList<>();
+                        if (logrosJson.length() == 0) {
+                            showError("No se han encontrado logros");
+                            return;
+                        }
+
+                        logrosList = new ArrayList<>();
                         for (int i = 0; i < logrosJson.length(); i++) {
                             JSONObject logroJson = logrosJson.getJSONObject(i);
+                            Log.e("LOGRO", String.format("Logro %d: %s", i, logroJson.toString()));
                             Logro logro = new Logro(
                                     logroJson.getInt("idLogro"),
                                     logroJson.getString("nombre_logro"),
@@ -244,13 +255,11 @@ public class PerfilActivity extends AppCompatActivity {
                                     logroJson.getInt("requisitos_puntos"),
                                     logroJson.getString("recompensa")
                             );
-                            logro.setNombre(logroJson.getString("nombre_logro"));
-                            logro.setDescripcion(logroJson.getString("descripcion"));
-                            logro.setRequisitosPuntos(logroJson.getInt("requisitos_puntos"));
-                            logros.add(logro);
+                            logrosList.add(logro);
                         }
-                        updateRecyclerViews();
+                        updateRecyclerViews(logrosList);
                     } catch (JSONException e) {
+                        Log.e("ERROR JSON", "Error al parsear JSON", e);
                         showError("Error al obtener los logros");
                     }
                 }
@@ -274,6 +283,7 @@ public class PerfilActivity extends AppCompatActivity {
                         for (Logro logro : logrosList) {
                             int puntosRequeridos = logro.getRequisitosPuntos();
                             int progreso = (puntosUsuario * 100) / puntosRequeridos;
+                            Log.d("progreso", ""+progreso+" "+puntosUsuario+" "+puntosRequeridos);
                         }
                     } catch (JSONException e) {
                         showError("Error al obtener los puntos");
@@ -283,17 +293,33 @@ public class PerfilActivity extends AppCompatActivity {
         });
     }
 
-    private void updateRecyclerViews() {
-        LogroAdapter unlockedAdapter = new LogroAdapter(unlockedLogros);
-        rvUnlockedLogros.setLayoutManager(new LinearLayoutManager(this));
-        rvUnlockedLogros.setAdapter(unlockedAdapter);
+    private void updateRecyclerViews(List<Logro> logros) {
+        List<Logro> unlockedLogros = new ArrayList<>();
+        List<Logro> lockedLogros = new ArrayList<>();
 
-        LogroAdapter lockedAdapter = new LogroAdapter(lockedLogros);
-        rvLockedLogros.setLayoutManager(new LinearLayoutManager(this));
-        rvLockedLogros.setAdapter(lockedAdapter);
+        for (Logro logro : logros) {
+            if (logro.getFechaObtenido() != null) {
+                unlockedLogros.add(logro);  // Si tiene fecha obtenida, es un logro desbloqueado
+            } else {
+                lockedLogros.add(logro);    // Si no tiene fecha obtenida, es un logro bloqueado
+            }
+        }
 
-        unlockedAdapter.notifyDataSetChanged();
-        lockedAdapter.notifyDataSetChanged();
+        if (unlockedAdapter == null) {
+            unlockedAdapter = new LogroAdapter(unlockedLogros);
+            rvUnlockedLogros.setLayoutManager(new LinearLayoutManager(this));
+            rvUnlockedLogros.setAdapter(unlockedAdapter);
+        } else {
+            unlockedAdapter.updateLogros(unlockedLogros);
+        }
+
+        if (lockedAdapter == null) {
+            lockedAdapter = new LogroAdapter(lockedLogros);
+            rvLockedLogros.setLayoutManager(new LinearLayoutManager(this));
+            rvLockedLogros.setAdapter(lockedAdapter);
+        } else {
+            lockedAdapter.updateLogros(lockedLogros);
+        }
     }
 
     private void mostrarNotificacionLogro(String titulo, String mensaje) {
