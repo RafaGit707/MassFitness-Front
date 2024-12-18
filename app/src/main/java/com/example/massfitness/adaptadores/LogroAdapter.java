@@ -13,7 +13,10 @@ import com.example.massfitness.R;
 import com.example.massfitness.entidades.Logro;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> {
 
@@ -40,7 +43,11 @@ public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> 
         holder.progressBar.setProgress(progresoInt);
 
         if (logro.getFechaObtenido() != null) {
-            holder.tvLogroFechaObtenido.setText("Obtenido el: " + logro.getFechaObtenido().toString());
+            SimpleDateFormat localDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+            localDateFormat.setTimeZone(TimeZone.getDefault());
+
+            String formattedDate = localDateFormat.format(logro.getFechaObtenido());
+            holder.tvLogroFechaObtenido.setText("Obtenido: " + formattedDate);
             holder.tvLogroFechaObtenido.setVisibility(View.VISIBLE);
         } else {
             holder.tvLogroFechaObtenido.setVisibility(View.GONE);

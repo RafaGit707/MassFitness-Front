@@ -39,7 +39,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:progressDrawable="@drawable/progress_drawable"
-        android:max="100" />
+        android:max="100"
+        android:progress="0"/>
 
     <TextView
         android:id="@+id/tvLogroFechaObtenido"

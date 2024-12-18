@@ -92,7 +92,7 @@ public class PerfilActivity extends AppCompatActivity {
                 startActivity(new Intent(PerfilActivity.this, EditarPerfilActivity.class));
             }
         });
-
+        obtenerLogros();
         getUserIdAndLogros();
     }
 
@@ -124,7 +124,6 @@ public class PerfilActivity extends AppCompatActivity {
                             idUsuario = logrosJson.getInt("idUsuario");
                             Log.d("ID USUARIO", ""+idUsuario);
                             fetchLogros(idUsuario);
-                            obtenerLogros();
                             obtenerPuntosUsuario(idUsuario);
                         } catch (Exception e) {
                             showError("Error al conectar con el servidor");
@@ -162,7 +161,7 @@ public class PerfilActivity extends AppCompatActivity {
         });
     }
     private void parseLogros(JSONArray jsonArray) {
-        if (jsonArray.length() == 0) {
+        if (jsonArray.length() < 0) {
             showError("No hay logros para este usuario.");
             return;
         }
@@ -269,6 +268,7 @@ public class PerfilActivity extends AppCompatActivity {
             });
         });
     }
+
     private void obtenerPuntosUsuario(int idUsuario) {
         String url = getResources().getString(R.string.url) + "usuarios/" + idUsuario + "/cantidad_puntos";
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -276,19 +276,31 @@ public class PerfilActivity extends AppCompatActivity {
         executor.execute(() -> {
             Internetop interopera = Internetop.getInstance();
             String resultado = interopera.getText(url, new ArrayList<>());
-            Log.e("tvLogroStatus", String.format("%s %s", resultado, url));
+            Log.e("tvLogroStatus1", String.format("%s %s", resultado, url));
+
             handler.post(() -> {
                 if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
+                    Log.e("tvLogroStatus2", String.format("%s", resultado));
                     showError(resultado);
                 } else {
                     try {
-                        JSONObject puntosJson = new JSONObject(resultado);
-                        int puntosUsuario = puntosJson.getInt("cantidad_puntos");
-                        TextView tvLogroStatus = findViewById(R.id.tvLogroStatus);
-                        tvLogroStatus.setText(String.valueOf(puntosUsuario));
+                        int puntosUsuario;
+                        // Si el resultado no es un JSON, lo tratamos como un número
+                        if (resultado.startsWith("[")) {
+                            // La respuesta es un JSON, obtenemos el valor de cantidad_puntos
+                            JSONObject puntosJson = new JSONObject(resultado);
+                            puntosUsuario = puntosJson.getInt("cantidad_puntos");
+                        } else {
+                            // La respuesta es un número directo
+                            puntosUsuario = Integer.parseInt(resultado);
+                        }
+
+                        Log.e("tvLogroStatus3", String.format("%s", puntosUsuario));
+
                         for (Logro logro : logrosList) {
                             int progreso = (puntosUsuario * 100) / logro.getRequisitosPuntos();
                             logro.setCantidadPuntos(puntosUsuario);
+                            Log.e("tvLogroStatus4", String.format("%s", puntosUsuario));
 
                             if (progreso >= 100 && logro.getFechaObtenido() == null) {
                                 Timestamp fechaActual = new Timestamp(System.currentTimeMillis());
@@ -302,8 +314,8 @@ public class PerfilActivity extends AppCompatActivity {
                         }
 
                         updateRecyclerViews(logrosList);
-                    } catch (JSONException e) {
-                        Log.e("tvLogroStatus", String.format("%s", resultado));
+                    } catch (JSONException | NumberFormatException e) {
+                        Log.e("tvLogroStatus5", String.format("%s", resultado));
                         showError("Error al obtener los puntos");
                     }
                 }
