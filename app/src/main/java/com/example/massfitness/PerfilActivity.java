@@ -15,6 +15,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -55,8 +57,9 @@ public class PerfilActivity extends AppCompatActivity {
     private LogroAdapter logroAdapter;
     private LogroAdapter unlockedAdapter, lockedAdapter;
     private List<Logro> logrosList;
-    private Button btnEditarPerfil;
+    private Button btnEditarPerfil, btnActivarNotificaciones;
     private ImageView ivBack;
+    private EditText etNombre;
     private int idUsuario;
     private RecyclerView rvUnlockedLogros, rvLockedLogros;
     private List<Logro> unlockedLogros = new ArrayList<>();
@@ -76,8 +79,18 @@ public class PerfilActivity extends AppCompatActivity {
         rvLockedLogros.setAdapter(logroAdapter);
         rvUnlockedLogros.setAdapter(logroAdapter);
 
+        etNombre = findViewById(R.id.etNombre);
+
         ivBack = findViewById(R.id.ivBack);
         btnEditarPerfil = findViewById(R.id.btnEditarPerfil);
+
+        btnActivarNotificaciones = findViewById(R.id.btnActivarNotificaciones);
+        btnActivarNotificaciones.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                solicitarPermisoNotificaciones();
+            }
+        });
 
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +138,7 @@ public class PerfilActivity extends AppCompatActivity {
                             Log.d("ID USUARIO", ""+idUsuario);
                             fetchLogros(idUsuario);
                             obtenerPuntosUsuario(idUsuario);
+                            cargarDatosUsuario();
                         } catch (Exception e) {
                             showError("Error al conectar con el servidor");
                         }
@@ -135,7 +149,53 @@ public class PerfilActivity extends AppCompatActivity {
             showError("No hay conexión a Internet.");
         }
     }
+    private void cargarDatosUsuario() {
+        if (isNetworkAvailable()) {
+            String url = getResources().getString(R.string.url) + "usuarios/" + idUsuario;
 
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Handler handler = new Handler(Looper.getMainLooper());
+
+            executor.execute(() -> {
+                Internetop interopera = Internetop.getInstance();
+                String resultado = interopera.getText(url, new ArrayList<>());
+
+                handler.post(() -> {
+                    if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
+                        showError(resultado);
+                    } else {
+                        try {
+                            if (resultado.trim().equalsIgnoreCase("false")) {
+                                showError("El servidor devolvió un error: usuario no encontrado.");
+                                return;
+                            }
+
+                            if (!resultado.trim().startsWith("{")) {
+                                showError("Respuesta inesperada del servidor: " + resultado);
+                                return;
+                            }
+
+                            JSONObject usuarioJson = new JSONObject(resultado);
+                            if (usuarioJson.has("nombre")) {
+                                etNombre.setText(usuarioJson.getString("nombre"));
+                            } else {
+                                showError("El campo 'nombre' no existe en la respuesta.");
+                            }
+                        } catch (JSONException e) {
+                            Log.e("cargarDatosUsuario", "JSONException: " + e.getMessage());
+                            showError("Error al procesar los datos del servidor.");
+                        } catch (Exception e) {
+                            Log.e("cargarDatosUsuario", "Exception: " + e.getMessage());
+                            showError("Ocurrió un error inesperado.");
+                        }
+
+                    }
+                });
+            });
+        } else {
+            showError("No hay conexión a Internet.");
+        }
+    }
     private void fetchLogros(int userId) {
         String urlLogros = getResources().getString(R.string.url) + "logros/" + userId;
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -406,6 +466,26 @@ public class PerfilActivity extends AppCompatActivity {
             return;
         }
         manager.notify(1, builder.build());
+    }
+
+    private void solicitarPermisoNotificaciones() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("Permisos", "Permiso para notificaciones concedido.");
+            } else {
+                Log.d("Permisos", "Permiso para notificaciones denegado.");
+            }
+        }
     }
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

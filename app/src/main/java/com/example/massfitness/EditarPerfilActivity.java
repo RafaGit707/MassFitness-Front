@@ -90,9 +90,6 @@ public class EditarPerfilActivity extends AppCompatActivity {
         executorService = Executors.newSingleThreadExecutor();
         handler = new Handler(Looper.getMainLooper());
 
-        getUserId();
-        cargarDatosUsuario();
-
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,7 +110,7 @@ public class EditarPerfilActivity extends AppCompatActivity {
                 borrarCuenta();
             }
         });
-
+        getUserId();
     }
 
     private void getUserId() {
@@ -182,6 +179,7 @@ public class EditarPerfilActivity extends AppCompatActivity {
             showError("No hay conexión a Internet.");
         }
     }
+
     private void actualizarPerfil() {
         String nombre = etNombre.getText().toString();
         String correo = etCorreo.getText().toString();

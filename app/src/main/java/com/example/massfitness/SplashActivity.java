@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,6 +23,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 public class SplashActivity extends AppCompatActivity {
+    private static final int REQUEST_NOTIFICATION_PERMISSION = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,17 +39,7 @@ public class SplashActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
 
-        // Detectar si es la primera vez que la app se inicia
-/*        boolean isFirstRun = sharedPreferences.getBoolean("isFirstRun", true);
-        if (isFirstRun) {
-            // Solicitar permiso para las notificaciones
-            solicitarPermisoNotificaciones();
-
-            // Marcar que la app ya se ha iniciado
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("isFirstRun", false);
-            editor.apply();
-        }*/
+        boolean isFirstRun = sharedPreferences.getBoolean("isFirstRun", true);
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -71,13 +64,30 @@ public class SplashActivity extends AppCompatActivity {
                 finish();
             }
         }, 3000);
+        if (isFirstRun) {
+            mostrarDialogoNotificaciones();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("isFirstRun", false);
+            editor.apply();
+        }
     }
 
-/*    private void solicitarPermisoNotificaciones() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                // Solicitar el permiso para notificaciones
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
+    private void mostrarDialogoNotificaciones() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Activar Notificaciones")
+                .setMessage("Para mejorar tu experiencia, activa las notificaciones y no te pierdas ninguna actualización importante.")
+                .setPositiveButton("Activar", (dialog, which) -> solicitarPermisoNotificaciones())
+                .setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void solicitarPermisoNotificaciones() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.POST_NOTIFICATIONS},
+                        REQUEST_NOTIFICATION_PERMISSION);
             }
         }
     }
@@ -85,14 +95,12 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
+        if (requestCode == REQUEST_NOTIFICATION_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // El usuario concedió el permiso para las notificaciones
-                Log.d("Permiso", "Permiso concedido para notificaciones");
+                Log.d("Permisos", "Permiso para notificaciones concedido.");
             } else {
-                // El usuario denegó el permiso para las notificaciones
-                Log.d("Permiso", "Permiso denegado para notificaciones");
+                Log.d("Permisos", "Permiso para notificaciones denegado.");
             }
         }
-    }*/
+    }
 }
