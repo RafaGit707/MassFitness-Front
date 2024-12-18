@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.massfitness.adaptadores.LogroAdapter;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -210,6 +218,7 @@ public class PerfilActivity extends AppCompatActivity {
                 try {
                     if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
                         showError(resultado);
+                        Log.e("AGREGAR LOGRO", String.format("%s %s", resultado, urlLogros));
                     } else {
                         JSONArray jsonArray = new JSONArray(resultado);
                         parseLogros(jsonArray);
@@ -236,7 +245,6 @@ public class PerfilActivity extends AppCompatActivity {
                 logro.setId_logro(jsonObject.getInt("id_logro"));
                 logro.setId_usuario(jsonObject.getInt("id_usuario"));
                 String fechaObtenidoStr = jsonObject.getString("fecha_obtenido");
-                logrosList.add(logro);
 
                 Log.e("AGREGAR LOGRO", String.format("%s %s %s %s %s", jsonObject.getInt("id_usuario_logro"), jsonObject.getInt("id_logro"), jsonObject.getInt("id_usuario"), fechaObtenidoStr));
 
@@ -256,6 +264,7 @@ public class PerfilActivity extends AppCompatActivity {
                 } else {
                     lockedLogros.add(logro);
                 }
+                logrosList.add(logro);
             }
             updateRecyclerViews(logrosList);
         } catch (Exception e) {
@@ -276,11 +285,9 @@ public class PerfilActivity extends AppCompatActivity {
 
         Date localDate = localFormat.parse(localDateTimeStr);
 
-        // Obtener la zona horaria actual
         TimeZone timeZone = TimeZone.getDefault();
         String zoneID = timeZone.getID();
 
-        // Verificar si la zona horaria es la correcta
         Log.d("TimeZone", "Current TimeZone: " + zoneID);
 
         return new Timestamp(localDate.getTime());
@@ -345,13 +352,10 @@ public class PerfilActivity extends AppCompatActivity {
                 } else {
                     try {
                         int puntosUsuario;
-                        // Si el resultado no es un JSON, lo tratamos como un número
                         if (resultado.startsWith("[")) {
-                            // La respuesta es un JSON, obtenemos el valor de cantidad_puntos
                             JSONObject puntosJson = new JSONObject(resultado);
                             puntosUsuario = puntosJson.getInt("cantidad_puntos");
                         } else {
-                            // La respuesta es un número directo
                             puntosUsuario = Integer.parseInt(resultado);
                         }
 
@@ -364,7 +368,17 @@ public class PerfilActivity extends AppCompatActivity {
 
                             if (progreso >= 100 && logro.getFechaObtenido() == null) {
                                 Timestamp fechaActual = new Timestamp(System.currentTimeMillis());
-                                logro.setFechaObtenido(fechaActual);
+                                String fechaActualStr = fechaActual.toString();
+
+                                Timestamp fechaObtenido;
+                                try {
+                                    fechaObtenido = parseDateTime(fechaActualStr);
+                                } catch (ParseException e) {
+                                    showError("Error al analizar la fecha y hora");
+                                    continue;
+                                }
+                                logro.setFechaObtenido(fechaObtenido);
+
                                 guardarFechaObtencionLogro(logro);
                                 mostrarNotificacionLogro("¡Logro desbloqueado!", logro.getNombre());
                             } else if (progreso < 100 && logro.getFechaObtenido() != null) {
@@ -372,7 +386,6 @@ public class PerfilActivity extends AppCompatActivity {
                                 eliminarFechaObtencionLogro(logro);
                             }
                         }
-
                         updateRecyclerViews(logrosList);
                     } catch (JSONException | NumberFormatException e) {
                         Log.e("tvLogroStatus5", String.format("%s", resultado));
@@ -386,22 +399,80 @@ public class PerfilActivity extends AppCompatActivity {
     private void guardarFechaObtencionLogro(Logro logro) {
         String url = getResources().getString(R.string.url) + "logros/addLogro/" + idUsuario + "/logro/" + logro.getId_logro();
         ExecutorService executor = Executors.newSingleThreadExecutor();
+        Log.e("guardarFechaLogro1", "Url: " + url);
 
         executor.execute(() -> {
             Internetop interopera = Internetop.getInstance();
             List<Parametro> parametros = new ArrayList<>();
-            parametros.add(new Parametro("id_usuario", String.valueOf(logro.getId_usuario())));
-            parametros.add(new Parametro("id_logro", String.valueOf(logro.getId_logro())));
-            parametros.add(new Parametro("fecha_obtenido", logro.getFechaObtenido().toString()));
+            Log.e("guardarFechaLogro2", "Parametros: " + parametros);
+            parametros.add(new Parametro("usuario_id", idUsuario+""));
+            parametros.add(new Parametro("logro_id", String.valueOf(logro.getId_logro())));
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S", Locale.getDefault());
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Europe/Madrid"));
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            String fechaFormateada = simpleDateFormat.format(logro.getFechaObtenido());
+            parametros.add(new Parametro("fecha_obtenido", fechaFormateada));
+            Log.e("guardarFechaLogro3", "Formato fecha: " + fechaFormateada);
 
             String resultado = interopera.postText(url, parametros);
+            Log.e("guardarFechaLogro3", "Resultado: " + resultado);
             if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
-                Log.e("guardarFechaLogro", "Error al guardar logro: " + resultado);
+                Log.e("guardarFechaLogro4", "Error al guardar logro: " + resultado);
             } else {
-                Log.d("guardarFechaLogro", "Logro registrado: " + logro.getNombre());
+                Log.d("guardarFechaLogro5", "Logro registrado: " + logro.getNombre());
             }
         });
     }
+
+/*    private void guardarFechaObtencionLogro(Logro logro) {
+        String url = getResources().getString(R.string.url) + "logros/addLogro/" + idUsuario + "/logro/" + logro.getId_logro();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                Internetop interopera = Internetop.getInstance();
+                List<Parametro> params = new ArrayList<>();
+                params.add(new Parametro("usuario_id", idUsuario+""));
+                params.add(new Parametro("logro_id", String.valueOf(logro.getId_logro())));
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S", Locale.getDefault());
+                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Europe/Madrid"));
+                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                String fechaFormateada = simpleDateFormat.format(logro.getFechaObtenido());
+                params.add(new Parametro("fecha_obtenido", fechaFormateada));
+
+                Log.e("guardarFechaObtencionLogro", "usuario_id: " + idUsuario+"");
+                Log.e("guardarFechaObtencionLogro", "logro_id: " + logro.getId_logro());
+                Log.e("guardarFechaObtencionLogro", "fecha_obtenido: " + fechaFormateada);
+
+                String resultado = interopera.postText(url,params);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        try {
+                            Integer idCreado = Integer.parseInt(resultado);
+                            if (idCreado > 0) {
+                                setResult(RESULT_OK);
+                                showSuccess("Logro registrado correctamente.");
+                                finish();
+                            } else {
+                                showError("Error al registrar el logro. Por favor, inténtalo de nuevo más tarde.");
+                            }
+                        } catch (NumberFormatException ex) {
+                            ex.printStackTrace();
+                            Log.e("guardarFechaObtencionLogro", "Respuesta del servidor: " + resultado);
+
+                            showError("Error al registrar el logro.");
+                        }
+                    }
+                });
+            }
+        });
+    }*/
 
     private void eliminarFechaObtencionLogro(Logro logro) {
         String url = getResources().getString(R.string.url) + "logros/eliminarLogro/" + idUsuario + "/logro/" + logro.getId_logro();
@@ -490,7 +561,7 @@ public class PerfilActivity extends AppCompatActivity {
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 Network nw = connectivityManager.getActiveNetwork();
                 if (nw == null) {
                     return false;

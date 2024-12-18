@@ -525,7 +525,6 @@ public class DetalleReservaActivity extends AppCompatActivity {
         });
     }
 
-
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager != null) {

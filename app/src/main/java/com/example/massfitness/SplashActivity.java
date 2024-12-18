@@ -7,6 +7,8 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,6 +26,7 @@ import android.widget.ImageView;
 
 public class SplashActivity extends AppCompatActivity {
     private static final int REQUEST_NOTIFICATION_PERMISSION = 1001;
+    private static final String CHANNEL_ID_LOGROS = "logrosChannel";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,22 @@ public class SplashActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("isFirstRun", false);
             editor.apply();
+        }
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID_LOGROS,
+                    "Logros Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            channel.setDescription("Canal para las notificaciones de logros");
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
         }
     }
 
