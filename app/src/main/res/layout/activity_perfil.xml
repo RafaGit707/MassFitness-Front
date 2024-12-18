@@ -78,7 +78,7 @@
                 android:textColor="@android:color/white" />
 
             <!-- Sección de estadísticas -->
-            <TextView
+<!--            <TextView
                 android:id="@+id/tvStatisticsLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -86,14 +86,14 @@
                 android:text="Progreso de Logros"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@color/white" />
+                android:textColor="@color/white" />-->
 
             <!-- Sección de Logros -->
             <LinearLayout
                 android:id="@+id/llLogros"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:orientation="vertical">
 
                 <!-- Logros desbloqueados -->

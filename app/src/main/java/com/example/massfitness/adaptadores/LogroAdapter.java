@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.massfitness.R;
 import com.example.massfitness.entidades.Logro;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> {
@@ -30,15 +31,22 @@ public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder holder, int position) {
         Logro logro = logrosList.get(position);
 
-        // Calcular el progreso como porcentaje
         float progreso = (float) logro.getCantidadPuntos() / logro.getRequisitosPuntos() * 100;
-        int progresoInt = Math.round(progreso); // Aseguramos que es un entero para la ProgressBar
+        int progresoInt = Math.round(progreso);
 
-        // Asignar datos a las vistas
+
         holder.tvLogroName.setText(logro.getNombre());
         holder.tvLogroStatus.setText("Progreso: " + progresoInt + "%");
-        holder.progressBar.setProgress(progresoInt);  // Establecer progreso en la barra
-        holder.ivLogroIcon.setImageResource(logro.isDesbloqueado() ? R.drawable.ic_logros : R.drawable.ic_logros);
+        holder.progressBar.setProgress(progresoInt);
+
+        if (logro.getFechaObtenido() != null) {
+            holder.tvLogroFechaObtenido.setText("Obtenido el: " + logro.getFechaObtenido().toString());
+            holder.tvLogroFechaObtenido.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvLogroFechaObtenido.setVisibility(View.GONE);
+        }
+
+        holder.ivLogroIcon.setImageResource(logro.isDesbloqueado() ? R.drawable.ic_boxeo : R.drawable.ic_logros);
     }
 
     @Override
@@ -53,7 +61,7 @@ public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> 
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvLogroName, tvLogroStatus;
+        TextView tvLogroName, tvLogroStatus,tvLogroFechaObtenido;
         ImageView ivLogroIcon;
         ProgressBar progressBar;
 
@@ -63,6 +71,7 @@ public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> 
             tvLogroStatus = itemView.findViewById(R.id.tvLogroStatus);
             ivLogroIcon = itemView.findViewById(R.id.ivLogroIcon);
             progressBar = itemView.findViewById(R.id.progressBar);
+            tvLogroFechaObtenido = itemView.findViewById(R.id.tvLogroFechaObtenido);
         }
     }
 }

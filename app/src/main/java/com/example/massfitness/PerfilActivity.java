@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -43,6 +44,7 @@ import com.example.massfitness.adaptadores.ReservaAdapter;
 import com.example.massfitness.entidades.Logro;
 import com.example.massfitness.entidades.Reserva;
 import com.example.massfitness.util.Internetop;
+import com.example.massfitness.util.Parametro;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -190,9 +192,10 @@ public class PerfilActivity extends AppCompatActivity {
                 logro.setFechaObtenido(fechaObtenido);
 
                 if (fechaObtenido != null) {
-                    unlockedLogros.add(logro);  // Add unlocked logros
+                    unlockedLogros.add(logro);
+                    findViewById(R.id.tvLogroFechaObtenido).setVisibility(View.VISIBLE);
                 } else {
-                    lockedLogros.add(logro);  // Add locked logros
+                    lockedLogros.add(logro);
                 }
             }
             updateRecyclerViews(logrosList);
@@ -267,12 +270,13 @@ public class PerfilActivity extends AppCompatActivity {
         });
     }
     private void obtenerPuntosUsuario(int idUsuario) {
-        String url = getResources().getString(R.string.url) + idUsuario + "/cantidad-puntos";
+        String url = getResources().getString(R.string.url) + "usuarios/" + idUsuario + "/cantidad_puntos";
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> {
             Internetop interopera = Internetop.getInstance();
             String resultado = interopera.getText(url, new ArrayList<>());
+            Log.e("tvLogroStatus", String.format("%s %s", resultado, url));
             handler.post(() -> {
                 if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
                     showError(resultado);
@@ -280,16 +284,65 @@ public class PerfilActivity extends AppCompatActivity {
                     try {
                         JSONObject puntosJson = new JSONObject(resultado);
                         int puntosUsuario = puntosJson.getInt("cantidad_puntos");
+                        TextView tvLogroStatus = findViewById(R.id.tvLogroStatus);
+                        tvLogroStatus.setText(String.valueOf(puntosUsuario));
                         for (Logro logro : logrosList) {
-                            int puntosRequeridos = logro.getRequisitosPuntos();
-                            int progreso = (puntosUsuario * 100) / puntosRequeridos;
-                            Log.d("progreso", ""+progreso+" "+puntosUsuario+" "+puntosRequeridos);
+                            int progreso = (puntosUsuario * 100) / logro.getRequisitosPuntos();
+                            logro.setCantidadPuntos(puntosUsuario);
+
+                            if (progreso >= 100 && logro.getFechaObtenido() == null) {
+                                Timestamp fechaActual = new Timestamp(System.currentTimeMillis());
+                                logro.setFechaObtenido(fechaActual);
+                                guardarFechaObtencionLogro(logro);
+                                mostrarNotificacionLogro("¡Logro desbloqueado!", logro.getNombre());
+                            } else if (progreso < 100 && logro.getFechaObtenido() != null) {
+                                logro.setFechaObtenido(null);
+                                eliminarFechaObtencionLogro(logro);
+                            }
                         }
+
+                        updateRecyclerViews(logrosList);
                     } catch (JSONException e) {
+                        Log.e("tvLogroStatus", String.format("%s", resultado));
                         showError("Error al obtener los puntos");
                     }
                 }
             });
+        });
+    }
+
+    private void guardarFechaObtencionLogro(Logro logro) {
+        String url = getResources().getString(R.string.url) + "logros/addLogro/" + idUsuario + "/logro/" + logro.getId_logro();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        executor.execute(() -> {
+            Internetop interopera = Internetop.getInstance();
+            List<Parametro> parametros = new ArrayList<>();
+            parametros.add(new Parametro("id_usuario", String.valueOf(logro.getId_usuario())));
+            parametros.add(new Parametro("id_logro", String.valueOf(logro.getId_logro())));
+            parametros.add(new Parametro("fecha_obtenido", logro.getFechaObtenido().toString()));
+
+            String resultado = interopera.postText(url, parametros);
+            if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
+                Log.e("guardarFechaLogro", "Error al guardar logro: " + resultado);
+            } else {
+                Log.d("guardarFechaLogro", "Logro registrado: " + logro.getNombre());
+            }
+        });
+    }
+
+    private void eliminarFechaObtencionLogro(Logro logro) {
+        String url = getResources().getString(R.string.url) + "logros/eliminarLogro/" + idUsuario + "/logro/" + logro.getId_logro();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        executor.execute(() -> {
+            Internetop interopera = Internetop.getInstance();
+            String resultado = interopera.deleteTask(url);
+            if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
+                Log.e("eliminarFechaLogro", "Error al eliminar logro: " + resultado);
+            } else {
+                Log.d("eliminarFechaLogro", "Logro eliminado: " + logro.getNombre());
+            }
         });
     }
 

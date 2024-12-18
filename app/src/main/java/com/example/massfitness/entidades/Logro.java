@@ -17,7 +17,16 @@ public class Logro {
     public Logro() {
     }
 
+    public Logro(int cantidadPuntos) {
+        this.cantidadPuntos = cantidadPuntos;
+    }
 
+    public Logro(int id_usuario_logro, int id_logro, int id_usuario, Timestamp fechaObtenido) {
+        this.id_usuario_logro = id_usuario_logro;
+        this.id_logro = id_logro;
+        this.id_usuario = id_usuario;
+        this.fechaObtenido = fechaObtenido;
+    }
 
     public Logro(int id_logro, String nombre, String descripcion, int requisitosPuntos, String recompensa) {
         this.id_logro = id_logro;
