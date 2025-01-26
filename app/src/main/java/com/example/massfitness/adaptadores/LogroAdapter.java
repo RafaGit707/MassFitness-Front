@@ -37,6 +37,9 @@ public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> 
         float progreso = (float) logro.getCantidadPuntos() / logro.getRequisitosPuntos() * 100;
         int progresoInt = Math.round(progreso);
 
+        if (progresoInt > 100) {
+            progresoInt = 100;
+        }
 
         holder.tvLogroName.setText(logro.getNombre());
         holder.tvLogroStatus.setText("Progreso: " + progresoInt + "%");

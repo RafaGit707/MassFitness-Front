@@ -67,7 +67,7 @@ public class PerfilActivity extends AppCompatActivity {
     private List<Logro> logrosList;
     private Button btnEditarPerfil, btnActivarNotificaciones;
     private ImageView ivBack;
-    private EditText etNombre;
+    private TextView tvNombre;
     private int idUsuario;
     private RecyclerView rvUnlockedLogros, rvLockedLogros;
     private List<Logro> unlockedLogros = new ArrayList<>();
@@ -87,7 +87,7 @@ public class PerfilActivity extends AppCompatActivity {
         rvLockedLogros.setAdapter(logroAdapter);
         rvUnlockedLogros.setAdapter(logroAdapter);
 
-        etNombre = findViewById(R.id.etNombre);
+        tvNombre = findViewById(R.id.tvNombre);
 
         ivBack = findViewById(R.id.ivBack);
         btnEditarPerfil = findViewById(R.id.btnEditarPerfil);
@@ -185,7 +185,7 @@ public class PerfilActivity extends AppCompatActivity {
 
                             JSONObject usuarioJson = new JSONObject(resultado);
                             if (usuarioJson.has("nombre")) {
-                                etNombre.setText(usuarioJson.getString("nombre"));
+                                tvNombre.setText(usuarioJson.getString("nombre"));
                             } else {
                                 showError("El campo 'nombre' no existe en la respuesta.");
                             }
@@ -520,7 +520,7 @@ public class PerfilActivity extends AppCompatActivity {
 
     private void mostrarNotificacionLogro(String titulo, String mensaje) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "logrosChannel")
-                .setSmallIcon(R.drawable.ic_logros)
+                .setSmallIcon(R.drawable.ic_notificationoff)
                 .setContentTitle(titulo)
                 .setContentText(mensaje)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
