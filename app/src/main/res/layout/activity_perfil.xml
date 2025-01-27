@@ -73,9 +73,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
-                <Button
+                <ImageView
                     android:id="@+id/btnActivarNotificaciones"
-                    android:src="@drawable/ic_notification_on"
                     android:layout_width="34dp"
                     android:layout_height="34dp"
                     android:layout_marginTop="12dp"
@@ -84,7 +83,6 @@
                     app:layout_constraintEnd_toEndOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
             <TextView
                 android:id="@+id/tvNombre"

@@ -8,10 +8,12 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -65,8 +68,8 @@ public class PerfilActivity extends AppCompatActivity {
     private LogroAdapter logroAdapter;
     private LogroAdapter unlockedAdapter, lockedAdapter;
     private List<Logro> logrosList;
-    private Button btnEditarPerfil, btnActivarNotificaciones;
-    private ImageView ivBack;
+    private Button btnEditarPerfil;
+    private ImageView ivBack, btnActivarNotificaciones;
     private TextView tvNombre;
     private int idUsuario;
     private RecyclerView rvUnlockedLogros, rvLockedLogros;
@@ -93,10 +96,21 @@ public class PerfilActivity extends AppCompatActivity {
         btnEditarPerfil = findViewById(R.id.btnEditarPerfil);
 
         btnActivarNotificaciones = findViewById(R.id.btnActivarNotificaciones);
+        btnActivarNotificaciones.setImageResource(R.drawable.ic_notification_off);
         btnActivarNotificaciones.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                solicitarPermisoNotificaciones();
+                if (btnActivarNotificaciones.getTag() != null && btnActivarNotificaciones.getTag().equals("on")) {
+                    abrirConfiguracionApp();
+                    btnActivarNotificaciones.setImageResource(R.drawable.ic_notification_off);
+                    btnActivarNotificaciones.setTag("off");
+                    guardarEstadoNotificaciones(false);
+                } else {
+                    solicitarPermisoNotificaciones();
+                    btnActivarNotificaciones.setImageResource(R.drawable.ic_notification_on);
+                    btnActivarNotificaciones.setTag("on");
+                    guardarEstadoNotificaciones(true);
+                }
             }
         });
 
@@ -538,7 +552,18 @@ public class PerfilActivity extends AppCompatActivity {
         }
         manager.notify(1, builder.build());
     }
-
+    private void abrirConfiguracionApp() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        startActivity(intent);
+    }
+    private void guardarEstadoNotificaciones(boolean estado) {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("notificaciones_activadas", estado);
+        editor.apply();
+    }
     private void solicitarPermisoNotificaciones() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -546,12 +571,13 @@ public class PerfilActivity extends AppCompatActivity {
             }
         }
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                btnActivarNotificaciones.setImageResource(R.drawable.ic_notification_on);
+                btnActivarNotificaciones.setTag("on");
                 Log.d("Permisos", "Permiso para notificaciones concedido.");
             } else {
                 Log.d("Permisos", "Permiso para notificaciones denegado.");
