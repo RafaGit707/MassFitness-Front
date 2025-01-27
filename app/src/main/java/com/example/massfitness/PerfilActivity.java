@@ -74,7 +74,7 @@ public class PerfilActivity extends AppCompatActivity {
     private List<Logro> lockedLogros = new ArrayList<>();
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
 
@@ -520,7 +520,7 @@ public class PerfilActivity extends AppCompatActivity {
 
     private void mostrarNotificacionLogro(String titulo, String mensaje) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "logrosChannel")
-                .setSmallIcon(R.drawable.ic_notificationoff)
+                .setSmallIcon(R.drawable.ic_notification_on)
                 .setContentTitle(titulo)
                 .setContentText(mensaje)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);

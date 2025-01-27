@@ -24,11 +24,21 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/tvLogroDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Descripcion del Logro"
+        android:textSize="12sp"
+        android:textColor="@color/darker_grey" />
+
+    <TextView
         android:id="@+id/tvLogroStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Progreso"
         android:textSize="16sp"
+        android:textStyle="bold"
         android:textColor="@color/cardview_dark_background" />
 
     <ProgressBar

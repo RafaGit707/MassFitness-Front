@@ -43,6 +43,7 @@ public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> 
 
         holder.tvLogroName.setText(logro.getNombre());
         holder.tvLogroStatus.setText("Progreso: " + progresoInt + "%");
+        holder.tvLogroDescription.setText(logro.getDescripcion());
         holder.progressBar.setProgress(progresoInt);
 
         if (logro.getFechaObtenido() != null) {
@@ -71,13 +72,14 @@ public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> 
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvLogroName, tvLogroStatus,tvLogroFechaObtenido;
+        TextView tvLogroName, tvLogroStatus, tvLogroFechaObtenido, tvLogroDescription;
         ImageView ivLogroIcon;
         ProgressBar progressBar;
 
         public ViewHolder(View itemView) {
             super(itemView);
             tvLogroName = itemView.findViewById(R.id.tvLogroName);
+            tvLogroDescription = itemView.findViewById(R.id.tvLogroDescription);
             tvLogroStatus = itemView.findViewById(R.id.tvLogroStatus);
             ivLogroIcon = itemView.findViewById(R.id.ivLogroIcon);
             progressBar = itemView.findViewById(R.id.progressBar);
