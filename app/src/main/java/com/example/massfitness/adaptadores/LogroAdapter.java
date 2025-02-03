@@ -48,7 +48,7 @@ public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> 
 
         if (logro.getFechaObtenido() != null) {
             SimpleDateFormat localDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-            localDateFormat.setTimeZone(TimeZone.getDefault());
+            localDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
             String formattedDate = localDateFormat.format(logro.getFechaObtenido());
             holder.tvLogroFechaObtenido.setText("Obtenido: " + formattedDate);

@@ -75,6 +75,7 @@ public class PerfilActivity extends AppCompatActivity {
     private RecyclerView rvUnlockedLogros, rvLockedLogros;
     private List<Logro> unlockedLogros = new ArrayList<>();
     private List<Logro> lockedLogros = new ArrayList<>();
+    boolean yaDesbloqueado = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +133,7 @@ public class PerfilActivity extends AppCompatActivity {
     }
 
     private void getUserIdAndLogros() {
+        Log.e("LOGRO", "Entra en getUserIdAndLogros");
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
         String email = sharedPreferences.getString("correo_electronico", null);
 
@@ -172,6 +174,7 @@ public class PerfilActivity extends AppCompatActivity {
         }
     }
     private void cargarDatosUsuario() {
+        Log.e("LOGRO", "Entra en cargarDatosUsuario");
         if (isNetworkAvailable()) {
             String url = getResources().getString(R.string.url) + "usuarios/" + idUsuario;
 
@@ -218,7 +221,10 @@ public class PerfilActivity extends AppCompatActivity {
             showError("No hay conexión a Internet.");
         }
     }
+
+
     private void fetchLogros(int userId) {
+        Log.e("LOGRO", "Entra en fetchLogros");
         String urlLogros = getResources().getString(R.string.url) + "logros/" + userId;
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
@@ -226,13 +232,13 @@ public class PerfilActivity extends AppCompatActivity {
         executor.execute(() -> {
             Internetop interopera = Internetop.getInstance();
             String resultado = interopera.getText(urlLogros, new ArrayList<>());
-            Log.e("AGREGAR LOGRO", String.format("%s %s", resultado, urlLogros));
+            Log.e("GET LOGRO", String.format("%s %s", resultado, urlLogros));
 
             handler.post(() -> {
                 try {
                     if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
                         showError(resultado);
-                        Log.e("AGREGAR LOGRO", String.format("%s %s", resultado, urlLogros));
+                        Log.e("GET LOGRO2", String.format("%s %s", resultado, urlLogros));
                     } else {
                         JSONArray jsonArray = new JSONArray(resultado);
                         parseLogros(jsonArray);
@@ -244,6 +250,7 @@ public class PerfilActivity extends AppCompatActivity {
         });
     }
     private void parseLogros(JSONArray jsonArray) {
+        Log.e("LOGRO", "Entra en parseLogros");
         if (jsonArray.length() < 0) {
             showError("No hay logros para este usuario.");
             return;
@@ -260,11 +267,13 @@ public class PerfilActivity extends AppCompatActivity {
                 logro.setId_usuario(jsonObject.getInt("id_usuario"));
                 String fechaObtenidoStr = jsonObject.getString("fecha_obtenido");
 
-                Log.e("AGREGAR LOGRO", String.format("%s %s %s %s %s", jsonObject.getInt("id_usuario_logro"), jsonObject.getInt("id_logro"), jsonObject.getInt("id_usuario"), fechaObtenidoStr));
+                Log.e("GET LOGRO", String.format("%s %s %s %s", jsonObject.getInt("id_usuario_logro"), jsonObject.getInt("id_logro"), jsonObject.getInt("id_usuario"), fechaObtenidoStr));
 
-                Timestamp fechaObtenido;
+                Timestamp fechaObtenido = null;
                 try {
-                    fechaObtenido = parseDateTime(fechaObtenidoStr);
+                    if (!fechaObtenidoStr.equals("null")) {
+                        fechaObtenido = parseDateTime(fechaObtenidoStr);
+                    }
                 } catch (ParseException e) {
                     showError("Error al analizar la fecha y hora");
                     continue;
@@ -273,6 +282,7 @@ public class PerfilActivity extends AppCompatActivity {
                 logro.setFechaObtenido(fechaObtenido);
 
                 if (fechaObtenido != null) {
+                    yaDesbloqueado = true;
                     unlockedLogros.add(logro);
                     findViewById(R.id.tvLogroFechaObtenido).setVisibility(View.VISIBLE);
                 } else {
@@ -288,7 +298,6 @@ public class PerfilActivity extends AppCompatActivity {
     private Timestamp parseDateTime(String dateTimeStr) throws ParseException {
         String pattern = "yyyy-MM-dd HH:mm:ss.S";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Europe/Madrid"));
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         Date date = simpleDateFormat.parse(dateTimeStr);
@@ -307,6 +316,7 @@ public class PerfilActivity extends AppCompatActivity {
         return new Timestamp(localDate.getTime());
     }
     private void obtenerLogros() {
+        Log.e("LOGRO", "Entra en obtenerLogros");
         String urlLogros = getResources().getString(R.string.url) + "logros";
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
@@ -351,6 +361,7 @@ public class PerfilActivity extends AppCompatActivity {
     }
 
     private void obtenerPuntosUsuario(int idUsuario) {
+        Log.e("LOGRO", "Entra en obtenerPuntosUsuario");
         String url = getResources().getString(R.string.url) + "usuarios/" + idUsuario + "/cantidad_puntos";
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
@@ -391,10 +402,12 @@ public class PerfilActivity extends AppCompatActivity {
                                     showError("Error al analizar la fecha y hora");
                                     continue;
                                 }
-                                logro.setFechaObtenido(fechaObtenido);
 
-                                guardarFechaObtencionLogro(logro);
-                                mostrarNotificacionLogro("¡Logro desbloqueado!", logro.getNombre());
+                                if (!yaDesbloqueado) {
+                                    logro.setFechaObtenido(fechaObtenido);
+                                    guardarFechaObtencionLogro(logro);
+                                    mostrarNotificacionLogro("¡Logro desbloqueado!", logro.getNombre());
+                                }
                             } else if (progreso < 100 && logro.getFechaObtenido() != null) {
                                 logro.setFechaObtenido(null);
                                 eliminarFechaObtencionLogro(logro);
@@ -410,36 +423,13 @@ public class PerfilActivity extends AppCompatActivity {
         });
     }
 
+
     private void guardarFechaObtencionLogro(Logro logro) {
-        String url = getResources().getString(R.string.url) + "logros/addLogro/" + idUsuario + "/logro/" + logro.getId_logro();
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Log.e("guardarFechaLogro1", "Url: " + url);
-
-        executor.execute(() -> {
-            Internetop interopera = Internetop.getInstance();
-            List<Parametro> parametros = new ArrayList<>();
-            Log.e("guardarFechaLogro2", "Parametros: " + parametros);
-            parametros.add(new Parametro("usuario_id", idUsuario+""));
-            parametros.add(new Parametro("logro_id", String.valueOf(logro.getId_logro())));
-
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S", Locale.getDefault());
-            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Europe/Madrid"));
-            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-            String fechaFormateada = simpleDateFormat.format(logro.getFechaObtenido());
-            parametros.add(new Parametro("fecha_obtenido", fechaFormateada));
-            Log.e("guardarFechaLogro3", "Formato fecha: " + fechaFormateada);
-
-            String resultado = interopera.postText(url, parametros);
-            Log.e("guardarFechaLogro3", "Resultado: " + resultado);
-            if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
-                Log.e("guardarFechaLogro4", "Error al guardar logro: " + resultado);
-            } else {
-                Log.d("guardarFechaLogro5", "Logro registrado: " + logro.getNombre());
-            }
-        });
-    }
-
-/*    private void guardarFechaObtencionLogro(Logro logro) {
+        Log.e("LOGRO", "Entra en guardarFechaObtencionLogro");
+        if (!yaDesbloqueado) {
+            Log.d("Logro Desbloqueado", "Este logro ya está desbloqueado y guardado.");
+            return;
+        }
         String url = getResources().getString(R.string.url) + "logros/addLogro/" + idUsuario + "/logro/" + logro.getId_logro();
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
@@ -453,7 +443,6 @@ public class PerfilActivity extends AppCompatActivity {
                 params.add(new Parametro("logro_id", String.valueOf(logro.getId_logro())));
 
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S", Locale.getDefault());
-                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Europe/Madrid"));
                 simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
                 String fechaFormateada = simpleDateFormat.format(logro.getFechaObtenido());
                 params.add(new Parametro("fecha_obtenido", fechaFormateada));
@@ -486,7 +475,7 @@ public class PerfilActivity extends AppCompatActivity {
                 });
             }
         });
-    }*/
+    }
 
     private void eliminarFechaObtencionLogro(Logro logro) {
         String url = getResources().getString(R.string.url) + "logros/eliminarLogro/" + idUsuario + "/logro/" + logro.getId_logro();
