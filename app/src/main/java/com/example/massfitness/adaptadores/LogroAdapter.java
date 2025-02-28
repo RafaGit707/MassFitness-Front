@@ -28,17 +28,21 @@ public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> 
     public void updateLogros(List<Logro> nuevosLogros) {
         this.logrosList = nuevosLogros;
         notifyDataSetChanged();
+        /*notifyItemRangeChanged(0, nuevosLogros.size());*/
+/*        logrosList.clear();
+        logrosList.addAll(nuevosLogros);
+        notifyDataSetChanged();*/
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Logro logro = logrosList.get(position);
 
-        float progreso = (float) logro.getCantidadPuntos() / logro.getRequisitosPuntos() * 100;
-        int progresoInt = Math.round(progreso);
-
-        if (progresoInt > 100) {
-            progresoInt = 100;
+        int progresoInt = 0;
+        if (logro.getRequisitosPuntos() > 0) {
+            float progreso = (float) logro.getCantidadPuntos() / logro.getRequisitosPuntos() * 100;
+            progresoInt = Math.round(progreso);
+            if (progresoInt > 100) progresoInt = 100;
         }
 
         holder.tvLogroName.setText(logro.getNombre());
@@ -48,7 +52,7 @@ public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> 
 
         if (logro.getFechaObtenido() != null) {
             SimpleDateFormat localDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-            localDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            localDateFormat.setTimeZone(TimeZone.getDefault());
 
             String formattedDate = localDateFormat.format(logro.getFechaObtenido());
             holder.tvLogroFechaObtenido.setText("Obtenido: " + formattedDate);
@@ -68,7 +72,7 @@ public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return logrosList.size();
+        return (logrosList != null) ? logrosList.size() : 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
