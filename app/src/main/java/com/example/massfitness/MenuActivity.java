@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -66,6 +67,17 @@ public class MenuActivity extends AppCompatActivity {
                 startActivity(new Intent(MenuActivity.this, PerfilActivity.class));
             }
         });
+/*        SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        String rol = prefs.getString("rol", "USUARIO");
+
+        if ("ADMIN".equals(rol)) {
+            menu.findItem(R.id.menu_add_trainer).setVisible(true);
+            menu.findItem(R.id.menu_add_class).setVisible(true);
+        } else {
+            menu.findItem(R.id.menu_add_trainer).setVisible(false);
+            menu.findItem(R.id.menu_add_class).setVisible(false);
+        }*/
+
     }
 
 }

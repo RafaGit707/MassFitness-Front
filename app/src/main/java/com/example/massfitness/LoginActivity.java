@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.animation.Animation;
@@ -29,6 +30,9 @@ import com.example.massfitness.util.Parametro;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -40,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     TextInputLayout usuarioTextField, contrasenaTextField;
     MaterialButton inicioSesion;
     ProgressBar progressBar;
+    String email = "", contrasena = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,8 +104,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void loginUsuario() {
-        String email = usuarioTextField.getEditText().getText().toString();
-        String contrasena = contrasenaTextField.getEditText().getText().toString();
+        email = usuarioTextField.getEditText().getText().toString();
+        contrasena = contrasenaTextField.getEditText().getText().toString();
 
         if (email.isEmpty() || contrasena.isEmpty()) {
             showError("Por favor, completa todos los campos.");
@@ -117,25 +122,115 @@ public class LoginActivity extends AppCompatActivity {
             parametros.add(new Parametro("correo_electronico", email));
             parametros.add(new Parametro("contrasena", contrasena));
 
-            loginUsuarioEnServidor(urlLogin, parametros);
+            verificarUsuarioExistente(urlLogin, parametros);
         } else {
             showError("No hay conexión a Internet.");
         }
     }
+    /*    public void verificarUsuarioExistente(String urlLogin, List<Parametro> params) {
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Handler handler = new Handler(Looper.getMainLooper());
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    Internetop interopera = Internetop.getInstance();
+                    String resultado = interopera.getText(urlLogin, params);
 
-    private void loginUsuarioEnServidor(String url, List<Parametro> params) {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                JSONObject jsonResponse = new JSONObject(resultado);
+                                Log.e("jsonResponse", String.valueOf(jsonResponse));
+                                Log.e("jsonResponse", resultado);
+                                if (resultado.equals("true")) {
+                                    obtenerRol();
+                                } else {
+                                    showError("Correo o contraseña incorrectos.");
+                                }
+                            } catch (JSONException e) {
+                                showError("Error al verificar el usuario.");
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            });
+        }*/
+    public void verificarUsuarioExistente(String urlLogin, List<Parametro> params) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                Internetop interopera = Internetop.getInstance();
-                String resultado = interopera.getText(url, params);
+        executor.execute(() -> {
+            Internetop interopera = Internetop.getInstance();
+            String resultado = interopera.getText(urlLogin, params).trim(); // Elimina espacios en blanco por seguridad
 
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        progressBar.setVisibility(View.GONE);
+            Log.e("resultado", resultado);
+            handler.post(() -> {
+                if (resultado.equals("true")) {
+                    obtenerDatosUsuario();  // Llamar a la función para obtener el usuario y su rol
+                } else {
+                    showError("Correo o contraseña incorrectos.");
+                }
+            });
+        });
+    }
+
+/*    public void obtenerRol() {
+        String rol = "ADMIN";
+
+        if (isNetworkAvailable()) {
+            progressBar.setVisibility(View.VISIBLE);
+
+            Resources res = getResources();
+            String urlLogin = res.getString(R.string.url) + "usuarios/correo/" + email;
+
+            List<Parametro> parametros = new ArrayList<>();
+            parametros.add(new Parametro("rol", rol));
+            loginUsuarioEnServidor(urlLogin, parametros);
+        } else {
+            showError("No hay conexión a Internet.");
+        }
+    }*/
+
+    /* private void loginUsuarioEnServidor(String url, List<Parametro> params) {
+         ExecutorService executor = Executors.newSingleThreadExecutor();
+         Handler handler = new Handler(Looper.getMainLooper());
+         executor.execute(new Runnable() {
+             @Override
+             public void run() {
+                 Internetop interopera = Internetop.getInstance();
+                 String resultado = interopera.getText(url, params);
+
+                 handler.post(new Runnable() {
+                     @Override
+                     public void run() {
+                         try {
+                             JSONObject jsonResponse = new JSONObject(resultado);
+
+                             if (jsonResponse.has("rol") && jsonResponse.has("correo_electronico")) {
+                                 String rol = jsonResponse.getString("rol");
+
+                                 showSuccess("Usuario logueado correctamente.");
+
+                                 SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+                                 SharedPreferences.Editor editor = sharedPreferences.edit();
+                                 editor.putBoolean("isLoggedIn", true);
+                                 editor.putString("correo_electronico", email);
+                                 editor.putString("rol", rol);
+                                 editor.apply();
+
+                                 Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+
+                                 startActivity(intent);
+                                 finish();
+                             } else {
+                                 showError("Error al loguear el usuario. Vuelva a intentarlo más tarde");
+                             }
+                         } catch (JSONException e) {
+                             showError("Error en la respuesta del servidor");
+                             e.printStackTrace();
+                         }
+                        *//* progressBar.setVisibility(View.GONE);
                         if (resultado.equals("true")) {
                             showSuccess("Usuario logueado correctamente.");
 
@@ -150,11 +245,60 @@ public class LoginActivity extends AppCompatActivity {
                             finish();
                         } else {
                             showError("Error al loguear el usuario. Vuelva a intentarlo más tarde");
-                        }
+                        }*//*
                     }
                 });
             }
         });
+    }*/
+    public void obtenerDatosUsuario() {
+        if (isNetworkAvailable()) {
+            progressBar.setVisibility(View.VISIBLE);
+
+            Resources res = getResources();
+            String urlUsuario = res.getString(R.string.url) + "usuarios/correo/" + email;
+
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Handler handler = new Handler(Looper.getMainLooper());
+            executor.execute(() -> {
+                Internetop interopera = Internetop.getInstance();
+                String resultado = interopera.getText(urlUsuario, new ArrayList<>());
+
+                handler.post(() -> {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(resultado);
+                        Log.e("jsonResponse", resultado);
+
+                        if (jsonResponse.has("rol") && jsonResponse.has("correo_electronico")) {
+                            String rol = jsonResponse.getString("rol");
+                            String correo = jsonResponse.getString("correo_electronico");
+
+                            // Guardar en SharedPreferences
+                            SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putBoolean("isLoggedIn", true);
+                            editor.putString("correo_electronico", correo);
+                            editor.putString("rol", rol);
+                            editor.apply();
+
+                            showSuccess("Usuario logueado correctamente.");
+
+                            // Redirigir a la pantalla principal
+                            Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            showError("Error al obtener los datos del usuario.");
+                        }
+                    } catch (JSONException e) {
+                        showError("Error en la respuesta del servidor.");
+                        e.printStackTrace();
+                    }
+                });
+            });
+        } else {
+            showError("No hay conexión a Internet.");
+        }
     }
 
     private boolean isNetworkAvailable() {
