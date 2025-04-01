@@ -28,10 +28,6 @@ public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> 
     public void updateLogros(List<Logro> nuevosLogros) {
         this.logrosList = nuevosLogros;
         notifyDataSetChanged();
-        /*notifyItemRangeChanged(0, nuevosLogros.size());*/
-/*        logrosList.clear();
-        logrosList.addAll(nuevosLogros);
-        notifyDataSetChanged();*/
     }
 
     @Override
@@ -61,7 +57,7 @@ public class LogroAdapter extends RecyclerView.Adapter<LogroAdapter.ViewHolder> 
             holder.tvLogroFechaObtenido.setVisibility(View.GONE);
         }
 
-        holder.ivLogroIcon.setImageResource(logro.isDesbloqueado() ? R.drawable.ic_boxeo : R.drawable.ic_logros);
+        holder.ivLogroIcon.setImageResource(logro.isDesbloqueado() ? R.drawable.ic_logros : R.drawable.ic_logros);
     }
 
     @Override

@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.example.massfitness.entidades.Logro;
 import com.example.massfitness.util.Internetop;
@@ -159,9 +160,9 @@ public class PerfilActivity extends AppCompatActivity {
                             Log.d("ID USUARIO", ""+idUsuario);
 
                             cargarDatosUsuario();
-
                             // Primero obtenemos los logros disponibles
                             obtenerLogros(new Callback<List<Logro>>() {
+
                                 @Override
                                 public void onSuccess(List<Logro> logrosDisponibles) {
                                     obtenerPuntosUsuario(idUsuario);
@@ -170,11 +171,7 @@ public class PerfilActivity extends AppCompatActivity {
                                     fetchLogros(new Callback<List<Logro>>() {
                                         @Override
                                         public void onSuccess(List<Logro> logrosDesbloqueados) {
-
-                                            // Ahora que tenemos ambos, los combinamos
                                             List<Logro> logrosFinales = combinarLogros(logrosDisponibles, logrosDesbloqueados);
-
-                                            // Actualizamos la vista
                                             updateRecyclerViews(logrosFinales);
                                         }
 
@@ -285,7 +282,6 @@ public class PerfilActivity extends AppCompatActivity {
 
     private void obtenerLogros(Callback<List<Logro>> callback) {
         Log.e("LOGRO", "Entra en obtenerLogros");
-
         String urlLogros = getResources().getString(R.string.url) + "logros";
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
@@ -331,6 +327,7 @@ public class PerfilActivity extends AppCompatActivity {
         logrosList = new ArrayList<>();
 
         for (int i = 0; i < jsonArray.length(); i++) {
+
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             Logro logro = new Logro();
             logro.setId_usuario_logro(jsonObject.optInt("id_usuario_logro", -1));
@@ -355,160 +352,32 @@ public class PerfilActivity extends AppCompatActivity {
             }
             Log.e("Logro Desbloqueado?", yaDesbloqueado+"");
         }
+
         return logrosList;
     }
-
-
-/*    private void fetchLogros(int userId) {
-        Log.e("LOGRO", "Entra en fetchLogros");
-        String urlLogros = getResources().getString(R.string.url) + "logros/" + userId;
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-
-        executor.execute(() -> {
-            Internetop interopera = Internetop.getInstance();
-            String resultado = interopera.getText(urlLogros, new ArrayList<>());
-            Log.e("GET LOGRO", String.format("%s %s", resultado, urlLogros));
-
-            handler.post(() -> {
-                if (resultado == null || resultado.trim().isEmpty()) {
-                    showError("La respuesta del servidor está vacía.");
-                    return;
-                }
-
-                if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
-                    showError(resultado);
-                    return;
-                }
-
-                try {
-                    JSONArray jsonArray = new JSONArray(resultado);
-                    parseLogros(jsonArray);
-                } catch (JSONException e) {
-                    showError("Error al procesar la respuesta JSON: " + e.getMessage());
-                }
-*//*                try {
-                    if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
-                        showError(resultado);
-                        Log.e("GET LOGRO2", String.format("%s %s", resultado, urlLogros));
-                    } else {
-                        JSONArray jsonArray = new JSONArray(resultado);
-                        parseLogros(jsonArray);
-                    }
-                } catch (Exception e) {
-                    showError("Error al procesar los logros");
-                }*//*
-            });
-        });
-    }*/
-/*    private void parseLogros(JSONArray jsonArray) {
-        logrosList = new ArrayList<>();
-
-        Log.e("LOGRO", "Entra en parseLogros");
-        if (jsonArray.length() <= 0) {
-            showError("No hay logros para este usuario.");
-            return;
+    private List<Logro> combinarLogros(List<Logro> logrosDisponibles, List<Logro> logrosDesbloqueados) {
+        if (logrosDisponibles == null || logrosDisponibles.isEmpty()) {
+            Log.e("ERROR", "Lista de logros disponibles está vacía o nula.");
+            return new ArrayList<>(); // Evita null
         }
-        unlockedLogros.clear();
-        lockedLogros.clear();
 
-        try {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                Logro logro = new Logro();
-                logro.setId_usuario_logro(jsonObject.getInt("id_usuario_logro"));
-                logro.setId_logro(jsonObject.getInt("logro_id"));
-                logro.setId_usuario(jsonObject.getInt("usuario_id"));
-                String fechaObtenidoStr = jsonObject.getString("fecha_obtenido");
+        Map<Integer, Logro> logrosMap = new HashMap<>();
 
-                Log.e("GET LOGRO", String.format("%s %s %s %s", jsonObject.getInt("id_usuario_logro"), jsonObject.getInt("id_logro"), jsonObject.getInt("id_usuario"), fechaObtenidoStr));
+        // Agregar todos los logros disponibles al mapa
+        for (Logro logro : logrosDisponibles) {
+            logrosMap.put(logro.getId_logro(), logro);
+        }
 
-                Timestamp fechaObtenido = null;
-                try {
-                    if (!fechaObtenidoStr.equals("null")) {
-                        fechaObtenido = parseDateTime(fechaObtenidoStr);
-                    }
-                } catch (ParseException e) {
-                    showError("Error al analizar la fecha y hora");
-                    continue;
+        // Marcar como desbloqueados los logros obtenidos por el usuario
+        if (logrosDesbloqueados != null) {
+            for (Logro logroDesbloqueado : logrosDesbloqueados) {
+                if (logrosMap.containsKey(logroDesbloqueado.getId_logro())) {
+                    logrosMap.get(logroDesbloqueado.getId_logro()).setFechaObtenido(logroDesbloqueado.getFechaObtenido());
                 }
-
-                logro.setFechaObtenido(fechaObtenido);
-
-                if (fechaObtenido != null) {
-*//*                    yaDesbloqueado = true;*//*
-                    unlockedLogros.add(logro);
-                    findViewById(R.id.tvLogroFechaObtenido).setVisibility(View.VISIBLE);
-                } else {
-                    lockedLogros.add(logro);
-                }
-                logrosList.add(logro);
             }
-            updateRecyclerViews(logrosList);
-        } catch (Exception e) {
-            showError("Error al procesar la respuesta del servidor");
         }
-    }*/
-/* Parse corregido chatgpt */
-/*    private void parseLogros(JSONArray jsonArray) {
-        logrosList = new ArrayList<>();
-
-        Log.e("LOGRO", "Entra en parseLogros");
-
-        if (jsonArray.length() == 0) {  // Corregido el chequeo de tamaño
-            showError("No hay logros para este usuario.");
-            return;
-        }
-
-        unlockedLogros.clear();
-        lockedLogros.clear();
-
-        try {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                Logro logro = new Logro();
-
-                logro.setId_usuario_logro(jsonObject.optInt("id_usuario_logro", -1));
-                logro.setId_logro(jsonObject.optInt("logro_id", -1));
-                logro.setId_usuario(jsonObject.optInt("usuario_id", -1));
-                String fechaObtenidoStr = jsonObject.optString("fecha_obtenido", "null");
-
-                Log.e("GET LOGRO", String.format("ID Usuario Logro: %d, ID Logro: %d, ID Usuario: %d, Fecha: %s",
-                        logro.getId_usuario_logro(), logro.getId_logro(), logro.getId_usuario(), fechaObtenidoStr));
-
-                Timestamp fechaObtenido = null;
-                if (fechaObtenidoStr != null && !fechaObtenidoStr.equals("null") && !fechaObtenidoStr.isEmpty()) {
-                    try {
-                        fechaObtenido = parseDateTime(fechaObtenidoStr);
-                    } catch (ParseException e) {
-                        Log.e("ERROR", "Error al analizar la fecha y hora: " + e.getMessage());
-                        continue;  // Salta este logro si hay error en la fecha
-                    }
-                }
-
-                logro.setFechaObtenido(fechaObtenido);
-
-                if (fechaObtenido != null) {
-*//*                    yaDesbloqueado = true;*//*
-                    unlockedLogros.add(logro);
-                    TextView tvLogroFechaObtenido = findViewById(R.id.tvLogroFechaObtenido);
-                    if (tvLogroFechaObtenido != null) {
-                        tvLogroFechaObtenido.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    lockedLogros.add(logro);
-                }
-
-                logrosList.add(logro);
-            }
-
-*//*            if (logrosList != null) {
-                updateRecyclerViews(logrosList);
-            }*//*
-        } catch (JSONException e) {
-            showError("Error al procesar la respuesta del servidor: " + e.getMessage());
-        }
-    }*/
+        return new ArrayList<>(logrosMap.values());
+    }
 
     private Timestamp parseDateTime(String dateTimeStr) throws ParseException {
         String pattern = "yyyy-MM-dd HH:mm:ss.S";
@@ -530,62 +399,12 @@ public class PerfilActivity extends AppCompatActivity {
 
         return new Timestamp(localDate.getTime());
     }
-/*    private void obtenerLogros() {
-        Log.e("LOGRO", "Entra en obtenerLogros");
-
-        String urlLogros = getResources().getString(R.string.url) + "logros";
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-        executor.execute(() -> {
-            Internetop interopera = Internetop.getInstance();
-            String resultado = interopera.getText(urlLogros, new ArrayList<>());
-            Log.e("AGREGAR LOGRO1", String.format("%s %s", resultado, urlLogros));
-
-            handler.post(() -> {
-                if (resultado.startsWith("Error") || resultado.startsWith("Exception")) {
-                    showError(resultado);
-                } else {
-                    try {
-                        Log.e("AGREGAR LOGRO2", String.format("%s %s", resultado, urlLogros));
-                        JSONArray logrosJson = new JSONArray(resultado);
-                        if (logrosJson.length() == 0) {
-                            showError("No se han encontrado logros");
-                            return;
-                        }
-
-                        logrosList = new ArrayList<>();
-                        for (int i = 0; i < logrosJson.length(); i++) {
-                            JSONObject logroJson = logrosJson.getJSONObject(i);
-                            Log.e("LOGRO", String.format("Logro %d: %s", i, logroJson.toString()));
-                            Logro logro = new Logro(
-                                    logroJson.getInt("idLogro"),
-                                    logroJson.getString("nombre_logro"),
-                                    logroJson.getString("descripcion"),
-                                    logroJson.getInt("requisitos_puntos"),
-                                    logroJson.getString("recompensa")
-                            );
-                            logrosList.add(logro);
-                        }
-                        *//*updateRecyclerViews(logrosList);*//*
-                    } catch (JSONException e) {
-                        Log.e("ERROR JSON", "Error al parsear JSON", e);
-                        showError("Error al obtener los logros");
-                    }
-                }
-            });
-        });
-    }*/
 
     private void obtenerPuntosUsuario(int idUsuario) {
         Log.e("LOGRO", "Entra en obtenerPuntosUsuario");
         if (logrosList == null || logrosList.isEmpty()) {
             Log.e("ERROR", "logrosList sigue vacía antes de obtener puntos.");
         }
-/*        if (logrosList == null || logrosList.isEmpty()) {
-            Log.e("ERROR", "logrosList vacía, reintentando en 500ms...");
-            new Handler(Looper.getMainLooper()).postDelayed(() -> obtenerPuntosUsuario(idUsuario), 500);
-            return;
-        }*/
 
         String url = getResources().getString(R.string.url) + "usuarios/" + idUsuario + "/cantidad_puntos";
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -614,6 +433,7 @@ public class PerfilActivity extends AppCompatActivity {
                         Log.e("tvLogroStatus3", String.format("%s", puntosUsuario));
 
                         if (logrosList != null) {
+                            AtomicInteger pendientes = new AtomicInteger(logrosList.size());
                             for (Logro logro : logrosList) {
                                 int requisitosPuntos = logro.getRequisitosPuntos();
                                 int progreso;
@@ -642,8 +462,11 @@ public class PerfilActivity extends AppCompatActivity {
                                             eliminarFechaObtencionLogro(logro);
                                         }
 
-                                        lockedAdapter.notifyDataSetChanged();
-                                        unlockedAdapter.notifyDataSetChanged();
+                                        if (pendientes.decrementAndGet() == 0) {
+                                            Log.e("RecyclerView Update", "Actualizando RecyclerView después de validar todos los logros");
+                                            lockedAdapter.notifyDataSetChanged();
+                                            unlockedAdapter.notifyDataSetChanged();
+                                        }
                                     }
 
                                     @Override
@@ -652,30 +475,6 @@ public class PerfilActivity extends AppCompatActivity {
                                         showError("Error al verificar el logro.");
                                     }
                                 });
-                                /*if (puntosUsuario >= logro.getRequisitosPuntos() && progreso >= 100 && !yaDesbloqueado) {
-                                    Timestamp fechaActual = new Timestamp(System.currentTimeMillis());
-                                    String fechaActualStr = fechaActual.toString();
-
-                                    Timestamp fechaObtenido;
-                                    try {
-                                        fechaObtenido = parseDateTime(fechaActualStr);
-                                    } catch (ParseException e) {
-                                        showError("Error al analizar la fecha y hora");
-                                        continue;
-                                    }
-                                    Log.e("tvLogroStatus5", yaDesbloqueado+"");
-                                    *//*yaDesbloqueado = isLogroAlreadySaved(idUsuario, logro.getId_logro());*//*
-                                    *//*if (!isLogroAlreadySaved(idUsuario, logro.getId_logro())) {
-                                        logro.setFechaObtenido(fechaObtenido);
-                                        guardarFechaObtencionLogro(logro);
-                                        mostrarNotificacionLogro("¡Logro desbloqueado!", logro.getNombre());
-                                    } else {
-                                        Log.e("LOGRO", "Este logro ya está guardado para el usuario.");
-                                    }*//*
-                                } else if (puntosUsuario < logro.getRequisitosPuntos() && progreso < 100 && logro.getFechaObtenido() != null && yaDesbloqueado) {
-                                    logro.setFechaObtenido(null);
-                                    eliminarFechaObtencionLogro(logro);
-                                }*/
                             }
                         } else {
                             Log.e("ERROR", "La lista de logros está vacía o nula.");
@@ -685,72 +484,12 @@ public class PerfilActivity extends AppCompatActivity {
                         showError("Error al obtener los puntos");
                     }
                 }
-                /*updateRecyclerViews(logrosList);*/
                 lockedAdapter.notifyDataSetChanged();
                 unlockedAdapter.notifyDataSetChanged();
             });
         });
     }
 
-
-    /*private void guardarFechaObtencionLogro(Logro logro) {
-        Log.e("LOGRO", "Entra en guardarFechaObtencionLogro");
-        *//*yaDesbloqueado = isLogroAlreadySaved(idUsuario, logro.getId_logro());*//*
-
-        if (yaDesbloqueado == true) {
-            Log.d("Logro Desbloqueado", "Este logro ya está desbloqueado y guardado.");
-            Log.e("guardarFechaObtencionLogro", yaDesbloqueado+"");
-            return;
-        }
-        Log.e("guardarFechaObtencionLogro", yaDesbloqueado+"");
-        String url = getResources().getString(R.string.url) + "logros/addLogro/" + idUsuario + "/logro/" + logro.getId_logro();
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                Internetop interopera = Internetop.getInstance();
-                List<Parametro> params = new ArrayList<>();
-                params.add(new Parametro("usuario_id", idUsuario+""));
-                params.add(new Parametro("logro_id", String.valueOf(logro.getId_logro())));
-
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S", Locale.getDefault());
-                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-                String fechaFormateada = simpleDateFormat.format(logro.getFechaObtenido());
-                params.add(new Parametro("fecha_obtenido", fechaFormateada));
-
-                Log.e("guardarFechaObtencionLogro", "usuario_id: " + idUsuario+"");
-                Log.e("guardarFechaObtencionLogro", "logro_id: " + logro.getId_logro());
-                Log.e("guardarFechaObtencionLogro", "fecha_obtenido: " + fechaFormateada);
-                Log.e("guardarFechaObtencionLogro", yaDesbloqueado+"");
-                String resultado = interopera.postText(url,params);
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        try {
-                            Integer idCreado = Integer.parseInt(resultado);
-                            if (idCreado > 0) {
-                                yaDesbloqueado = true;
-                                setResult(RESULT_OK);
-                                showSuccess("Logro registrado correctamente.");
-                                finish();
-                            } else {
-                                showError("Error al registrar el logro. Por favor, inténtalo de nuevo más tarde.");
-                            }
-                        } catch (NumberFormatException ex) {
-                            ex.printStackTrace();
-                            Log.e("guardarFechaObtencionLogro", "Respuesta del servidor: " + resultado);
-
-                            showError("Error al registrar el logro.");
-                        }
-                    }
-
-                });
-            }
-        });
-    }*/
     private void guardarFechaObtencionLogro(Logro logro) {
         Log.e("LOGRO", "Entra en guardarFechaObtencionLogro");
 
@@ -813,23 +552,6 @@ public class PerfilActivity extends AppCompatActivity {
         });
     }
 
-    /*    private boolean isLogroAlreadySaved(int idUsuario, int logroId) {
-        String url = getResources().getString(R.string.url) + "logros/usuario/" + idUsuario + "/logro/" + logroId;
-        Internetop interopera = Internetop.getInstance();
-        String resultado = interopera.getText(url, new ArrayList<>());
-
-        Log.d("LOGRO", "Respuesta del servidor: " + resultado); // Log para ver qué devuelve el backend
-
-        if (resultado == null || resultado.startsWith("Error") || resultado.startsWith("Exception")) {
-            Log.e("LOGRO", "Error al comprobar si el logro ya está guardado.");
-            return false;
-        }
-
-        boolean logroGuardado = Boolean.parseBoolean(resultado.trim());
-        Log.d("LOGRO", "¿Logro guardado? " + logroGuardado); // Log del resultado final
-
-        return logroGuardado;
-    }*/
     private void isLogroAlreadySaved(int idUsuario, int logroId, Callback<Boolean> callback) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
@@ -854,7 +576,6 @@ public class PerfilActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void eliminarFechaObtencionLogro(Logro logro) {
         String url = getResources().getString(R.string.url) + "logros/eliminarLogro/" + idUsuario + "/logro/" + logro.getId_logro();
@@ -979,7 +700,6 @@ public class PerfilActivity extends AppCompatActivity {
         }
         return false;
     }
-
     private void showError(String error) {
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
     }
@@ -987,35 +707,4 @@ public class PerfilActivity extends AppCompatActivity {
     private void showSuccess(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-
-    /*Después de llamar a fetchLogros() y obtenerLogros(), usa:*/
-/*    List<Logro> logrosFinales = combinarLogros(logrosDisponibles, logrosDesbloqueados);
-    updateRecyclerViews(logrosFinales);*/
-
-    private List<Logro> combinarLogros(List<Logro> logrosDisponibles, List<Logro> logrosDesbloqueados) {
-        if (logrosDisponibles == null || logrosDisponibles.isEmpty()) {
-            Log.e("ERROR", "Lista de logros disponibles está vacía o nula.");
-            return new ArrayList<>(); // Evita null
-        }
-
-        Map<Integer, Logro> logrosMap = new HashMap<>();
-
-        // Agregar todos los logros disponibles al mapa
-        for (Logro logro : logrosDisponibles) {
-            logrosMap.put(logro.getId_logro(), logro);
-        }
-
-        // Marcar como desbloqueados los logros obtenidos por el usuario
-        if (logrosDesbloqueados != null) {
-            for (Logro logroDesbloqueado : logrosDesbloqueados) {
-                if (logrosMap.containsKey(logroDesbloqueado.getId_logro())) {
-                    logrosMap.get(logroDesbloqueado.getId_logro()).setFechaObtenido(logroDesbloqueado.getFechaObtenido());
-                }
-            }
-        }
-
-        return new ArrayList<>(logrosMap.values());
-    }
-
-
 }
