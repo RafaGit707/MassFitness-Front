@@ -67,16 +67,16 @@ public class MenuActivity extends AppCompatActivity {
                 startActivity(new Intent(MenuActivity.this, PerfilActivity.class));
             }
         });
-/*        SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         String rol = prefs.getString("rol", "USUARIO");
 
         if ("ADMIN".equals(rol)) {
-            menu.findItem(R.id.menu_add_trainer).setVisible(true);
-            menu.findItem(R.id.menu_add_class).setVisible(true);
+            findViewById(R.id.addEntrenador).setVisibility(View.VISIBLE);
+            findViewById(R.id.addClase).setVisibility(View.VISIBLE);
         } else {
-            menu.findItem(R.id.menu_add_trainer).setVisible(false);
-            menu.findItem(R.id.menu_add_class).setVisible(false);
-        }*/
+            findViewById(R.id.addEntrenador).setVisibility(View.INVISIBLE);
+            findViewById(R.id.addClase).setVisibility(View.INVISIBLE);
+        }
 
     }
 
