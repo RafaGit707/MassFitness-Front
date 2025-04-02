@@ -6,12 +6,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-public class LogrosActivity extends AppCompatActivity {
+public class AdminAddActivity extends AppCompatActivity {
     private ImageView ivBack;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_logros);
+        setContentView(R.layout.activity_admin_add);
 
         ivBack = findViewById(R.id.ivBack);
 

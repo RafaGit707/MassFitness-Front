@@ -13,7 +13,7 @@ import android.widget.ImageView;
 
 public class MenuActivity extends AppCompatActivity {
 
-    ImageView loginImageView, userImageView;
+    ImageView loginImageView, userImageView, addClase;
     CardView reservaButton, acercaButton, equipoButton, misReservasButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +26,7 @@ public class MenuActivity extends AppCompatActivity {
         misReservasButton = findViewById(R.id.misReservasButton);
         acercaButton = findViewById(R.id.acercaButton);
         equipoButton = findViewById(R.id.equipoButton);
+        addClase = findViewById(R.id.addClase);
 
         reservaButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,14 +68,20 @@ public class MenuActivity extends AppCompatActivity {
                 startActivity(new Intent(MenuActivity.this, PerfilActivity.class));
             }
         });
+
+        addClase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MenuActivity.this, AdminAddActivity.class));
+            }
+        });
+
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         String rol = prefs.getString("rol", "USUARIO");
 
         if ("ADMIN".equals(rol)) {
-            findViewById(R.id.addEntrenador).setVisibility(View.VISIBLE);
             findViewById(R.id.addClase).setVisibility(View.VISIBLE);
         } else {
-            findViewById(R.id.addEntrenador).setVisibility(View.INVISIBLE);
             findViewById(R.id.addClase).setVisibility(View.INVISIBLE);
         }
 

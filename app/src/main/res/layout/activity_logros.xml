@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
-            android:id="@+id/ivBackLogros"
+            android:id="@+id/ivBack"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_gravity="center"
