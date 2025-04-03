@@ -3,64 +3,72 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="14dp"
+    android:padding="12dp"
     android:background="@color/massfitness_background_2">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginRight="20dp">
+        android:padding="12dp"
+        android:layout_marginRight="40dp">
 
         <TextView
-            android:id="@+id/txtNombreClase"
+            android:id="@+id/tvNombreClase"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Nombre del Logro"
+            android:text="Nombre de la Clase"
             android:textColor="@color/massfitness"
             android:textSize="18sp"
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/tvLogroDescription"
+            android:id="@+id/tvNombreDescripcion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Descripcion del Logro"
+            android:text="Descripcion de la Clase"
             android:textSize="15sp"
             android:textColor="@color/darker_grey" />
 
         <TextView
-            android:id="@+id/tvLogroStatus"
+            android:id="@+id/tvNombreEntrenador"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Progreso"
+            android:text="Nombre Entrenador"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/darker_grey" />
+
+        <TextView
+            android:id="@+id/tvNombreHorario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Horario - Horario"
+            android:textSize="16sp"
+            android:textColor="@color/white" />
+
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/btnEditarClase"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        android:src="@drawable/icon_user_purple"
-        android:transitionName="userImageTrans" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center">
 
-    <ImageView
-        android:id="@+id/btnEliminarClase"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_alignEnd="@id/addClase"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="80dp"
-        android:layout_marginBottom="24dp"
-        android:src="@drawable/ic_notification_off"
-        android:transitionName="userImageTrans" />
+        <ImageView
+            android:id="@+id/btnEditarClase"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="40dp"
+            android:src="@drawable/ic_delete"/>
+
+        <ImageView
+            android:id="@+id/btnEliminarClase"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_delete"/>
+    </LinearLayout>
 
 </LinearLayout>

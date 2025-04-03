@@ -18,6 +18,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".AddEntrenadorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddClaseActivity"
+            android:exported="false" />
+        <activity
             android:name=".AdminAddActivity"
             android:exported="false" />
         <activity
