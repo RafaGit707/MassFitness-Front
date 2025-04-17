@@ -3,20 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="12dp"
+    android:padding="10dp"
     android:background="@color/massfitness_background_2">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="12dp"
+        android:padding="10dp"
         android:background="?attr/selectableItemBackground">
 
         <ImageView
             android:id="@+id/ivEntrenadorImage"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_gravity="center"/>
 
         <LinearLayout
@@ -43,21 +43,14 @@
                 android:text="Specialization"
                 android:textSize="16sp"
                 android:textColor="@color/darker_grey"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvEntrenadorDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Description"
-                android:textSize="15sp"
-                android:textColor="@color/darker_grey" />
+                android:textStyle="bold"
+                android:layout_marginTop="5dp"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="16dp">
 
                 <ImageView
                     android:id="@+id/btnEditarClase"
