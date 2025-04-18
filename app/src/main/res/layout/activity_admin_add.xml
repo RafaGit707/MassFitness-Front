@@ -42,121 +42,118 @@
         android:id="@+id/addClase"
         android:layout_width="55dp"
         android:layout_height="55dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="12dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="16dp"
         android:src="@drawable/ic_add_clase"
-        android:elevation="7dp"
-        android:layout_below="@id/topBarLayout"/>
-
-    <ImageView
-        android:id="@+id/addEntrenador"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="10dp"
-        android:layout_alignStart="@id/addClase"
-        android:layout_marginStart="72dp"
-        android:src="@drawable/ic_add_entrenador"
         android:elevation="7dp"
         android:layout_below="@id/topBarLayout"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cvClases"
-        android:layout_width="wrap_content"
-        android:layout_height="304dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/addClase"
-        android:layout_margin="12dp"
-        app:cardElevation="6dp">
+        android:layout_marginTop="15dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/massfitness_background_2"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="12dp">
 
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/tvClases"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📋 Clases Disponibles"
+                android:text="Clases Disponibles"
+                android:layout_marginStart="5dp"
                 android:textColor="@color/white"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:onClick="abrirClases"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="6dp"
-                android:background="@color/darker_grey" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerClases"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/topBarLayout"
-                android:orientation="vertical"
-                tools:listitem="@layout/item_clase" />
+            <ImageView
+                android:id="@+id/ivGo"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:clickable="true"
+                android:onClick="abrirClases"
+                android:scaleX="-1"
+                android:src="@drawable/ic_atras_white" />
 
         </LinearLayout>
+
     </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cvEntrenadores"
-        android:layout_width="wrap_content"
-        android:layout_height="325dp"
-        android:layout_below="@id/cvClases"
-        android:layout_margin="12dp"
-        app:cardElevation="6dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/massfitness_background_2"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="🏋️‍♂️ Entrenadores Disponibles"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="6dp"
-                android:background="@color/darker_grey" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerEntrenadores"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/topBarLayout"
-                android:orientation="vertical"
-                tools:listitem="@layout/item_entrenador" />
-
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-<!--    <ImageView
-        android:id="@+id/addClase"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        android:src="@drawable/ic_add_clase"/>
 
     <ImageView
         android:id="@+id/addEntrenador"
         android:layout_width="55dp"
         android:layout_height="55dp"
-        android:layout_alignEnd="@id/addClase"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="80dp"
-        android:layout_marginBottom="24dp"
-        android:src="@drawable/ic_add_entrenador"/>-->
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/ic_add_entrenador"
+        android:elevation="7dp"
+        android:layout_below="@id/cvClases"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvEntrenadores"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/addEntrenador"
+        android:layout_marginTop="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/massfitness_background_2"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/tvEntrenadores"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Entrenadores Disponibles"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginStart="5dp"
+                android:onClick="abrirEntrenadores"/>
+
+            <ImageView
+                android:id="@+id/ivGo2"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:clickable="true"
+                android:onClick="abrirEntrenadores"
+                android:scaleX="-1"
+                android:src="@drawable/ic_atras_white" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <!--    <ImageView
+            android:id="@+id/addClase"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp"
+            android:src="@drawable/ic_add_clase"/>
+
+        <ImageView
+            android:id="@+id/addEntrenador"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_alignEnd="@id/addClase"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="80dp"
+            android:layout_marginBottom="24dp"
+            android:src="@drawable/ic_add_entrenador"/>-->
 
 </RelativeLayout>
