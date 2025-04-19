@@ -48,7 +48,6 @@ public class EditEntrenadoresActivity extends AppCompatActivity {
             }
         });
 
-        // LLAMADAS CORRECTAS A LOS MÉTODOS
         obtenerEntrenadores(new EditEntrenadoresActivity.Callback<List<Entrenador>>() {
             @Override
             public void onSuccess(List<Entrenador> entrenadores) {

@@ -57,21 +57,18 @@ public class AdminAddActivity extends AppCompatActivity {
                 startActivity(new Intent(AdminAddActivity.this, AddEntrenadorActivity.class));
             }
         });
-
         addClase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(AdminAddActivity.this, AddClaseActivity.class));
             }
         });
-
         cvClases.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(AdminAddActivity.this, EditClasesActivity.class));
             }
         });
-
         cvEntrenadores.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

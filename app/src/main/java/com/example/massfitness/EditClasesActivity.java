@@ -48,9 +48,6 @@ public class EditClasesActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        // LLAMADAS CORRECTAS A LOS MÉTODOS
-
         obtenerClases(new EditClasesActivity.Callback<List<Clase>>() {
             @Override
             public void onSuccess(List<Clase> clases) {

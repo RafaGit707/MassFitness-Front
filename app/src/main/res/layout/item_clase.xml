@@ -61,8 +61,8 @@
             android:id="@+id/btnEditarClase"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginRight="40dp"
-            android:src="@drawable/ic_delete"/>
+            android:layout_marginRight="20dp"
+            android:src="@drawable/ic_edit"/>
 
         <ImageView
             android:id="@+id/btnEliminarClase"
