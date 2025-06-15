@@ -15,8 +15,8 @@
 
         <ImageView
             android:id="@+id/ivEntrenadorImage"
-            android:layout_width="110dp"
-            android:layout_height="110dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_gravity="center"/>
 
         <LinearLayout
@@ -53,14 +53,14 @@
                 android:layout_marginTop="16dp">
 
                 <ImageView
-                    android:id="@+id/btnEditarClase"
+                    android:id="@+id/btnEditarEntrenador"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginRight="24dp"
                     android:src="@drawable/ic_edit"/>
 
                 <ImageView
-                    android:id="@+id/btnEliminarClase"
+                    android:id="@+id/btnEliminarEntrenador"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_delete"/>

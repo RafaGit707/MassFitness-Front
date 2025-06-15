@@ -31,19 +31,87 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="24sp"
-            android:text="ADMIN"
+            android:text="AÑADIR CLASE"
             android:textStyle="bold"
             android:textColor="@android:color/white"
             android:layout_gravity="center"
             android:layout_marginStart="8dp" />
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerClases"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@id/topBarLayout"
-        tools:listitem="@layout/item_clase"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:layout_below="@+id/topBarLayout">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre de la Clase"
+                android:textColor="@color/white"
+                android:textAppearance="?attr/textAppearanceSubtitle1"/>
+
+            <EditText
+                android:id="@+id/etNombreClase"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="Ej: Spinning Avanzado"
+                android:background="@drawable/dialog_background"
+                android:padding="12dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/darker_grey"
+                android:inputType="textCapWords" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Capacidad Máxima"
+                android:textColor="@color/white"
+                android:textAppearance="?attr/textAppearanceSubtitle1"/>
+
+            <EditText
+                android:id="@+id/etCapacidadClase"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="Ej: 20"
+                android:background="@drawable/dialog_background"
+                android:padding="12dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/darker_grey"
+                android:inputType="number"
+                android:maxLength="3" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Asignar Entrenador"
+                android:textColor="@color/white"
+                android:textAppearance="?attr/textAppearanceSubtitle1"/>
+
+            <Spinner
+                android:id="@+id/spinnerEntrenadores"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/white"
+                android:spinnerMode="dropdown"/>
+
+            <Button
+                android:id="@+id/btnGuardarClase"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:backgroundTint="@color/massfitness"
+                android:background="@drawable/button_background_menu"
+                android:text="Guardar Clase"
+                android:textColor="@android:color/white"
+                android:padding="14dp"/>
+
+        </LinearLayout>
 
 </RelativeLayout>

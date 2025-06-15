@@ -38,12 +38,64 @@
             android:layout_marginStart="8dp" />
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerEntrenadores"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@id/topBarLayout"
-        tools:listitem="@layout/item_entrenador"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:layout_below="@+id/topBarLayout">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre del Entrenador"
+                android:textColor="@color/white"
+                android:textAppearance="?attr/textAppearanceSubtitle1"/>
+
+            <EditText
+                android:id="@+id/etNombreEntrenador"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="Ej: Juan Pérez"
+                android:background="@drawable/dialog_background"
+                android:padding="12dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/darker_grey"
+                android:inputType="textPersonName|textCapWords" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Especialización"
+                android:textColor="@color/white"
+                android:textAppearance="?attr/textAppearanceSubtitle1"/>
+
+            <EditText
+                android:id="@+id/etEspecializacionEntrenador"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="Ej: Yoga, Crossfit"
+                android:background="@drawable/dialog_background"
+                android:padding="12dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/darker_grey"
+                android:inputType="text" />
+
+            <Button
+                android:id="@+id/btnGuardarEntrenador"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:backgroundTint="@color/massfitness"
+                android:background="@drawable/button_background"
+                android:text="Guardar Entrenador"
+                android:textColor="@android:color/white"
+                android:padding="14dp"/>
+
+        </LinearLayout>
 
 </RelativeLayout>

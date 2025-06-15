@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nombre del Entrenador"
+        android:labelFor="@+id/etNombreEntrenador"
+        android:textAppearance="?attr/textAppearanceSubtitle2"
+        android:textColor="?attr/colorOnSurface" />
+
+    <EditText
+        android:id="@+id/etNombreEntrenador"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Ej: Juan Pérez"
+        android:inputType="textPersonName|textCapWords"
+        android:autofillHints="name" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Especialización"
+        android:labelFor="@+id/etEspecializacionEntrenador"
+        android:textAppearance="?attr/textAppearanceSubtitle2"
+        android:textColor="?attr/colorOnSurface" />
+
+    <EditText
+        android:id="@+id/etEspecializacionEntrenador"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Ej: Yoga, Crossfit, Musculación"
+        android:inputType="text"
+        android:autofillHints="text" />
+
+</LinearLayout>

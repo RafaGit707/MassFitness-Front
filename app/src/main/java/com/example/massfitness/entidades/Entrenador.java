@@ -39,4 +39,23 @@ public class Entrenador {
         this.especializacion = especializacion;
     }
 
+    @Override
+    public String toString() {
+        return nombre_entrenador;
+    }
+
+    // Es buena idea tener también un equals para comparar objetos
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Entrenador that = (Entrenador) obj;
+        return idEntrenador == that.idEntrenador;
+    }
+
+    @Override
+    public int hashCode() {
+        return idEntrenador;
+    }
+
 }

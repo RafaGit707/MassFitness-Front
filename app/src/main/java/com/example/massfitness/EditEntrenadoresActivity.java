@@ -1,5 +1,6 @@
 package com.example.massfitness;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -7,13 +8,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.massfitness.adaptadores.EntrenadorAdapter;
 import com.example.massfitness.entidades.Entrenador;
 import com.example.massfitness.util.Internetop;
+import com.example.massfitness.util.Parametro;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,12 +28,16 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class EditEntrenadoresActivity extends AppCompatActivity {
+
+public class EditEntrenadoresActivity extends AppCompatActivity implements EntrenadorAdapter.OnEntrenadorActionClickListener {
 
     private ImageView ivBack;
     private EntrenadorAdapter entrenadorAdapter;
     private List<Entrenador> listEntrenadores = new ArrayList<>();
     private RecyclerView recyclerEntrenadores;
+    private ExecutorService executor;
+    private Handler handler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,85 +46,156 @@ public class EditEntrenadoresActivity extends AppCompatActivity {
         ivBack = findViewById(R.id.ivBack);
         recyclerEntrenadores = findViewById(R.id.recyclerEntrenadores);
 
+        executor = Executors.newSingleThreadExecutor();
+        handler = new Handler(Looper.getMainLooper());
+
+        setupRecyclerView();
+
+        ivBack.setOnClickListener(v -> finish());
+
+        refreshEntrenadoresList();
+    }
+
+    private void setupRecyclerView() {
         recyclerEntrenadores.setLayoutManager(new LinearLayoutManager(this));
-        entrenadorAdapter = new EntrenadorAdapter(listEntrenadores);
-
-        ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        obtenerEntrenadores(new EditEntrenadoresActivity.Callback<List<Entrenador>>() {
-            @Override
-            public void onSuccess(List<Entrenador> entrenadores) {
-                entrenadorAdapter = new EntrenadorAdapter(entrenadores);
-                recyclerEntrenadores.setAdapter(entrenadorAdapter);
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                Toast.makeText(EditEntrenadoresActivity.this, "Error al cargar entrenadores", Toast.LENGTH_SHORT).show();
-            }
-        });
+        entrenadorAdapter = new EntrenadorAdapter(this, listEntrenadores, this);
+        recyclerEntrenadores.setAdapter(entrenadorAdapter);
     }
 
-    public interface Callback<T> {
-        void onSuccess(T result);
-        void onFailure(Exception e);
-    }
-
-    private void obtenerEntrenadores(EditEntrenadoresActivity.Callback<List<Entrenador>> callback) {
+    private void refreshEntrenadoresList() {
         String urlEntrenadores = getResources().getString(R.string.url) + "entrenadores";
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-
         executor.execute(() -> {
-            Internetop interopera = Internetop.getInstance();
-            String resultado = interopera.getText(urlEntrenadores, new ArrayList<>());
-
+            String resultado = Internetop.getInstance().getText(urlEntrenadores, new ArrayList<>());
             handler.post(() -> {
-                if (resultado.startsWith("Error") || resultado.startsWith("Exception") || resultado.startsWith("error")) {
-                    callback.onFailure(new Exception(resultado));
+                if (resultado.startsWith("Error") || resultado.equals("false")) {
+                    Toast.makeText(EditEntrenadoresActivity.this, "Error al cargar entrenadores", Toast.LENGTH_SHORT).show();
                 } else {
                     try {
-                        JSONArray entrenadoresJson = new JSONArray(resultado);
-                        List<Entrenador> listaEntrenadores = new ArrayList<>();
-
-                        for (int i = 0; i < entrenadoresJson.length(); i++) {
-                            JSONObject obj = entrenadoresJson.getJSONObject(i);
-                            Entrenador entrenador = new Entrenador();
-                            entrenador.setIdEntrenador(obj.getInt("idEntrenador"));
-                            entrenador.setNombre_entrenador(obj.getString("nombre_entrenador"));
-                            entrenador.setEspecializacion(obj.getString("especializacion"));
-                            listaEntrenadores.add(entrenador);
+                        JSONArray jsonArray = new JSONArray(resultado);
+                        List<Entrenador> tempList = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject obj = jsonArray.getJSONObject(i);
+                            tempList.add(new Entrenador(
+                                    obj.getInt("idEntrenador"),
+                                    obj.getString("nombre_entrenador"),
+                                    obj.getString("especializacion")
+                            ));
                         }
-
-                        callback.onSuccess(listaEntrenadores);
+                        entrenadorAdapter.updateEntrenadores(tempList);
                     } catch (JSONException e) {
-                        callback.onFailure(e);
+                        Toast.makeText(this, "Error al procesar los datos de entrenadores", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
         });
     }
-    private void updateRecyclerView() {
-        obtenerEntrenadores(new EditEntrenadoresActivity.Callback<List<Entrenador>>() {
-            @Override
-            public void onSuccess(List<Entrenador> entrenadores) {
-                if (entrenadorAdapter != null) {
-                    entrenadorAdapter.updateEntrenadores(entrenadores);
-                } else {
-                    entrenadorAdapter = new EntrenadorAdapter(entrenadores);
-                    recyclerEntrenadores.setAdapter(entrenadorAdapter);
-                }
+
+    @Override
+    public void onEditClick(Entrenador entrenador, int position) {
+        mostrarDialogoEditarOAgregar(entrenador);
+    }
+
+    @Override
+    public void onDeleteClick(Entrenador entrenador, int position) {
+        new AlertDialog.Builder(this)
+                .setTitle("Eliminar Entrenador")
+                .setMessage("¿Estás seguro de que quieres eliminar a " + entrenador.getNombre_entrenador() + "?\n\n(Esto fallará si el entrenador está asignado a alguna clase)")
+                .setPositiveButton("Sí", (dialog, which) -> eliminarEntrenadorBackend(entrenador.getIdEntrenador()))
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void mostrarDialogoEditarOAgregar(final Entrenador entrenador) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialogo_editar_entrenador, null); // Debes crear este layout
+        builder.setView(view);
+
+        final EditText etNombre = view.findViewById(R.id.etNombreEntrenador);
+        final EditText etEspecializacion = view.findViewById(R.id.etEspecializacionEntrenador);
+
+        if (entrenador != null) {
+            builder.setTitle("Editar Entrenador");
+            etNombre.setText(entrenador.getNombre_entrenador());
+            etEspecializacion.setText(entrenador.getEspecializacion());
+        } else {
+            builder.setTitle("Añadir Entrenador");
+        }
+
+        builder.setPositiveButton("Guardar", (dialog, which) -> {
+            String nombre = etNombre.getText().toString().trim();
+            String especializacion = etEspecializacion.getText().toString().trim();
+
+            if (nombre.isEmpty() || especializacion.isEmpty()) {
+                Toast.makeText(this, "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show();
+                return;
             }
 
-            @Override
-            public void onFailure(Exception e) {
-                Toast.makeText(EditEntrenadoresActivity.this, "Error al actualizar entrenadores", Toast.LENGTH_SHORT).show();
+            if (entrenador != null) { // Editando
+                editarOAgregarEntrenadorBackend(nombre, especializacion, entrenador.getIdEntrenador());
+            } else { // Creando
+                editarOAgregarEntrenadorBackend(nombre, especializacion, -1);
             }
         });
+        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
+    }
+
+    private void editarOAgregarEntrenadorBackend(String nombre, String especializacion, int id) {
+        String url;
+        List<Parametro> params = new ArrayList<>();
+        params.add(new Parametro("nombre_entrenador", nombre)); // Asegúrate que las llaves coinciden con tu backend
+        params.add(new Parametro("especializacion", especializacion));
+
+        if (id != -1) { // Editando (PUT)
+            url = getResources().getString(R.string.url) + "entrenadores/" + id;
+            executor.execute(() -> {
+                String resultado = Internetop.getInstance().putText(url, params);
+                handler.post(() -> {
+                    if (resultado != null && !resultado.toLowerCase().contains("error")) {
+                        Toast.makeText(this, "Entrenador actualizado", Toast.LENGTH_SHORT).show();
+                        refreshEntrenadoresList();
+                    } else {
+                        Toast.makeText(this, "Error al actualizar entrenador", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            });
+        } else { // Creando (POST)
+            url = getResources().getString(R.string.url) + "entrenadores";
+            executor.execute(() -> {
+                String resultado = Internetop.getInstance().postText(url, params);
+                handler.post(() -> {
+                    if (resultado != null && !resultado.toLowerCase().contains("error")) {
+                        Toast.makeText(this, "Entrenador añadido", Toast.LENGTH_SHORT).show();
+                        refreshEntrenadoresList();
+                    } else {
+                        Toast.makeText(this, "Error al añadir entrenador", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            });
+        }
+    }
+
+    private void eliminarEntrenadorBackend(int idEntrenador) {
+        String url = getResources().getString(R.string.url) + "entrenadores/" + idEntrenador;
+        executor.execute(() -> {
+            String resultado = Internetop.getInstance().deleteTask(url);
+            handler.post(() -> {
+                if (resultado != null && !resultado.toLowerCase().contains("error")) {
+                    Toast.makeText(this, "Entrenador eliminado", Toast.LENGTH_SHORT).show();
+                    refreshEntrenadoresList();
+                } else {
+                    Toast.makeText(this, "Error al eliminar. ¿Está asignado a alguna clase?", Toast.LENGTH_LONG).show();
+                }
+            });
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (executor != null && !executor.isShutdown()) {
+            executor.shutdown();
+        }
     }
 }

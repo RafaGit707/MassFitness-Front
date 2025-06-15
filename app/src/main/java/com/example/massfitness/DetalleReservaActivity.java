@@ -293,11 +293,11 @@ public class DetalleReservaActivity extends AppCompatActivity {
                 return 1;
             case "PILATES":
                 return 2;
-            case "MUSCULACIÓN":
-                return 3;
-            case "ABDOMINALES":
-                return 4;
             case "YOGA":
+                return 3;
+            case "MUSCULACIÓN":
+                return 4;
+            case "ABDOMINALES":
                 return 5;
             default:
                 return 0;

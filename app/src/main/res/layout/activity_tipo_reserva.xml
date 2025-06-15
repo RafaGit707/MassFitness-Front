@@ -111,7 +111,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <androidx.cardview.widget.CardView
+<!--        <androidx.cardview.widget.CardView
             android:id="@+id/reservaEntrenadorButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -142,6 +142,6 @@
                     android:textColor="@android:color/white"
                     android:textSize="18sp" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </androidx.cardview.widget.CardView>-->
     </GridLayout>
 </RelativeLayout>

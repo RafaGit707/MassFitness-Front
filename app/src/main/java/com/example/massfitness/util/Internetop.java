@@ -231,4 +231,55 @@ public class Internetop {
             return "error.IOException";
         }
     }
+
+    public String postJsonString(String url, String jsonString) {
+        try {
+            // Asegúrate de usar la codificación correcta
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            OkHttpClient client = new OkHttpClient();
+
+            RequestBody body = RequestBody.create(jsonString, JSON);
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .build();
+
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    // Devuelve más información del error si es posible
+                    return "error.OKHttp: " + response.code() + " " + response.message();
+                } else {
+                    // Devuelve el cuerpo de la respuesta, que puede ser vacío o contener el objeto creado
+                    return response.body().string();
+                }
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            return "error.PIPE";
+        }
+    }
+
+    public String putJsonString(String url, String jsonString) {
+        try {
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            OkHttpClient client = new OkHttpClient();
+
+            RequestBody body = RequestBody.create(jsonString, JSON);
+            Request request = new Request.Builder()
+                    .url(url)
+                    .put(body) // La única diferencia es .put() en lugar de .post()
+                    .build();
+
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    return "error.OKHttp: " + response.code() + " " + response.message();
+                } else {
+                    return response.body().string();
+                }
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            return "error.PIPE";
+        }
+    }
 }

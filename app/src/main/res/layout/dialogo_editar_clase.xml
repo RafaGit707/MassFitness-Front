@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nombre de la Clase"
+        android:labelFor="@+id/etNombreClase"
+        android:textAppearance="?attr/textAppearanceSubtitle2"
+        android:textColor="?attr/colorOnSurface" />
+
+    <EditText
+        android:id="@+id/etNombreClase"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Ej: Spinning Avanzado"
+        android:inputType="textCapWords" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Capacidad Máxima"
+        android:labelFor="@+id/etCapacidadClase"
+        android:textAppearance="?attr/textAppearanceSubtitle2"
+        android:textColor="?attr/colorOnSurface" />
+
+    <EditText
+        android:id="@+id/etCapacidadClase"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Ej: 20"
+        android:inputType="number"
+        android:maxLength="3" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Asignar Entrenador"
+        android:labelFor="@+id/spinnerEntrenadores"
+        android:textAppearance="?attr/textAppearanceSubtitle2"
+        android:textColor="?attr/colorOnSurface" />
+
+    <Spinner
+        android:id="@+id/spinnerEntrenadores"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:spinnerMode="dropdown" />
+
+</LinearLayout>
